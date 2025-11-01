@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Munetios Maze</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root { --accent:#6a00ff; --accent2:#00ff9d; --glass:rgba(255,255,255,0.12); }
+body {
+  margin:0; font-family:'Press Start 2P',cursive;
+  background:radial-gradient(circle at center,#1b0032,#0a0018);
+  color:white; overflow:hidden;
+}
+.container{display:flex;flex-direction:column;align-items:center;height:100vh;}
+h1{margin:16px 0 6px;color:#b577ff;font-size:22px;text-shadow:0 2px 10px rgba(0,0,0,.5);}
+.tabs{display:flex;gap:.6rem;margin:8px 0 0;}
+.tab{padding:10px 16px;border-radius:12px;cursor:pointer;background:var(--glass);transition:.25s;}
+.tab.active{background:#6a00ff;} .tab:hover{background:rgba(255,255,255,0.2);}
+.panel{display:none;width:95%;max-width:980px;height:75vh;margin-top:14px;padding:16px;
+  border-radius:20px;background:rgba(255,255,255,0.08);overflow:hidden;position:relative;}
+.panel.active{display:block;}
+button{font-family:'Press Start 2P',cursive;background:var(--accent);color:#fff;border:0;
+  border-radius:12px;padding:10px 14px;cursor:pointer;}
+button:hover{filter:brightness(1.08);}
+#mazeCanvas{width:100%;height:100%;background:rgba(0,0,0,.25);border-radius:12px;}
+#hud{position:absolute;top:12px;left:16px;font-size:10px;line-height:1.9;
+  background:rgba(0,0,0,.25);padding:8px 10px;border-radius:10px;}
+#controls{position:absolute;bottom:12px;left:16px;font-size:9px;opacity:.75;}
+#startOverlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,rgba(6,1,13,.5),rgba(6,1,13,.8));}
+#startCard{padding:18px;border-radius:14px;background:rgba(255,255,255,.08);text-align:center;}
+#toastContainer{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;gap:10px;z-index:9999;}
+.toast{min-width:220px;text-align:center;padding:10px 16px;border-radius:12px;
+  background:rgba(255,255,255,.12);backdrop-filter:blur(8px);color:#fff;
+  border-left:4px solid #6a00ff;animation:toastInOut 3.8s ease forwards;font-size:11px;}
+.toast.success{border-left-color:#00ff9d;} .toast.error{border-left-color:#ff4b4b;}
+@keyframes toastInOut{0%{opacity:0;transform:translate(-50%,20px);}12%{opacity:1;transform:translate(-50%,0);}
+80%{opacity:1;}100%{opacity:0;transform:translate(-50%,20px);}}
+.badge{padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.15);font-size:9px;}
+.player-list{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.player-item{padding:10px;border-radius:12px;background:rgba(255,255,255,.06);}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>MUNETIOS MAZE</h1>
+  <div class="tabs">
+    <div class="tab active" data-tab="game">Game</div>
+    <div class="tab" data-tab="players">Players</div>
+    <div class="tab" data-tab="settings">Settings</div>
+  </div>
+
+  <div id="game" class="panel active">
+    <canvas id="mazeCanvas" width="900" height="580"></canvas>
+    <div id="hud">
+      ⏱️ Time: <span id="time">120</span><br>
+      💯 Score: <span id="score">0</span><br>
+      ❤️ HP: <span id="hp">100</span>
+    </div>
+    <div id="controls">Move: ⬆️⬇️⬅️➡️/WASD · Attack: SPACE · Sprint: Shift</div>
+    <div id="startOverlay">
+      <div id="startCard">
+        <div>Press Start to enter the maze</div>
+        <div style="font-size:10px;opacity:.9;margin:10px 0 16px;">Audio will start (music + sfx). You can mute in Settings.</div>
+        <button id="startBtn">▶ Start Game</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="players" class="panel">
+    <h2>Players</h2>
+    <ul id="playerList" class="player-list"></ul>
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+      <button id="addPlayerBtn">Add Random Player</button>
+      <span class="badge" id="playerCountBadge">0 players</span>
+    </div>
+  </div>
+
+  <div id="settings" class="panel">
+    <h2>Settings</h2>
+    <label><input type="checkbox" id="musicToggle" checked> Background Music</label><br><br>
+    <label><input type="checkbox" id="sfxToggle" checked> Sound Effects</label>
+    <audio id="bgMusic" loop>
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfxHit" src="https://cdn.jsdelivr.net/gh/kenneyinc/kenney_sounds@master/Audio%20impact%20fx/impactMetal_medium_000.ogg"></audio>
+    <audio id="sfxPickup" src="https://cdn.jsdelivr.net/gh/kenneyinc/kenney_sounds@master/Audio%20select%20sfx/select_003.ogg"></audio>
+    <audio id="sfxHurt" src="https://cdn.jsdelivr.net/gh/kenneyinc/kenney_sounds@master/Audio%20impact%20fx/impactWood_heavy_001.ogg"></audio>
+  </div>
+</div>
+<div id="toastContainer"></div>
+
+<script>
+/* ===== Toast ===== */
+function showToast(msg,type="info"){
+  const c=document.getElementById('toastContainer');
+  const el=document.createElement('div');
+  el.className='toast '+(type==='success'?'success':type==='error'?'error':'');
+  el.textContent=msg;
+  c.appendChild(el);
+  setTimeout(()=>el.remove(),3800);
+}
+
+/* ===== Tabs ===== */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+/* ===== Elements ===== */
+const canvas=document.getElementById('mazeCanvas');
+const ctx=canvas.getContext('2d');
+const playerList=document.getElementById('playerList');
+const playerCountBadge=document.getElementById('playerCountBadge');
+
+/* ===== Audio ===== */
+const bgMusic=document.getElementById('bgMusic');
+const sfxHit=document.getElementById('sfxHit');
+const sfxPickup=document.getElementById('sfxPickup');
+const sfxHurt=document.getElementById('sfxHurt');
+const musicToggle=document.getElementById('musicToggle');
+const sfxToggle=document.getElementById('sfxToggle');
+function playMusic(){ if(musicToggle.checked) bgMusic.play().catch(()=>{}); }
+function playSfx(a){ if(sfxToggle.checked){ a.currentTime=0; a.play().catch(()=>{});} }
+
+/* ===== Maze ===== */
+const TILE=30;
+const COLS=Math.floor(canvas.width/TILE);
+const ROWS=Math.floor(canvas.height/TILE);
+function genMaze(cols,rows){
+  const g=Array.from({length:rows},()=>Array(cols).fill(1));
+  function carve(x,y){
+    g[y][x]=0;
+    const dirs=[[1,0],[-1,0],[0,1],[0,-1]].sort(()=>Math.random()-0.5);
+    for(const [dx,dy] of dirs){
+      const nx=x+dx*2,ny=y+dy*2;
+      if(nx>0&&ny>0&&nx<cols-1&&ny<rows-1&&g[ny][nx]===1){
+        g[y+dy][x+dx]=0; carve(nx,ny);
+      }
+    }
+  }
+  carve(1,1);
+  return g;
+}
+const maze=genMaze(COLS,ROWS);
+const exitCell={x:COLS-2,y:ROWS-2};
+
+/* ===== Game ===== */
+let timeLeft=120,score=0;
+const you={x:TILE*1.5,y:TILE*1.5,w:18,h:18,color:"purple",speed:2.4,sprint:1.6,hp:100,atk:20,cooldown:0};
+const bots=[];
+const names=["Rex","Nova","Pixel","Drift","Echo","Frost","Blaze","Vibe","Zen","Lumo"];
+function randomCell(){let x,y;do{x=Math.floor(Math.random()*COLS);y=Math.floor(Math.random()*ROWS);}while(maze[y][x]!==0);return {x,y};}
+function cellToCenter({x,y}){return {x:x*TILE+TILE/2,y:y*TILE+TILE/2};}
+function addBot(){
+  const pos=cellToCenter(randomCell());
+  bots.push({x:pos.x,y:pos.y,w:18,h:18,color:`hsl(${Math.random()*360},80%,60%)`,
+             name:names[Math.floor(Math.random()*names.length)],
+             hp:60,speed:1.8,atk:10,cooldown:0});
+  renderPlayers();
+}
+function renderPlayers(){
+  playerList.innerHTML='';
+  const all=[{name:'You',color:you.color,hp:you.hp},...bots];
+  all.forEach(p=>{
+    const li=document.createElement('li');
+    li.className='player-item';
+    li.innerHTML=`<div style="display:flex;align-items:center;gap:8px">
+      <span style="width:12px;height:12px;background:${p.color};border-radius:3px;display:inline-block"></span>
+      ${p.name}<span style="margin-left:auto" class="badge">${p.hp} HP</span></div>`;
+    playerList.appendChild(li);
+  });
+  playerCountBadge.textContent=`${all.length} players`;
+}
+for(let i=0;i<4;i++) addBot();
+
+/* ===== Movement + Fight ===== */
+const keys={};
+window.addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);
+window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+function collides(nx,ny,w,h){
+  if(Number.isNaN(nx)||Number.isNaN(ny)) return true;
+  const pts=[[nx-w/2,ny-h/2],[nx+w/2,ny-h/2],[nx-w/2,ny+h/2],[nx+w/2,ny+h/2]];
+  for(const [x,y] of pts){
+    const cx=Math.floor(x/TILE),cy=Math.floor(y/TILE);
+    if(cx<0||cy<0||cx>=COLS||cy>=ROWS||maze[cy][cx]===1)return true;
+  }return false;
+}
+function tryAttack(a,b){
+  if(a.cooldown>0)return false;
+  const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
+  if(d===0)return false; // avoid NaN
+  if(d<26){b.hp-=a.atk;a.cooldown=20;return true;}
+  return false;
+}
+
+/* ===== Draw Loop ===== */
+function drawMaze(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if(maze[y][x]===1){
+    ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+  }
+  ctx.fillStyle='lime';
+  ctx.fillRect(exitCell.x*TILE+8,exitCell.y*TILE+8,TILE-16,TILE-16);
+}
+function drawPlayer(p){ctx.fillStyle=p.color;ctx.fillRect(p.x-p.w/2,p.y-p.h/2,p.w,p.h);}
+
+let started=false,timer=null;
+function update(){
+  if(!started)return;
+  const spd=you.speed*(keys['shift']?you.sprint:1);
+  let vx=(keys['d']||keys['arrowright']?spd:0)-(keys['a']||keys['arrowleft']?spd:0);
+  let vy=(keys['s']||keys['arrowdown']?spd:0)-(keys['w']||keys['arrowup']?spd:0);
+  const nx=you.x+vx,ny=you.y+vy;
+  if(!collides(nx,you.y,you.w,you.h))you.x=nx;
+  if(!collides(you.x,ny,you.w,you.h))you.y=ny;
+
+  if(keys[' ']||keys['space']){
+    for(const b of bots){
+      if(tryAttack(you,b)){
+        playSfx(sfxHit);score+=10;showToast(`You hit ${b.name}! +10`,'success');
+        if(b.hp<=0){score+=15;playSfx(sfxPickup);b.hp=60;showToast(`${b.name} respawned!`,'success');}
+        break;
+      }
+    }
+  }
+
+  for(const b of bots){
+    const dx=you.x-b.x,dy=you.y-b.y,d=Math.hypot(dx,dy);
+    if(d>0){ // avoid divide by zero
+      const vx=(dx/d)*b.speed,vy=(dy/d)*b.speed;
+      const nx=b.x+vx,ny=b.y+vy;
+      if(!collides(nx,b.y,b.w,b.h))b.x=nx;
+      if(!collides(b.x,ny,b.w,b.h))b.y=ny;
+    }
+    if(d<26&&tryAttack(b,you)){
+      you.hp-=b.atk;playSfx(sfxHurt);showToast(`${b.name} hit you!`,'error');
+      if(you.hp<=0){showToast('💀 You were defeated!','error');reset();}
+    }
+  }
+  const cx=Math.floor(you.x/TILE),cy=Math.floor(you.y/TILE);
+  if(cx===exitCell.x&&cy===exitCell.y){showToast(`🏆 Exit reached! Score ${score}`,'success');reset();}
+  document.getElementById('hp').textContent=Math.max(0,you.hp);
+  document.getElementById('score').textContent=score;
+}
+function draw(){drawMaze();drawPlayer(you);for(const b of bots)drawPlayer(b);}
+function loop(){update();draw();requestAnimationFrame(loop);} loop();
+
+/* ===== Timer ===== */
+function startTimer(){
+  timeLeft=120;document.getElementById('time').textContent=timeLeft;
+  if(timer)clearInterval(timer);
+  timer=setInterval(()=>{
+    if(!started)return;
+    timeLeft--;document.getElementById('time').textContent=timeLeft;
+    if(timeLeft<=0){showToast(`⏰ Time's up! Score ${score}`,'error');reset();}
+  },1000);
+}
+function reset(){
+  started=false;
+  document.getElementById('startOverlay').style.display='flex';
+  you.x=TILE*1.5;you.y=TILE*1.5;you.hp=100;score=0;
+  document.getElementById('hp').textContent=you.hp;
+  document.getElementById('score').textContent=score;
+  playMusic();
+}
+
+/* ===== Start ===== */
+document.getElementById('startBtn').addEventListener('click',()=>{
+  document.getElementById('startOverlay').style.display='none';
+  started=true;playMusic();startTimer();showToast('Go!','success');
+});
+
+/* ===== Add Player ===== */
+document.getElementById('addPlayerBtn').addEventListener('click',()=>{
+  addBot();showToast('New player joined!','info');
+});
+</script>
+</body>
+</html>
