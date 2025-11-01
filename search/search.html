@@ -306,7 +306,7 @@
                 }
                 settingsIcon.addEventListener('click', openSettings);
                 settingsModal.addEventListener('click', closeSettings);
-                // App launcher open/close logic
+                // App launcher open/close flogic
                 const appsIcon = document.querySelector('.apps-icon');
                 const appLauncher = document.querySelector('.app-launcher');
                 let appLauncherOpen = false;
@@ -805,7 +805,7 @@ document.addEventListener('DOMContentLoaded', () => {
         paginationDiv.style.display = 'none';
         showAdIfNeeded(query);
         try {
-            const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}&page=${page}&limit=${limit}&country=${encodeURIComponent(country)}`);
+            const res = await fetch(`/api/fetch.js?q=${encodeURIComponent(query)}&type=${type}&page=${page}&limit=${limit}&country=${encodeURIComponent(country)}`);
             if (!res.ok) throw new Error(`Server error: ${res.statusText}`);
             const data = await res.json();
             totalPages = data.totalPages;
