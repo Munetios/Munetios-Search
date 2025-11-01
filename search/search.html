@@ -794,31 +794,37 @@ document.addEventListener('DOMContentLoaded', () => {
         window.history.pushState({}, '', url);
     }
 
-    async function performSearch(query, type, page, country) {
-        if (!query) {
-            resultsDiv.textContent = 'Please enter a search term.';
-            paginationDiv.style.display = 'none';
-            showAdIfNeeded(query);
-            return;
-        }
-        resultsDiv.innerHTML = '<div class="loader"></div>';
+   async function performSearch(query, type, page, country) {
+    if (!query) {
+        resultsDiv.textContent = 'Please enter a search term.';
         paginationDiv.style.display = 'none';
         showAdIfNeeded(query);
-        try {
-            const res = await fetch(`/api/fetch.js?q=${encodeURIComponent(query)}&type=${type}&page=${page}&limit=${limit}&country=${encodeURIComponent(country)}`);
-            if (!res.ok) throw new Error(`Server error: ${res.statusText}`);
-            const data = await res.json();
-            totalPages = data.totalPages;
-            currentPage = data.page;
-            renderResults(data.results || [], type);
-            updatePagination(data);
-            showAdIfNeeded(query);
-        } catch(err) {
-            console.error("Search failed:", err);
-            resultsDiv.innerHTML = `<p style="text-align:center;color:#ff8a8a;">Search failed. Please try again.</p>`;
-            showAdIfNeeded(query);
-        }
+        return;
     }
+
+    resultsDiv.innerHTML = '<div class="loader"></div>';
+    paginationDiv.style.display = 'none';
+    showAdIfNeeded(query);
+
+    try {
+        // 🟣 Use local frontend dataset (no server.js needed)
+        const data = MunetiosSearch.search(query, { limit, page });
+
+        // emulate async feel (optional small delay)
+        await new Promise(r => setTimeout(r, 100));
+
+        totalPages = data.totalPages;
+        currentPage = data.page;
+
+        renderResults(data.results || [], type);
+        updatePagination(data);
+        showAdIfNeeded(query);
+    } catch (err) {
+        console.error("Search failed:", err);
+        resultsDiv.innerHTML = `<p style="text-align:center;color:#ff8a8a;">Search failed. Please try again.</p>`;
+        showAdIfNeeded(query);
+    }
+}
 
     function handleSearchTrigger() {
         currentPage = 1;
@@ -1039,5 +1045,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
+    <script src="/api/fetch.js"></script>
 </body>
 </html>
