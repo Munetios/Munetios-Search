@@ -1,0 +1,19 @@
+{
+  "name": "munetios-search",
+  "version": "1.0.0",
+  "main": "backend/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsdom": "^27.0.0",
+    "node-fetch": "^3.3.2"
+  }
+}
