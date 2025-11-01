@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Munetios Search</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css">
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --main-bg: #130036; --text-color: #fff; --card-bg: rgba(26, 0, 51, 0.7); --card-border: #25104d; --link-color: #7c4dff; --link-hover: #b388ff; }
+        * {font-family: Lexend, Poppins, sans-serif;}
+        body { font-family: Lexend, Poppins, sans-serif; margin: 0; background-color: var(--main-bg); color: var(--text-color); overflow-x: hidden; }
+        .topbar { position: sticky; top: 0; width: 100%; padding: 10px 20px; display: flex; flex-direction: column; box-sizing: border-box; z-index: 1000; background-color: rgba(19, 0, 54, 0.5); backdrop-filter: blur(5px); }
+        .topbar .top { display: flex; align-items: center; width: 100%; gap: 20px; }
+        .toolbar { margin-top: 10px; width: 100%; border-bottom: 1px solid #52009e; display: flex; align-items: center; gap: 20px; }
+        .tabs { display: flex; gap: 15px; padding-bottom: 8px; }
+        .item { cursor: pointer; padding: 6px 14px; border-radius: 18px; transition: 0.2s; color: #ccc; user-select: none; white-space: nowrap; }
+        .item.active { background-color: var(--link-color); color: white; }
+        .item:hover { background-color: rgba(124, 77, 255, 0.2); color: white; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none;}
+        .logo h1 { margin: 0; font-size: 24px; color: var(--text-color); }
+        .search-bar { display: flex; align-items: center; background-color: #1a0033; border-radius: 25px; max-width: 1024px; width: 100%; padding: 5px 15px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+        .search-bar svg { color: #ccc; margin-right: 8px; flex-shrink: 0; }
+        .search-bar input { width: 100%; border: none; background: transparent; color: var(--text-color); font-size: 16px; outline: none; padding: 10px 0; }
+        .content { max-width: 1000px; margin: 10px; padding: 0 20px 40px 20px; }
+        .result { margin-bottom: 28px; padding: 18px 20px 14px 20px; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--card-border); transition: 0.2s; position: relative; }
+        .result:hover { box-shadow: 0 4px 16px rgba(19, 0, 54, 0.18); background: rgba(26, 0, 51, 0.85); }
+        .result h3 { font-size: 20px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; font-weight: 600; margin: 0; }
+        .result a { color: var(--link-color); text-decoration: none; }
+        .result a:hover { color: var(--link-hover); text-decoration: underline; }
+        .result p { margin: 6px 0 0 0; color: #e0e0e0; font-size: 15px; }
+        .result img.thumbnail { width: 100%; border-radius: 8px; margin-top: 10px; }
+        .more-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; opacity: 0.8; border: none; background: transparent; color: #ddd; font-size: 24px; line-height: 1; padding: 0 5px; }
+        .details-panel { position: fixed; top: 80px; right: 20px; width: 100%; max-width: 1200px; border: 1px solid #3a1a70; border-radius: 16px; padding: 16px; height: 700px; z-index: 1200; display: none; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); backdrop-filter: blur(8px); }
+        .details-header { display: flex; align-items: center; gap: 10px; }
+        .details-header img { width: 20px; height: 20px; border-radius: 4px; }
+        .details-title { margin: 0; font-size: 18px; }
+        .details-url { font-size: 13px; color: #c6b7ff; word-break: break-all; }
+        .details-actions { display: flex; gap: 8px; margin: 12px 0; }
+        .btn { padding: 6px 12px; border-radius: 10px; background: #7c4dff; color: #fff; border: 0; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }
+        .btn.secondary { background: rgba(124, 77, 255, 0.18); color: #dcd3ff; border: 1px solid rgba(124, 77, 255, 0.35); }
+        .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: none; z-index: 1199; }
+        .details-close { position: absolute; top: 10px; right: 10px; background: transparent; color: #fff; border: 0; font-size: 20px; cursor: pointer; }
+        .pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+        .top-right { display: flex; align-items: center; gap: 15px; margin-left: auto; color: #fff; }
+        .top-right .icon { cursor: pointer; transition: opacity 0.2s; }
+        .top-right .icon:hover { opacity: 0.8; }
+        select#countryselect { background: #1a0033; border: 1px solid #7c4dff; color: #fff; padding: 6px 14px; border-radius: 18px; font-size: 15px; cursor: pointer; outline: none; }
+        .loader { width: 48px; height: 48px; border: 5px solid #FFF; border-bottom-color: var(--link-color); border-radius: 50%; display: block; margin: 40px auto; box-sizing: border-box; animation: rotation 1s linear infinite; }
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+        .app-launcher {
+            display: none;
+            position: absolute;
+            top: 48px;
+            right: 0;
+            width: 500px;
+            max-width: 90vw;
+            background: rgba(26, 0, 51, 0.97);
+            border: 1px solid #3a1a70;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            z-index: 1500;
+            padding: 0;
+            overflow: hidden;
+            transition: opacity 0.2s;
+        }
+        .app-launcher iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+            border-radius: 0 0 14px 14px;
+            background: transparent;
+            display: block;
+        }
+        .apps-icon {
+            position: relative;
+        }
+        .apps-icon.active + .app-launcher {
+            display: block;
+        }
+        @media (max-width: 600px) {
+            .app-launcher {
+                width: 98vw;
+                left: 1vw;
+                right: 1vw;
+                top: 48px;
+                max-width: 98vw;
+                border-radius: 10px;
+            }
+            .app-launcher iframe {
+                height: 60vw;
+                min-height: 220px;
+            }
+        }
+        .modal-content {
+            background: rgba(26, 0, 51, 0.85);
+            margin: 80px auto;
+            padding: 24px 28px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            width: 80%;
+            max-width: 640px;
+            border: 1px solid #3a1a70;
+            backdrop-filter: blur(5px) saturate(1.2);
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 900px) {
+           .logo-text  { 
+            display: none; 
+            }
+
+      }
+        @media (max-width: 700px) { #countryselect { display: none; } .hide-700 { display: none; } }
+        @media (max-width: 768px) { .details-panel { top: 50%; left: 50%; transform: translate(-50%, -50%); right: auto; width: min(92vw, 560px); } }
+        @media (max-width: 370px) { .hide-370 { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="top">
+            <a href="/" class="logo">
+                <img src="favicon-32x32.png" alt="Munetios Logo" style="height:32px;width:32px;">
+                <h1 class="logo-text" style="white-space: nowrap;">Munetios (Beta search)</h1>
+            </a>
+            <div class="search-bar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="searchInput" placeholder="Search">
+            </div>
+            <div class="top-right">
+                <select name="country" style="display: none;" id="countryselect" title="Select a country">
+                    <option value="" selected>All Countries</option>
+                    <option value="us">United States</option><option value="gb">United Kingdom</option><option value="ca">Canada</option><option value="au">Australia</option><option value="in">India</option><option value="de">Germany</option><option value="fr">France</option><option value="jp">Japan</option><option value="cn">China</option><option value="br">Brazil</option><option value="ru">Russia</option><option value="es">Spain</option><option value="it">Italy</option><option value="nl">Netherlands</option>
+                </select>
+                <!-- Settings Icon now -->
+                <div class="icon settings-icon" title="Settings">
+                  <svg height="28" width="28" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.438.995s.145.755.438.995l1.003.827c.48.398.668 1.03.26 1.431l-1.296 2.247a1.125 1.125 0 01-1.37.49l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.063-.374-.313-.686-.645-.87a6.52 6.52 0 01-.22-.127c-.324-.196-.72-.257-1.075-.124l-1.217.456a1.125 1.125 0 01-1.37-.49l-1.296-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.437-.995s-.145-.755-.437-.995l-1.004-.827a1.125 1.125 0 01-.26-1.431l1.296-2.247a1.125 1.125 0 011.37-.49l1.217.456c.355.133.75.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+
+                </div>
+                <div class="icon help-icon" title="Help">
+                    <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"></path></svg>
+                </div>
+                 <div class="icon apps-icon hide-700" title="Apps">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="20" cy="4" r="1.5"/>
+                        <circle cx="4" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/>
+                        <circle cx="4" cy="20" r="1.5"/><circle cx="12" cy="20" r="1.5"/><circle cx="20" cy="20" r="1.5"/>
+                    </svg>
+                </div>
+                <div class="app-launcher">
+                    <iframe src="https://www.munetios.com/apps" height="100vh" width="500" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar">
+            <div class="tabs">
+                <div class="item active" data-type="all">All</div>
+                <div class="item" data-type="images">Images</div>
+                <div class="item" data-type="videos">Videos (Broken)</div>
+                <div class="item hide-370" data-type="web">Web</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- ads here -->
+        <div class="ad-result" style="display: none;">
+            <div class="ad-content" id="adContent"></div>
+            </div>
+            <br>
+        <div id="results">Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.</div>
+        <div class="pagination" style="display: none;">
+            <button class="btn secondary" id="prevBtn" disabled>Prev</button>
+            <span class="counter"><span id="current-page">1</span> of <span id="total-pages">1</span></span>
+            <button class="btn secondary" id="nextBtn" disabled>Next</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="details-panel liquid-glass transparency-md" id="detailsPanel">
+        <button class="details-close" id="detailsClose" aria-label="Close">&times;</button>
+        <div class="details-header">
+            <img id="dpFavicon" src="favicon-16x16.png" alt="icon">
+            <div>
+                <h3 class="details-title" id="dpTitle">Title</h3>
+                <div class="details-url" id="dpUrl"></div>
+            </div>
+            <p>Reporting the result will not remove the website it will only remove it from the search results if it violates our policies.</p>
+        </div>
+        <div class="details-actions">
+            <a class="btn" id="dpVisit" rel="noopener noreferrer">Visit</a>
+            <a class="btn secondary" id="dpReport" rel="noopener noreferrer">Report</a>
+        </div>
+        <div class="details-desc" id="dpDesc"></div>
+    </div>
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <h2 style="margin-top:0;">Help</h2>
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:220px;">
+                <p>
+                    <strong>How to use Munetios Search:</strong><br>
+                    <ul style="margin:8px 0 0 18px;padding:0;">
+                        <li>Type your query in the search bar and press <kbd>Enter</kbd>.</li>
+                        <li>Switch between <b>All</b>, <b>Images</b>, <b>Videos</b>, or <b>Web</b> tabs for different result types.</li>
+                        <li>Use the country selector to filter results by country (on desktop).</li>
+                        <li>Click <b>⋮</b> on a result for more details, to visit, or to report it.</li>
+                        <li>Use <b>Prev</b>/<b>Next</b> to navigate pages.</li>
+                    </ul>
+                </p>
+                <p>
+                    <strong>Tips:</strong><br>
+                    <ul style="margin:8px 0 0 18px;padding:0;">
+                        <li>Enable or disable ads and dark mode in <b>Settings</b>.</li>
+                        <li>Change language in <b>Settings</b> for localized UI.</li>
+                        <li>Some features (like video search) may be limited in beta.</li>
+                    </ul>
+                </p>
+                <p>
+                    <strong>Need more help?</strong><br>
+                    Contact: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=minecraftgamer97529@gmail.com&su=Munetios%20Search%20Help%20Request" style="color:var(--link-color);" target="_blank" rel="noopener">minecraftgamer97529@gmail.com</a>
+                    <button class="btn" onclick="window.location.href='https://mail.google.com/mail/?view=cm&fs=1&to=minecraftgamer97529@gmail.com&su=Request%20a%20result%20for%20Munetios%20Search'">Request a result</button>
+                    <button class="btn" onclick="window.location.href='https://mail.google.com/mail/?view=cm&fs=1&to=minecraftgamer97529@gmail.com&su=Request%20an%20ad%20for%20Munetios%20Search'">Request an ad</button>
+                </p>
+            </div>
+        </div>
+        <script>
+        (function() {
+            const helpModal = document.getElementById('helpModal');
+            const helpIcon = document.querySelector('.help-icon');
+            function openHelp() {
+                helpModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+            function closeHelp(e) {
+                if (e.target === helpModal) {
+                    helpModal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            }
+            helpIcon.addEventListener('click', openHelp);
+            helpModal.addEventListener('click', closeHelp);
+            // Optional: close on Escape
+            window.addEventListener('keydown', function(e) {
+                if (helpModal.style.display === 'block' && e.key === 'Escape') {
+                    helpModal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
+        })();
+        </script>
+    </div>
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h2 style="margin-top:0;">Settings</h2>
+            <div style="display:flex;flex-direction:column;gap:18px;min-width:220px;">
+                <label style="display:flex;align-items:center;gap:10px;">
+                    <input type="checkbox" id="adsToggle" checked>
+                    Show Ads
+                </label>
+                <p>Note: Adblockers may break the show ads</p>
+                <label style="display:flex;align-items:center;gap:10px;">
+                    <input type="checkbox" id="darkModeToggle">
+                    Dark Mode
+                </label>
+                <label style="display:flex;flex-direction:column;gap:4px;">
+                    Language
+                    <select id="languageSelect" style="margin-top:4px;">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="zh">中文</option>
+                        <option value="ja">日本語</option>
+                        <option value="ru">Русский</option>
+                        <option value="ar">العربية</option>
+                        <option value="hi">हिन्दी</option>
+                    </select>
+                </label>
+            </div>
+            <script>
+            (function() {
+                // Modal open/close logic
+                const settingsModal = document.getElementById('settingsModal');
+                const settingsIcon = document.querySelector('.settings-icon');
+                function openSettings() {
+                    settingsModal.style.display = 'block';
+                    settingsModal.style.position = 'fixed';
+                    settingsModal.style.inset = '0';
+                    settingsModal.style.background = 'rgba(0,0,0,0.4)';
+                    settingsModal.style.zIndex = 2000;
+                    settingsModal.querySelector('.modal-content').style.background = '#1a0033';
+                    settingsModal.querySelector('.modal-content').style.borderRadius = '12px';
+                    settingsModal.querySelector('.modal-content').style.padding = '24px 28px';
+                    settingsModal.querySelector('.modal-content').style.margin = '80px auto';
+                    settingsModal.querySelector('.modal-content').style.maxWidth = '340px';
+                    settingsModal.querySelector('.modal-content').style.boxShadow = '0 8px 32px rgba(0,0,0,0.25)';
+                    document.body.style.overflow = 'hidden';
+                }
+                function closeSettings(e) {
+                    if (e.target === settingsModal) {
+                        settingsModal.style.display = 'none';
+                        document.body.style.overflow = '';
+                    }
+                }
+                settingsIcon.addEventListener('click', openSettings);
+                settingsModal.addEventListener('click', closeSettings);
+                // App launcher open/close logic
+                const appsIcon = document.querySelector('.apps-icon');
+                const appLauncher = document.querySelector('.app-launcher');
+                let appLauncherOpen = false;
+
+                function openAppLauncher(e) {
+                    e.stopPropagation();
+                    appsIcon.classList.add('active');
+                    appLauncher.style.display = 'block';
+                    appLauncherOpen = true;
+                }
+                function closeAppLauncher() {
+                    appsIcon.classList.remove('active');
+                    appLauncher.style.display = 'none';
+                    appLauncherOpen = false;
+                }
+                appsIcon.addEventListener('click', function(e) {
+                    if (appLauncherOpen) {
+                        closeAppLauncher();
+                    } else {
+                        openAppLauncher(e);
+                    }
+                });
+                // Close when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (appLauncherOpen && !appLauncher.contains(e.target) && !appsIcon.contains(e.target)) {
+                        closeAppLauncher();
+                    }
+                });
+                // Optional: close on Escape
+                window.addEventListener('keydown', function(e) {
+                    if (appLauncherOpen && e.key === 'Escape') {
+                        closeAppLauncher();
+                    }
+                });
+                // UI translations
+                const translations = {
+                    en: {
+                        'Munetios (Beta search)': 'Munetios (Beta search)',
+                        'Search': 'Search',
+                        'All': 'All',
+                        'Images': 'Images',
+                        'Videos (Broken)': 'Videos (Broken)',
+                        'Web': 'Web',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': 'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.',
+                        'Prev': 'Prev',
+                        'Next': 'Next',
+                        'Settings': 'Settings',
+                        'Help': 'Help',
+                        'Apps': 'Apps',
+                        'All Countries': 'All Countries',
+                        'Show Ads': 'Show Ads',
+                        'Dark Mode': 'Dark Mode',
+                        'Language': 'Language',
+                        'SettingsTitle': 'Settings',
+                        'Please enter a search term.': 'Please enter a search term.',
+                        'No results found for your query.': 'No results found for your query.',
+                        'Search failed. Please try again.': 'Search failed. Please try again.',
+                        'Visit': 'Visit',
+                        'Report': 'Report',
+                        'No description available.': 'No description available.',
+                        'Untitled': 'Untitled'
+                    },
+                    es: {
+                        'Munetios (Beta search)': 'Munetios (Búsqueda Beta)',
+                        'Search': 'Buscar',
+                        'All': 'Todo',
+                        'Images': 'Imágenes',
+                        'Videos (Broken)': 'Videos (Roto)',
+                        'Web': 'Web',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': 'Introduce una consulta para empezar a buscar. Nota: Los videos están rotos por limitaciones de la API de YouTube. Es beta, puede haber menos resultados y tardar más en cargar.',
+                        'Prev': 'Anterior',
+                        'Next': 'Siguiente',
+                        'Settings': 'Configuración',
+                        'Help': 'Ayuda',
+                        'Apps': 'Aplicaciones',
+                        'All Countries': 'Todos los países',
+                        'Show Ads': 'Mostrar anuncios',
+                        'Dark Mode': 'Modo oscuro',
+                        'Language': 'Idioma',
+                        'SettingsTitle': 'Configuración',
+                        'Please enter a search term.': 'Por favor, introduce un término de búsqueda.',
+                        'No results found for your query.': 'No se encontraron resultados para tu consulta.',
+                        'Search failed. Please try again.': 'La búsqueda falló. Inténtalo de nuevo.',
+                        'Visit': 'Visitar',
+                        'Report': 'Reportar',
+                        'No description available.': 'No hay descripción disponible.',
+                        'Untitled': 'Sin título'
+                    },
+                    fr: {
+                        'Munetios (Beta search)': 'Munetios (Recherche Bêta)',
+                        'Search': 'Rechercher',
+                        'All': 'Tout',
+                        'Images': 'Images',
+                        'Videos (Broken)': 'Vidéos (Cassé)',
+                        'Web': 'Web',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': 'Entrez une requête pour commencer la recherche. Remarque : Les vidéos sont actuellement cassées en raison des limitations de l\'API YouTube. C\'est une version bêta, il peut y avoir moins de résultats et cela peut prendre plus de temps.',
+                        'Prev': 'Précédent',
+                        'Next': 'Suivant',
+                        'Settings': 'Paramètres',
+                        'Help': 'Aide',
+                        'Apps': 'Applications',
+                        'All Countries': 'Tous les pays',
+                        'Show Ads': 'Afficher les pubs',
+                        'Dark Mode': 'Mode sombre',
+                        'Language': 'Langue',
+                        'SettingsTitle': 'Paramètres',
+                        'Please enter a search term.': 'Veuillez entrer un terme de recherche.',
+                        'No results found for your query.': 'Aucun résultat trouvé pour votre requête.',
+                        'Search failed. Please try again.': 'La recherche a échoué. Veuillez réessayer.',
+                        'Visit': 'Visiter',
+                        'Report': 'Signaler',
+                        'No description available.': 'Aucune description disponible.',
+                        'Untitled': 'Sans titre'
+                    },
+                    // Add more languages as needed
+                    de: {
+                        'Munetios (Beta search)': 'Munetios (Beta-Suche)',
+                        'Search': 'Suchen',
+                        'All': 'Alle',
+                        'Images': 'Bilder',
+                        'Videos (Broken)': 'Videos (Defekt)',
+                        'Web': 'Web',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': 'Geben Sie eine Anfrage ein, um die Suche zu starten. Hinweis: Videos sind derzeit aufgrund von YouTube-API-Beschränkungen defekt. Es ist Beta, daher gibt es möglicherweise weniger Ergebnisse und es kann länger dauern.',
+                        'Prev': 'Zurück',
+                        'Next': 'Weiter',
+                        'Settings': 'Einstellungen',
+                        'Help': 'Hilfe',
+                        'Apps': 'Apps',
+                        'All Countries': 'Alle Länder',
+                        'Show Ads': 'Werbung anzeigen',
+                        'Dark Mode': 'Dunkler Modus',
+                        'Language': 'Sprache',
+                        'SettingsTitle': 'Einstellungen',
+                        'Please enter a search term.': 'Bitte geben Sie einen Suchbegriff ein.',
+                        'No results found for your query.': 'Keine Ergebnisse für Ihre Anfrage gefunden.',
+                        'Search failed. Please try again.': 'Suche fehlgeschlagen. Bitte versuchen Sie es erneut.',
+                        'Visit': 'Besuchen',
+                        'Report': 'Melden',
+                        'No description available.': 'Keine Beschreibung verfügbar.',
+                        'Untitled': 'Ohne Titel'
+                    },
+                    zh: {
+                        'Munetios (Beta search)': 'Munetios（测试版搜索）',
+                        'Search': '搜索',
+                        'All': '全部',
+                        'Images': '图片',
+                        'Videos (Broken)': '视频（不可用）',
+                        'Web': '网页',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': '输入查询以开始搜索。注意：由于YouTube API限制，视频目前不可用。测试版可能结果较少且加载较慢。',
+                        'Prev': '上一页',
+                        'Next': '下一页',
+                        'Settings': '设置',
+                        'Help': '帮助',
+                        'Apps': '应用',
+                        'All Countries': '所有国家',
+                        'Show Ads': '显示广告',
+                        'Dark Mode': '深色模式',
+                        'Language': '语言',
+                        'SettingsTitle': '设置',
+                        'Please enter a search term.': '请输入搜索词。',
+                        'No results found for your query.': '未找到相关结果。',
+                        'Search failed. Please try again.': '搜索失败，请重试。',
+                        'Visit': '访问',
+                        'Report': '举报',
+                        'No description available.': '暂无描述。',
+                        'Untitled': '无标题'
+                    },
+                    ja: {
+                        'Munetios (Beta search)': 'Munetios（ベータ検索）',
+                        'Search': '検索',
+                        'All': 'すべて',
+                        'Images': '画像',
+                        'Videos (Broken)': '動画（利用不可）',
+                        'Web': 'ウェブ',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': '検索を開始するにはクエリを入力してください。注：YouTube APIの制限により動画は現在利用できません。ベータ版のため結果が少なく、読み込みに時間がかかる場合があります。',
+                        'Prev': '前へ',
+                        'Next': '次へ',
+                        'Settings': '設定',
+                        'Help': 'ヘルプ',
+                        'Apps': 'アプリ',
+                        'All Countries': 'すべての国',
+                        'Show Ads': '広告を表示',
+                        'Dark Mode': 'ダークモード',
+                        'Language': '言語',
+                        'SettingsTitle': '設定',
+                        'Please enter a search term.': '検索語を入力してください。',
+                        'No results found for your query.': '検索結果が見つかりませんでした。',
+                        'Search failed. Please try again.': '検索に失敗しました。もう一度お試しください。',
+                        'Visit': '訪問',
+                        'Report': '報告',
+                        'No description available.': '説明はありません。',
+                        'Untitled': '無題'
+                    },
+                    ru: {
+                        'Munetios (Beta search)': 'Munetios (Бета-поиск)',
+                        'Search': 'Поиск',
+                        'All': 'Все',
+                        'Images': 'Изображения',
+                        'Videos (Broken)': 'Видео (не работает)',
+                        'Web': 'Веб',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': 'Введите запрос для начала поиска. Видео сейчас не работают из-за ограничений YouTube API. Это бета, поэтому результатов может быть меньше и поиск может занять больше времени.',
+                        'Prev': 'Назад',
+                        'Next': 'Вперёд',
+                        'Settings': 'Настройки',
+                        'Help': 'Помощь',
+                        'Apps': 'Приложения',
+                        'All Countries': 'Все страны',
+                        'Show Ads': 'Показывать рекламу',
+                        'Dark Mode': 'Тёмный режим',
+                        'Language': 'Язык',
+                        'SettingsTitle': 'Настройки',
+                        'Please enter a search term.': 'Пожалуйста, введите поисковый запрос.',
+                        'No results found for your query.': 'По вашему запросу ничего не найдено.',
+                        'Search failed. Please try again.': 'Ошибка поиска. Пожалуйста, попробуйте ещё раз.',
+                        'Visit': 'Перейти',
+                        'Report': 'Пожаловаться',
+                        'No description available.': 'Описание отсутствует.',
+                        'Untitled': 'Без названия'
+                    },
+                    ar: {
+                        'Munetios (Beta search)': 'مونيتيوس (بحث تجريبي)',
+                        'Search': 'بحث',
+                        'All': 'الكل',
+                        'Images': 'صور',
+                        'Videos (Broken)': 'فيديوهات (معطلة)',
+                        'Web': 'الويب',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': 'أدخل استعلامًا لبدء البحث. ملاحظة: الفيديوهات معطلة حاليًا بسبب قيود YouTube API. النسخة تجريبية وقد تظهر نتائج أقل وقد يستغرق التحميل وقتًا أطول.',
+                        'Prev': 'السابق',
+                        'Next': 'التالي',
+                        'Settings': 'الإعدادات',
+                        'Help': 'مساعدة',
+                        'Apps': 'تطبيقات',
+                        'All Countries': 'كل الدول',
+                        'Show Ads': 'عرض الإعلانات',
+                        'Dark Mode': 'الوضع الداكن',
+                        'Language': 'اللغة',
+                        'SettingsTitle': 'الإعدادات',
+                        'Please enter a search term.': 'يرجى إدخال كلمة بحث.',
+                        'No results found for your query.': 'لم يتم العثور على نتائج لبحثك.',
+                        'Search failed. Please try again.': 'فشل البحث. يرجى المحاولة مرة أخرى.',
+                        'Visit': 'زيارة',
+                        'Report': 'إبلاغ',
+                        'No description available.': 'لا يوجد وصف.',
+                        'Untitled': 'بدون عنوان'
+                    },
+                    hi: {
+                        'Munetios (Beta search)': 'Munetios (बीटा खोज)',
+                        'Search': 'खोजें',
+                        'All': 'सभी',
+                        'Images': 'चित्र',
+                        'Videos (Broken)': 'वीडियो (काम नहीं कर रहे)',
+                        'Web': 'वेब',
+                        'Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.': 'खोज शुरू करने के लिए क्वेरी दर्ज करें। नोट: YouTube API सीमाओं के कारण वीडियो वर्तमान में काम नहीं कर रहे हैं। यह बीटा है, इसलिए कम परिणाम मिल सकते हैं और लोड होने में अधिक समय लग सकता है।',
+                        'Prev': 'पिछला',
+                        'Next': 'अगला',
+                        'Settings': 'सेटिंग्स',
+                        'Help': 'सहायता',
+                        'Apps': 'ऐप्स',
+                        'All Countries': 'सभी देश',
+                        'Show Ads': 'विज्ञापन दिखाएँ',
+                        'Dark Mode': 'डार्क मोड',
+                        'Language': 'भाषा',
+                        'SettingsTitle': 'सेटिंग्स',
+                        'Please enter a search term.': 'कृपया खोज शब्द दर्ज करें।',
+                        'No results found for your query.': 'आपकी क्वेरी के लिए कोई परिणाम नहीं मिला।',
+                        'Search failed. Please try again.': 'खोज विफल रही। कृपया पुनः प्रयास करें।',
+                        'Visit': 'देखें',
+                        'Report': 'रिपोर्ट करें',
+                        'No description available.': 'कोई विवरण उपलब्ध नहीं है।',
+                        'Untitled': 'शीर्षकहीन'
+                    }
+                };
+
+                function t(key) {
+                    const lang = localStorage.getItem('lang') || navigator.language.slice(0,2) || 'en';
+                    return (translations[lang] && translations[lang][key]) || translations['en'][key] || key;
+                }
+
+                // Translate static UI
+                function translateUI() {
+                    // Logo text
+                    const logoText = document.querySelector('.logo-text');
+                    if (logoText) logoText.textContent = t('Munetios (Beta search)');
+
+                    // Search input
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) searchInput.placeholder = t('Search');
+
+                    // Tabs
+                    const tabMap = {
+                        all: 'All',
+                        images: 'Images',
+                        videos: 'Videos (Broken)',
+                        web: 'Web'
+                    };
+                    document.querySelectorAll('.tabs .item').forEach(tab => {
+                        const type = tab.dataset.type;
+                        if (tabMap[type]) tab.textContent = t(tabMap[type]);
+                    });
+
+                    // Top-right icons
+                    document.querySelector('.settings-icon').title = t('Settings');
+                    document.querySelector('.help-icon').title = t('Help');
+                    const appsIcon = document.querySelector('.apps-icon');
+                    if (appsIcon) appsIcon.title = t('Apps');
+
+                    // Country select
+                    const countrySelect = document.getElementById('countryselect');
+                    if (countrySelect) {
+                        countrySelect.options[0].textContent = t('All Countries');
+                    }
+
+                    // Settings modal
+                    const settingsModal = document.getElementById('settingsModal');
+                    if (settingsModal) {
+                        const h2 = settingsModal.querySelector('h2');
+                        if (h2) h2.textContent = t('SettingsTitle');
+                        const labels = settingsModal.querySelectorAll('label');
+                        if (labels[0]) labels[0].lastChild.textContent = ' ' + t('Show Ads');
+                        if (labels[1]) labels[1].lastChild.textContent = ' ' + t('Dark Mode');
+                        if (labels[2]) labels[2].childNodes[0].textContent = t('Language');
+                    }
+
+                    // Pagination
+                    const prevBtn = document.getElementById('prevBtn');
+                    const nextBtn = document.getElementById('nextBtn');
+                    if (prevBtn) prevBtn.textContent = t('Prev');
+                    if (nextBtn) nextBtn.textContent = t('Next');
+                }
+
+                // Translate dynamic UI (results, errors, etc.)
+                window.translateDynamicUI = function() {
+                    // Results placeholder
+                    const resultsDiv = document.getElementById('results');
+                    if (resultsDiv && resultsDiv.textContent.trim().startsWith('Enter a query')) {
+                        resultsDiv.textContent = t('Enter a query to start searching. Note: Videos are currently broken due to YouTube API limitations. Note its beta so may only do fewer results and may take longer to load.');
+                    }
+                };
+
+                // Ads toggle
+                const adsToggle = document.getElementById('adsToggle');
+                function setAdsVisibility(show) {
+                    document.body.classList.toggle('hide-ads', !show);
+                    localStorage.setItem('showAds', show ? '1' : '0');
+                    // Example: hide elements with class 'ad-result'
+                    document.querySelectorAll('.ad-result').forEach(el => {
+                        el.style.display = show ? '' : 'none';
+                    });
+                }
+                adsToggle.checked = localStorage.getItem('showAds') !== '0';
+                adsToggle.addEventListener('change', () => setAdsVisibility(adsToggle.checked));
+                setAdsVisibility(adsToggle.checked);
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+
+        function getSystemTheme() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        function applyLightTheme() {
+            document.documentElement.style.setProperty('--main-bg', '#f7f7fa');
+            document.documentElement.style.setProperty('--text-color', '#18123a');
+            document.documentElement.style.setProperty('--card-bg', 'rgba(255,255,255,0.92)');
+            document.documentElement.style.setProperty('--card-border', '#e0d7ff');
+            document.documentElement.style.setProperty('--link-color', '#5a2dbe');
+            document.documentElement.style.setProperty('--link-hover', '#7c4dff');
+            document.body.classList.add('light');
+            document.body.classList.remove('dark');
+            // Light mode for modals
+            const modalContent = document.querySelectorAll('.modal-content');
+            modalContent.forEach(mc => {
+                mc.style.background = '#fff';
+                mc.style.color = '#18123a';
+                mc.style.border = '1px solid #e0d7ff';
+                mc.style.boxShadow = '0 8px 32px rgba(90,45,190,0.08)';
+            });
+        }
+        function applyDarkTheme() {
+            document.documentElement.style.setProperty('--main-bg', '#130036');
+            document.documentElement.style.setProperty('--text-color', '#fff');
+            document.documentElement.style.setProperty('--card-bg', 'rgba(26, 0, 51, 0.7)');
+            document.documentElement.style.setProperty('--card-border', '#25104d');
+            document.documentElement.style.setProperty('--link-color', '#7c4dff');
+            document.documentElement.style.setProperty('--link-hover', '#b388ff');
+            document.body.classList.add('dark');
+            document.body.classList.remove('light');
+            // Dark mode for modals
+            const modalContent = document.querySelectorAll('.modal-content');
+            modalContent.forEach(mc => {
+                mc.style.background = 'rgba(26, 0, 51, 0.85)';
+                mc.style.color = '#fff';
+                mc.style.border = '1px solid #3a1a70';
+                mc.style.boxShadow = '0 8px 32px rgba(0,0,0,0.25)';
+            });
+        }
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                applyDarkTheme();
+            } else {
+                applyLightTheme();
+            }
+        }
+        function updateDarkModeToggle() {
+            const saved = localStorage.getItem('theme');
+            if (saved) {
+                darkModeToggle.checked = saved === 'dark';
+                applyTheme(saved);
+            } else {
+                const sys = getSystemTheme();
+                darkModeToggle.checked = sys === 'dark';
+                applyTheme(sys);
+            }
+        }
+        darkModeToggle.addEventListener('change', () => {
+            const theme = darkModeToggle.checked ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
+        });
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'dark' : 'light');
+                darkModeToggle.checked = e.matches;
+            }
+        });
+        updateDarkModeToggle();
+              
+                // Language select
+                const languageSelect = document.getElementById('languageSelect');
+                const savedLang = localStorage.getItem('lang') || navigator.language.slice(0,2) || 'en';
+                languageSelect.value = savedLang;
+                languageSelect.addEventListener('change', () => {
+                    localStorage.setItem('lang', languageSelect.value);
+                    translateUI();
+                    window.translateDynamicUI();
+                });
+
+                // Initial translation
+                translateUI();
+                window.translateDynamicUI();
+
+                // Expose translation function for other scripts
+                window.t = t;
+            })();
+            </script>
+        </div>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const resultsDiv = document.getElementById('results');
+    const paginationDiv = document.querySelector('.pagination');
+    const currentPageEl = document.getElementById('current-page');
+    const totalPagesEl = document.getElementById('total-pages');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const countrySelect = document.getElementById('countryselect');
+    const tabs = document.querySelectorAll('.tabs .item');
+    const detailsPanel = document.getElementById('detailsPanel');
+    const overlay = document.getElementById('overlay');
+    const dpClose = document.getElementById('detailsClose');
+    let currentType = 'all';
+    let currentPage = 1;
+    let totalPages = 1;
+    const limit = 20;
+
+    const params = new URLSearchParams(window.location.search);
+    const initialQuery = params.get('q') || '';
+    const initialPage = parseInt(params.get('page') || '1', 10);
+    const initialCountry = params.get('country') || '';
+
+    if (initialQuery) {
+        searchInput.value = initialQuery;
+        currentPage = initialPage;
+        countrySelect.value = initialCountry;
+        document.title = `${initialQuery} - Munetios Search`;
+        performSearch(initialQuery, currentType, currentPage, initialCountry);
+    }
+    
+    function updateURL() {
+        const url = new URL(window.location);
+        const query = searchInput.value.trim();
+        url.searchParams.set('q', query);
+        url.searchParams.set('page', currentPage);
+        url.searchParams.set('country', countrySelect.value);
+        window.history.pushState({}, '', url);
+    }
+
+    async function performSearch(query, type, page, country) {
+        if (!query) {
+            resultsDiv.textContent = 'Please enter a search term.';
+            paginationDiv.style.display = 'none';
+            showAdIfNeeded(query);
+            return;
+        }
+        resultsDiv.innerHTML = '<div class="loader"></div>';
+        paginationDiv.style.display = 'none';
+        showAdIfNeeded(query);
+        try {
+            const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}&page=${page}&limit=${limit}&country=${encodeURIComponent(country)}`);
+            if (!res.ok) throw new Error(`Server error: ${res.statusText}`);
+            const data = await res.json();
+            totalPages = data.totalPages;
+            currentPage = data.page;
+            renderResults(data.results || [], type);
+            updatePagination(data);
+            showAdIfNeeded(query);
+        } catch(err) {
+            console.error("Search failed:", err);
+            resultsDiv.innerHTML = `<p style="text-align:center;color:#ff8a8a;">Search failed. Please try again.</p>`;
+            showAdIfNeeded(query);
+        }
+    }
+
+    function handleSearchTrigger() {
+        currentPage = 1;
+        const query = searchInput.value.trim();
+        const country = countrySelect.value;
+        updateURL();
+        performSearch(query, currentType, currentPage, country);
+    }
+
+    searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSearchTrigger(); });
+    countrySelect.addEventListener('change', handleSearchTrigger);
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentType = tab.dataset.type;
+            handleSearchTrigger();
+        });
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            updateURL();
+            performSearch(searchInput.value.trim(), currentType, currentPage, countrySelect.value);
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            updateURL();
+            performSearch(searchInput.value.trim(), currentType, currentPage, countrySelect.value);
+        }
+    });
+
+    function renderResults(results, type) {
+        if (!results.length) {
+            resultsDiv.textContent = 'No results found for your query.';
+            return;
+        }
+        let html = '';
+        if (type === 'images') {
+            html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;">${results.map(img => `<a href="${escapeHTML(img.url)}" rel="noopener noreferrer" class="result" style="padding:0;background:none;border:none;"><img src="${escapeHTML(img.image)}" alt="${escapeHTML(img.title || '')}" class="thumbnail" loading="lazy"></a>`).join('')}</div>`;
+        } else {
+            html = results.map(r => {
+                const payload = JSON.stringify(sanitizeForAttr(r));
+                return `
+                <div class="result">
+                    <button class="more-btn" aria-label="More" onclick='openPanel(${payload})'>&#8942;</button>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <img src="${escapeHTML(r.favicon)}" width="16" height="16" alt="favicon" style="border-radius:2px;" loading="lazy">
+                        <a href="${escapeHTML(r.url)}" rel="noopener noreferrer"><span style="font-size:14px;color:#ccc;display:block;">${escapeHTML(new URL(r.url).hostname)}</span></a>
+                    </div>
+                    <h3><a href="${escapeHTML(r.url)}" rel="noopener noreferrer">${escapeHTML(r.title)}</a></h3>
+                    <p>${escapeHTML(r.description || "")}</p>
+                    ${(type === 'videos' && r.thumbnail) ? `<img src="${escapeHTML(r.thumbnail)}" alt="${escapeHTML(r.title)}" class="thumbnail" loading="lazy">` : ''}
+                </div>`;
+            }).join('');
+        }
+        resultsDiv.innerHTML = html;
+    }
+
+    // Show ad for specific queries if ads are enabled
+    function showAdIfNeeded(query) {
+        const showAds = localStorage.getItem('showAds') !== '0';
+        const adDiv = document.querySelector('.ad-result');
+        const adContent = document.getElementById('adContent');
+        // Show ad for notebook/journal-related queries
+        if (
+            showAds &&
+            query &&
+            (
+            /\bnotebooks?\b/i.test(query) ||
+            /\bjournals?\b/i.test(query) ||
+            /\bbest\s+notebook\b/i.test(query) ||
+            /\bbest\s+notebook\s+for\s+free\b/i.test(query)
+            )
+        ) {
+            adDiv.style.display = '';
+            adContent.innerHTML = `
+            <div style="display:flex;align-items:center;gap:14px;">
+                <img src="https://notebook.munetios.com/favicon.ico" alt="Munetios Notebook" style="width:32px;height:32px;border-radius:6px;">
+                <div>
+                <span style="font-size:13px;color:#b388ff;font-weight:600;">Sponsored</span>
+                <h4 style="margin:2px 0 4px 0;">Munetios Notebook – Free, Powerful Online Notebook</h4>
+                <p style="margin:0 0 6px 0;font-size:14px;">Make journal, Add images and videos, Archive journals, Add tags, and more. Try Munetios Notebook for free!</p>
+                <a href="https://notebook.munetios.com/" class="btn" rel="noopener sponsored" target="_blank">Try Munetios Notebook</a>
+                </div>
+            </div>
+            `;
+            return;
+        }
+        // Show ad for calendar-related queries
+        if (
+            showAds &&
+            query &&
+            (
+            /free\s+calendars?/i.test(query) ||
+            /no\s+sign[\s-]*in|no\s+sign[\s-]*up.*calendar/i.test(query) ||
+            /best\s+calendars?/i.test(query) ||
+            /calendars?\s+that\s+have\s+favorites?/i.test(query) ||
+            /advanced\s+calendar/i.test(query)
+            )
+        ) {
+            adDiv.style.display = '';
+            adContent.innerHTML = `
+            <div style="display:flex;align-items:center;gap:14px;">
+                <img src="https://calendar.munetios.com/new/logo.png" alt="Munetios Calendar" style="width:32px;height:32px;border-radius:6px;">
+                <div>
+                <span style="font-size:13px;color:#b388ff;font-weight:600;">Sponsored</span>
+                <h4 style="margin:2px 0 4px 0;">Munetios Calendar – Free, Advanced, No Sign In Needed</h4>
+                <p style="margin:0 0 6px 0;font-size:14px;">Plan events, add favorites, use advanced features, and enjoy a privacy-friendly calendar with no sign in/up required. Try Munetios Calendar for free!</p>
+                <a href="https://calendar.munetios.com/" class="btn" rel="noopener sponsored" target="_blank">Try Munetios Calendar</a>
+                </div>
+            </div>
+            `;
+            return;
+        }
+        // Show ad for "calculators that have ai" or "calculators that have ai assistant"
+        if (
+            showAds &&
+            query &&
+            (
+            /calculators?\s+that\s+have\s+ai(\s+assistant)?/i.test(query)
+            || /ai\s+assistant\s+calculator/i.test(query)
+            )
+        ) {
+            adDiv.style.display = '';
+            adContent.innerHTML = `
+            <div style="display:flex;align-items:center;gap:14px;">
+                <img src="https://calculator.munetios.com/favicon.png" alt="Munetios Calculator" style="width:32px;height:32px;border-radius:6px;">
+                <div>
+                <span style="font-size:13px;color:#b388ff;font-weight:600;">Sponsored</span>
+                <h4 style="margin:2px 0 4px 0;">Munetios Calculator – Smart AI-Powered Calculator</h4>
+                <p style="margin:0 0 6px 0;font-size:14px;">Solve math, get explanations, and use AI assistant for advanced calculations. Try Munetios Calculator for free!</p>
+                <a href="https://calculator.munetios.com/" class="btn" rel="noopener sponsored" target="_blank">Try Munetios Calculator</a>
+                </div>
+            </div>
+            `;
+            return;
+        }
+        // Example: show ad for "best task managers for free"
+        if (
+            showAds &&
+            query &&
+            query.toLowerCase().includes('task manager') &&
+            query.toLowerCase().includes('free')
+        ) {
+            adDiv.style.display = '';
+            adContent.innerHTML = `
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <img src="https://tasks.munetios.com/favicon-32x32.png" alt="Munetios Tasks" style="width:32px;height:32px;border-radius:6px;">
+                    <div>
+                        <span style="font-size:13px;color:#b388ff;font-weight:600;">Sponsored</span>
+                        <h4 style="margin:2px 0 4px 0;">Munetios Tasks – Powerful Free Task Manager</h4>
+                        <p style="margin:0 0 6px 0;font-size:14px;">Organize tasks, create categories, add subtasks, backup your data, archive a task, search a task, share a task and more, and boost your productivity. Try Munetios Tasks for free!</p>
+                        <a href="https://tasks.munetios.com/" class="btn" rel="noopener sponsored" target="_blank">Try Munetios Tasks</a>
+                    </div>
+                </div>
+            `;
+        } else {
+            adDiv.style.display = 'none';
+            adContent.innerHTML = '';
+        }
+    }
+
+    // Call showAdIfNeeded after rendering results
+    showAdIfNeeded(searchInput.value.trim());
+
+    function updatePagination(data) {
+        if (data.totalResults > 0) {
+            paginationDiv.style.display = 'flex';
+            currentPageEl.textContent = data.page;
+            totalPagesEl.textContent = data.totalPages;
+            prevBtn.disabled = data.page <= 1;
+            nextBtn.disabled = data.page >= data.totalPages;
+        } else {
+            paginationDiv.style.display = 'none';
+        }
+    }
+
+    window.openPanel = (data) => {
+        document.getElementById('dpFavicon').src = data.favicon || 'favicon-16x16.png';
+        document.getElementById('dpTitle').textContent = data.title || 'Untitled';
+        document.getElementById('dpUrl').textContent = data.url || '';
+        document.getElementById('dpDesc').textContent = data.description || 'No description available.';
+        document.getElementById('dpVisit').href = data.url || '#';
+        const subject = encodeURIComponent(`Report: ${data.title || 'Untitled'} (${data.url || 'unknown'})`);
+        document.getElementById('dpReport').onclick = function(e) {
+            e.preventDefault();
+            window.location.href = `https://mail.google.com/mail/?view=cm&fs=1&to=minecraftgamer97529@gmail.com&su=${subject}`;
+        };
+        overlay.style.display = 'block';
+        detailsPanel.style.display = 'block';
+    }
+
+    function closePanel() {
+        detailsPanel.style.display = 'none';
+        overlay.style.display = 'none';
+    }
+    overlay.addEventListener('click', closePanel);
+    dpClose.addEventListener('click', closePanel);
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+
+    function escapeHTML(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    
+    function sanitizeForAttr(obj) {
+        const clone = {};
+        for (const k in obj) { clone[k] = typeof obj[k] === 'string' ? escapeHTML(obj[k]) : obj[k]; }
+        return clone;
+    }
+});
+</script>
+</body>
+</html>
