@@ -7,7 +7,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css">
     <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
-
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; img-src 'self' https: data:; script-src 'self' https: 'unsafe-inline'; style-src 'self' https: 'unsafe-inline'; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:;">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --main-bg: #130036; --text-color: #fff; --card-bg: rgba(26, 0, 51, 0.7); --card-border: #25104d; --link-color: #7c4dff; --link-hover: #b388ff; }
@@ -808,7 +808,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
         // 🟣 Use local frontend dataset (no server.js needed)
-        const data = MunetiosSearch.search(query, { limit, page });
+        const data = await MunetiosSearch.search(query, { limit, page, type, country });
 
         // emulate async feel (optional small delay)
         await new Promise(r => setTimeout(r, 100));
@@ -1045,6 +1045,1746 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
-    <script src="/api/fetch.js"></script>
+    <script>
+        /**
+         * MunetiosSearch.search(query, {limit, page}) - fetches results from a local static dataset and can fetch from Wikipedia, GitHub, and YouTube as seed sources.
+         * Returns: { results: [...], totalResults: number, totalPages: number, page: number }
+         */
+        const MunetiosSearch = {
+            async search(query, { limit = 20, page = 1, type = 'all', country = '' } = {}) {
+                // Static dataset
+                const dataset = [
+                    {
+                        title: "Munetios Home",
+                        url: "https://www.munetios.com/",
+                        description: "Munetios is a privacy-focused productivity platform.",
+                        favicon: "https://www.munetios.com/favicon.ico",
+                        image: "https://www.munetios.com/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Munetios Notebook",
+                        url: "https://notebook.munetios.com/",
+                        description: "Free online notebook for journaling, notes, and more.",
+                        favicon: "https://notebook.munetios.com/favicon.ico",
+                        image: "https://notebook.munetios.com/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Munetios Calendar",
+                        url: "https://calendar.munetios.com/",
+                        description: "Advanced, privacy-friendly calendar. No sign in required.",
+                        favicon: "https://calendar.munetios.com/new/logo.png",
+                        image: "https://calendar.munetios.com/new/logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Munetios Tasks",
+                        url: "https://tasks.munetios.com/",
+                        description: "Organize your tasks and boost productivity for free.",
+                        favicon: "https://tasks.munetios.com/favicon-32x32.png",
+                        image: "https://tasks.munetios.com/favicon.ico",
+                        type: "web"
+                    },
+                    {
+                        title: "Munetios Calculator",
+                        url: "https://calculator.munetios.com/",
+                        description: "AI-powered calculator for solving math and more.",
+                        favicon: "https://calculator.munetios.com/favicon.png",
+                        image: "",
+                        type: "web"
+                    },
+                    {
+                        title: "Munetios Blog",
+                        url: "https://blog.munetios.com/",
+                        description: "Read the latest news and updates from Munetios.",
+                        favicon: "https://blog.munetios.com/favicon.ico",
+                        image: "",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Search",
+                        url: "https://www.google.com/",
+                        description: "Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking for.",
+                        favicon: "https://www.google.com/favicon.ico",
+                        image: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Images",
+                        url: "https://images.google.com/",
+                        description: "Search the web for images. Google Images helps you quickly find the pictures you want.",
+                        favicon: "https://www.google.com/favicon.ico",
+                        image: "https://www.google.com/images/branding/product/ico/images_48dp.ico",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Maps",
+                        url: "https://maps.google.com/",
+                        description: "Find local businesses, view maps and get driving directions in Google Maps.",
+                        favicon: "https://maps.google.com/favicon.ico",
+                        image: "https://www.google.com/maps/about/images/og.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Drive",
+                        url: "https://drive.google.com/",
+                        description: "Google Drive is a free way to keep your files backed up and easy to reach from any phone, tablet, or computer.",
+                        favicon: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/hh_drive_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Docs",
+                        url: "https://docs.google.com/",
+                        description: "Create and edit web-based documents, spreadsheets, and presentations. Store documents online and access them from any computer.",
+                        favicon: "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/docs_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Sheets",
+                        url: "https://sheets.google.com/",
+                        description: "Create and edit spreadsheets online, for free. Google Sheets makes your data pop with charts and graphs.",
+                        favicon: "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/sheets_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Slides",
+                        url: "https://slides.google.com/",
+                        description: "Create and edit presentations online, for free. Google Slides makes your ideas shine with a variety of presentation themes.",
+                        favicon: "https://ssl.gstatic.com/docs/presentations/images/favicon5.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/slides_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Calendar",
+                        url: "https://calendar.google.com/",
+                        description: "With Google Calendar, you can quickly schedule meetings and events and get reminders about upcoming activities.",
+                        favicon: "https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_32.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/calendar_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Gmail",
+                        url: "https://mail.google.com/",
+                        description: "Gmail is email that's intuitive, efficient, and useful. 15 GB of storage, less spam, and mobile access.",
+                        favicon: "https://mail.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
+                        type: "web"
+                    },
+                    {
+                        title: "Google News",
+                        url: "https://news.google.com/",
+                        description: "Comprehensive, up-to-date news coverage, aggregated from sources all over the world by Google News.",
+                        favicon: "https://news.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/news_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Translate",
+                        url: "https://translate.google.com/",
+                        description: "Google's free service instantly translates words, phrases, and web pages between English and over 100 other languages.",
+                        favicon: "https://translate.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/translate_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Photos",
+                        url: "https://photos.google.com/",
+                        description: "Google Photos is the home for all your photos and videos, automatically organized and easy to share.",
+                        favicon: "https://ssl.gstatic.com/images/branding/product/2x/photos_96dp.png",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/photos_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Keep",
+                        url: "https://keep.google.com/",
+                        description: "Capture notes, share them with others, and access them from your computer, phone or tablet. Free with a Google account.",
+                        favicon: "https://ssl.gstatic.com/keep/keep.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/keep_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Classroom",
+                        url: "https://classroom.google.com/",
+                        description: "Google Classroom helps educators create engaging learning experiences they can personalize, manage, and measure.",
+                        favicon: "https://ssl.gstatic.com/classroom/favicon.png",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/classroom_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Forms",
+                        url: "https://forms.google.com/",
+                        description: "Create online forms and surveys, and analyze responses in real-time. Google Forms is free and easy to use.",
+                        favicon: "https://ssl.gstatic.com/docs/forms/forms_favicon_2020q4.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/forms_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Sites",
+                        url: "https://sites.google.com/",
+                        description: "Effortlessly create impactful team sites. Collaborate on sites with your team, and access them from anywhere.",
+                        favicon: "https://ssl.gstatic.com/atari/images/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/sites_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Books",
+                        url: "https://books.google.com/",
+                        description: "Search the world's most comprehensive index of full-text books. My library.",
+                        favicon: "https://books.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/books_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Scholar",
+                        url: "https://scholar.google.com/",
+                        description: "Google Scholar provides a simple way to broadly search for scholarly literature.",
+                        favicon: "https://scholar.google.com/favicon.ico",
+                        image: "https://scholar.google.com/intl/en/scholar/images/1x/scholar_64dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Finance",
+                        url: "https://www.google.com/finance/",
+                        description: "Google Finance provides real-time market quotes, international exchanges, up-to-date financial news, and analytics.",
+                        favicon: "https://www.google.com/finance/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/finance_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Flights",
+                        url: "https://www.google.com/flights/",
+                        description: "Find cheap flights in seconds, explore destinations on a map, and sign up for fare alerts on Google Flights.",
+                        favicon: "https://www.google.com/flights/static/images/flights-favicon.ico",
+                        image: "https://www.gstatic.com/flights/app/branding/flights_logo_2018q4_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Domains",
+                        url: "https://domains.google/",
+                        description: "Find your place online with a domain from Google, powered by Google reliability, security and performance.",
+                        favicon: "https://domains.google/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/domains_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Ads",
+                        url: "https://ads.google.com/",
+                        description: "Grow your business with Google Ads. Get in front of customers when they’re searching for businesses like yours.",
+                        favicon: "https://ads.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/ads_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google AdSense",
+                        url: "https://www.google.com/adsense/",
+                        description: "Earn money from your site. Monetize your content with the AdSense program.",
+                        favicon: "https://www.google.com/adsense/static/images/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/adsense_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Analytics",
+                        url: "https://analytics.google.com/",
+                        description: "Google Analytics gives you the tools you need to better understand your customers.",
+                        favicon: "https://ssl.gstatic.com/analytics/20230417-00/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/analytics_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Play",
+                        url: "https://play.google.com/",
+                        description: "Enjoy millions of the latest Android apps, games, music, movies, TV, books, magazines & more.",
+                        favicon: "https://play.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/play_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Podcasts",
+                        url: "https://podcasts.google.com/",
+                        description: "Google Podcasts lets you discover, subscribe, and listen to your favorite podcasts.",
+                        favicon: "https://podcasts.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/podcasts_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Meet",
+                        url: "https://meet.google.com/",
+                        description: "Secure video meetings and conferencing for everyone. Meet safely with Google Meet.",
+                        favicon: "https://ssl.gstatic.com/meet/meet_favicon_48px.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/meet_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Chat",
+                        url: "https://chat.google.com/",
+                        description: "Google Chat is an intelligent and secure communication and collaboration tool, built for teams.",
+                        favicon: "https://ssl.gstatic.com/chat/20230417-00/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/chat_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Contacts",
+                        url: "https://contacts.google.com/",
+                        description: "Google Contacts is your online address book, integrated with Gmail, Calendar, Drive, and other Google products.",
+                        favicon: "https://contacts.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/contacts_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Account",
+                        url: "https://myaccount.google.com/",
+                        description: "Your Google Account helps you do more by personalizing your Google experience and offering easy access to your most important information.",
+                        favicon: "https://myaccount.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/account_circle_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Alerts",
+                        url: "https://www.google.com/alerts",
+                        description: "Monitor the web for interesting new content with Google Alerts.",
+                        favicon: "https://www.google.com/alerts/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/alerts_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Trends",
+                        url: "https://trends.google.com/",
+                        description: "Explore what the world is searching. Google Trends allows you to explore trending search topics.",
+                        favicon: "https://trends.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/trends_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Developers",
+                        url: "https://developers.google.com/",
+                        description: "Google Developers is the place to find all Google developer documentation, resources, events, and products.",
+                        favicon: "https://developers.google.com/site-assets/images/favicon.png",
+                        image: "https://developers.google.com/site-assets/images/developers-social-media.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Cloud",
+                        url: "https://cloud.google.com/",
+                        description: "Google Cloud provides flexible infrastructure, end-to-end security, modern productivity, and intelligent insights.",
+                        favicon: "https://cloud.google.com/favicon.ico",
+                        image: "https://cloud.google.com/images/social-icon-google-cloud-1200-630.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google One",
+                        url: "https://one.google.com/",
+                        description: "Google One offers expanded cloud storage, automatic phone backup, and more.",
+                        favicon: "https://one.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/one_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Shopping",
+                        url: "https://shopping.google.com/",
+                        description: "Google Shopping helps you compare thousands of online and local stores. Save money by comparing millions of products across stores and brands.",
+                        favicon: "https://shopping.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/shopping_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Art & Culture",
+                        url: "https://artsandculture.google.com/",
+                        description: "Explore collections from around the world with Google Arts & Culture, created by the Google Cultural Institute.",
+                        favicon: "https://artsandculture.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/artsandculture_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Subdomains & Subpages Example",
+                        url: "https://support.google.com/",
+                        description: "Get help with Google products. Find answers to common questions and learn how to use Google services.",
+                        favicon: "https://ssl.gstatic.com/images/branding/product/2x/support_96dp.png",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/support_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Account Security",
+                        url: "https://myaccount.google.com/security",
+                        description: "Manage your Google Account security settings and keep your account protected.",
+                        favicon: "https://myaccount.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/account_circle_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Account Privacy",
+                        url: "https://myaccount.google.com/privacycheckup",
+                        description: "Take the Privacy Checkup to review and adjust important privacy settings in your Google Account.",
+                        favicon: "https://myaccount.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/account_circle_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Classroom Assignments",
+                        url: "https://classroom.google.com/u/0/h",
+                        description: "View and manage your Google Classroom assignments and classes.",
+                        favicon: "https://ssl.gstatic.com/classroom/favicon.png",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/classroom_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Docs Templates",
+                        url: "https://docs.google.com/templates",
+                        description: "Browse a gallery of Google Docs templates for resumes, reports, and more.",
+                        favicon: "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/docs_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Sheets Templates",
+                        url: "https://docs.google.com/spreadsheets/u/0/",
+                        description: "Access and create Google Sheets templates for budgets, schedules, and more.",
+                        favicon: "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/sheets_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Slides Templates",
+                        url: "https://docs.google.com/presentation/u/0/",
+                        description: "Find and use Google Slides templates for presentations, pitches, and more.",
+                        favicon: "https://ssl.gstatic.com/docs/presentations/images/favicon5.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/slides_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google News World",
+                        url: "https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZ4ZERBU0JXVnpjR0ZqYjNnQVAB",
+                        description: "World news from Google News, covering global events and stories.",
+                        favicon: "https://news.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/news_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google News Technology",
+                        url: "https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZ4ZERBU0JXVnpjR0ZqYjNnQVAB?oc=3&ceid=US:en",
+                        description: "Technology news from Google News, including the latest in tech and innovation.",
+                        favicon: "https://news.google.com/favicon.ico",
+                        image: "https://ssl.gstatic.com/images/branding/product/2x/news_96dp.png",
+                        type: "web"
+                    },
+                    {
+                        title: "DuckDuckGo Search",
+                        url: "https://duckduckgo.com/",
+                        description: "Privacy, simplified. DuckDuckGo is an internet privacy company that empowers you to seamlessly take control of your personal information online.",
+                        favicon: "https://duckduckgo.com/favicon.ico",
+                        image: "https://duckduckgo.com/assets/logo_homepage.normal.v108.svg",
+                        type: "web"
+                    },
+                    {
+                        title: "Bing Search",
+                        url: "https://www.bing.com/",
+                        description: "Bing helps you turn information into action, making it faster and easier to go from searching to doing.",
+                        favicon: "https://www.bing.com/sa/simg/favicon-2x.ico",
+                        image: "https://www.bing.com/th?id=OHR.BingHomepage_EN-US9425249853_1920x1080.jpg",
+                        type: "web"
+                    },
+                    {
+                        title: "Yahoo Search",
+                        url: "https://search.yahoo.com/",
+                        description: "The search engine that helps you find exactly what you're looking for.",
+                        favicon: "https://s.yimg.com/rz/l/favicon.ico",
+                        image: "https://s.yimg.com/cv/apiv2/social/images/yahoo_default_logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Brave Search",
+                        url: "https://search.brave.com/",
+                        description: "Private, independent, and transparent search engine by Brave.",
+                        favicon: "https://search.brave.com/static-assets/images/brave-favicon.png",
+                        image: "https://brave.com/static-assets/images/brave-og.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Startpage Search",
+                        url: "https://www.startpage.com/",
+                        description: "The world's most private search engine.",
+                        favicon: "https://www.startpage.com/sp/cdn/images/favicon/favicon-32x32.png",
+                        image: "https://www.startpage.com/sp/cdn/images/startpage-og.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Qwant Search",
+                        url: "https://www.qwant.com/",
+                        description: "Qwant is a search engine that respects your privacy and eases discovering and sharing via a social approach.",
+                        favicon: "https://www.qwant.com/favicon.ico",
+                        image: "https://www.qwant.com/img/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Reddit",
+                        url: "https://www.reddit.com/",
+                        description: "Reddit is a network of communities based on people's interests.",
+                        favicon: "https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png",
+                        image: "https://www.redditinc.com/assets/images/site/reddit-logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Stack Overflow",
+                        url: "https://stackoverflow.com/",
+                        description: "Stack Overflow is the largest, most trusted online community for developers to learn, share their programming knowledge, and build their careers.",
+                        favicon: "https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico",
+                        image: "https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Wikipedia",
+                        url: "https://www.wikipedia.org/",
+                        description: "Wikipedia is a free online encyclopedia, created and edited by volunteers around the world.",
+                        favicon: "https://www.wikipedia.org/static/favicon/wikipedia.ico",
+                        image: "https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png",
+                        type: "web"
+                    },
+                    {
+                        title: "YouTube",
+                        url: "https://www.youtube.com/",
+                        description: "Enjoy the videos and music you love, upload original content, and share it all with friends, family, and the world on YouTube.",
+                        favicon: "https://www.youtube.com/s/desktop/6e8e3e5d/img/favicon.ico",
+                        image: "https://www.youtube.com/img/desktop/yt_1200.png",
+                        type: "videos"
+                    },
+                    {
+                        title: "Vimeo",
+                        url: "https://vimeo.com/",
+                        description: "Vimeo is the world's most innovative video experience platform.",
+                        favicon: "https://vimeo.com/favicon.ico",
+                        image: "https://i.vimeocdn.com/video/595198868_1280x720.jpg",
+                        type: "videos"
+                    },
+                    {
+                        title: "Unsplash",
+                        url: "https://unsplash.com/",
+                        description: "Beautiful, free images and photos that you can download and use for any project.",
+                        favicon: "https://unsplash.com/favicon-32x32.png",
+                        image: "https://unsplash.com/blog/content/images/2022/12/unsplash-logo.png",
+                        type: "images"
+                    },
+                    {
+                        title: "Pixabay",
+                        url: "https://pixabay.com/",
+                        description: "Over 2.7 million+ high quality stock images, videos and music shared by our talented community.",
+                        favicon: "https://pixabay.com/favicon-32x32.png",
+                        image: "https://cdn.pixabay.com/photo/2017/01/06/19/15/soap-bubble-1958650_1280.jpg",
+                        type: "images"
+                    },
+                    {
+                        title: "Pexels",
+                        url: "https://www.pexels.com/",
+                        description: "Free stock photos you can use everywhere.",
+                        favicon: "https://www.pexels.com/favicon.ico",
+                        image: "https://images.pexels.com/photos/34950/pexels-photo.jpg",
+                        type: "images"
+                    },
+                    {
+                        title: "Flickr",
+                        url: "https://www.flickr.com/",
+                        description: "Flickr is almost certainly the best online photo management and sharing application in the world.",
+                        favicon: "https://www.flickr.com/favicon.ico",
+                        image: "https://combo.staticflickr.com/pw/images/buddyicon02_r.png",
+                        type: "images"
+                    },
+                    {
+                        title: "Instagram",
+                        url: "https://www.instagram.com/",
+                        description: "Create & share photos, stories, & clips with the friends you love.",
+                        favicon: "https://www.instagram.com/static/images/ico/favicon-192.png/68d99ba29cc8.png",
+                        image: "https://instagram-brand.com/wp-content/uploads/2016/11/app-icon2.png",
+                        type: "images"
+                    },
+                    {
+                        title: "Twitter (X)",
+                        url: "https://twitter.com/",
+                        description: "From breaking news and entertainment to sports and politics, get the full story with all the live commentary.",
+                        favicon: "https://abs.twimg.com/favicons/twitter.2.ico",
+                        image: "https://abs.twimg.com/icons/apple-touch-icon-192x192.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Facebook",
+                        url: "https://www.facebook.com/",
+                        description: "Connect with friends and the world around you on Facebook.",
+                        favicon: "https://www.facebook.com/favicon.ico",
+                        image: "https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg",
+                        type: "web"
+                    },
+                    {
+                        title: "LinkedIn",
+                        url: "https://www.linkedin.com/",
+                        description: "Manage your professional identity. Build and engage with your professional network.",
+                        favicon: "https://static.licdn.com/scds/common/u/images/logos/favicons/v1/favicon.ico",
+                        image: "https://static-exp1.licdn.com/sc/h/8w0q7k8b5a6p5b5w6y0v4p6p",
+                        type: "web"
+                    },
+                    {
+                        title: "GitHub",
+                        url: "https://github.com/",
+                        description: "GitHub is where over 100 million developers shape the future of software, together.",
+                        favicon: "https://github.githubassets.com/favicons/favicon.svg",
+                        image: "https://github.githubassets.com/images/modules/open_graph/github-mark.png",
+                        type: "web"
+                    },
+                    {
+                        title: "GitLab",
+                        url: "https://gitlab.com/",
+                        description: "The first single application for the entire DevOps lifecycle.",
+                        favicon: "https://about.gitlab.com/images/favicon.png",
+                        image: "https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Bitbucket",
+                        url: "https://bitbucket.org/",
+                        description: "Bitbucket is more than just Git code management.",
+                        favicon: "https://bitbucket.org/favicon.ico",
+                        image: "https://wac-cdn.atlassian.com/dam/jcr:1b8e6e7c-6c8b-4e5e-8e2a-2e3e7b8e7e7e/bitbucket-og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Notion",
+                        url: "https://www.notion.so/",
+                        description: "One workspace. Every team. Notion is all you need — in one tool.",
+                        favicon: "https://www.notion.so/images/favicon.ico",
+                        image: "https://www.notion.so/cdn-cgi/image/format=auto,width=1200,quality=80/front-static/pages/home/home-hero.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Trello",
+                        url: "https://trello.com/",
+                        description: "Trello helps teams move work forward.",
+                        favicon: "https://trello.com/favicon.ico",
+                        image: "https://a.trellocdn.com/prgb/dist/images/og/trello-hero.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Asana",
+                        url: "https://asana.com/",
+                        description: "Easily organize and plan workflows, projects, and more.",
+                        favicon: "https://asana.com/favicon.ico",
+                        image: "https://luna1.co/0e1b6d.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Slack",
+                        url: "https://slack.com/",
+                        description: "Slack is your digital HQ—a place where work flows between your people, systems, partners and customers.",
+                        favicon: "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png",
+                        image: "https://a.slack-edge.com/80588/marketing/img/meta/slack_hash_256.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Discord",
+                        url: "https://discord.com/",
+                        description: "Discord is the easiest way to talk over voice, video, and text.",
+                        favicon: "https://discord.com/assets/847541504914fd33810e70a0ea73177e.ico",
+                        image: "https://discord.com/assets/9c38e5c8c8b8c8c8c8c8c8c8c8c8c8c8.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Zoom",
+                        url: "https://zoom.us/",
+                        description: "Zoom is the leader in modern enterprise video communications.",
+                        favicon: "https://st1.zoom.us/zoom.ico",
+                        image: "https://explore.zoom.us/media/zoom-og-image.jpg",
+                        type: "web"
+                    },
+                    {
+                        title: "Microsoft Teams",
+                        url: "https://teams.microsoft.com/",
+                        description: "Microsoft Teams is a collaboration app that helps your team stay organized and has conversations all in one place.",
+                        favicon: "https://statics.teams.cdn.office.net/hashedassets/favicon/favicon-32x32.png",
+                        image: "https://statics.teams.cdn.office.net/hashedassets/logo/teams-logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Dropbox",
+                        url: "https://www.dropbox.com/",
+                        description: "Dropbox is a modern workspace designed to reduce busywork.",
+                        favicon: "https://cfl.dropboxstatic.com/static/images/favicon.ico",
+                        image: "https://cfl.dropboxstatic.com/static/images/brand/glyph@2x-vflJ1vxbq.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Box",
+                        url: "https://www.box.com/",
+                        description: "Box is changing how you manage content across your business from simple file sharing to building custom apps.",
+                        favicon: "https://www.box.com/static/img/favicon.ico",
+                        image: "https://cdn01.boxcdn.net/sites/default/files/2018-11/box-og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Evernote",
+                        url: "https://evernote.com/",
+                        description: "Evernote helps you capture and prioritize ideas, projects, and to-do lists.",
+                        favicon: "https://evernote.com/favicon.ico",
+                        image: "https://evernote.com/c/assets/homepage/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "OneNote",
+                        url: "https://www.onenote.com/",
+                        description: "OneNote is your digital notebook for capturing and organizing everything across your devices.",
+                        favicon: "https://www.onenote.com/favicon.ico",
+                        image: "https://onenote.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Quora",
+                        url: "https://www.quora.com/",
+                        description: "Quora is a place to gain and share knowledge.",
+                        favicon: "https://www.quora.com/favicon.ico",
+                        image: "https://qph.cf2.quoracdn.net/main-qimg-6b3e6b3e6b3e6b3e6b3e6b3e6b3e6b3e",
+                        type: "web"
+                    },
+                    {
+                        title: "Medium",
+                        url: "https://medium.com/",
+                        description: "Medium is an open platform where readers find dynamic thinking, and where expert and undiscovered voices can share their writing.",
+                        favicon: "https://medium.com/favicon.ico",
+                        image: "https://miro.medium.com/max/1200/1*U7u5QwKQpQKQpQKQpQKQpQ.png",
+                        type: "web"
+                    },
+                    {
+                        title: "WordPress",
+                        url: "https://wordpress.com/",
+                        description: "Create a free website or build a blog with ease on WordPress.com.",
+                        favicon: "https://wordpress.com/favicon.ico",
+                        image: "https://s.w.org/images/core/emoji/13.1.0/svg/1f4dd.svg",
+                        type: "web"
+                    },
+                    {
+                        title: "Tumblr",
+                        url: "https://www.tumblr.com/",
+                        description: "Tumblr is a place to express yourself, discover yourself, and bond over the stuff you love.",
+                        favicon: "https://www.tumblr.com/favicon.ico",
+                        image: "https://assets.tumblr.com/images/og/tumblr_og_image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Pinterest",
+                        url: "https://www.pinterest.com/",
+                        description: "Discover recipes, home ideas, style inspiration and other ideas to try.",
+                        favicon: "https://s.pinimg.com/webapp/favicon-32x32.png",
+                        image: "https://s.pinimg.com/webapp/style/images/logo_trans_144x144-4c3a4e7e.png",
+                        type: "images"
+                    },
+                    {
+                        title: "Canva",
+                        url: "https://www.canva.com/",
+                        description: "Create beautiful designs with your team.",
+                        favicon: "https://static.canva.com/static/images/favicon.ico",
+                        image: "https://static.canva.com/static/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Figma",
+                        url: "https://www.figma.com/",
+                        description: "Figma is the collaborative interface design tool.",
+                        favicon: "https://static.figma.com/app/icon/1/favicon.ico",
+                        image: "https://static.figma.com/app/icon/1/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Adobe Creative Cloud",
+                        url: "https://www.adobe.com/creativecloud.html",
+                        description: "Creative Cloud gives you the entire collection of Adobe desktop and mobile apps.",
+                        favicon: "https://www.adobe.com/favicon.ico",
+                        image: "https://www.adobe.com/content/dam/cc/icons/cc-apps-og.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Spotify",
+                        url: "https://www.spotify.com/",
+                        description: "Spotify is a digital music service that gives you access to millions of songs.",
+                        favicon: "https://www.scdn.co/i/_global/favicon.png",
+                        image: "https://www.scdn.co/i/_global/open-graph-default.png",
+                        type: "web"
+                    },
+                    {
+                        title: "SoundCloud",
+                        url: "https://soundcloud.com/",
+                        description: "SoundCloud is a music and podcast streaming platform.",
+                        favicon: "https://soundcloud.com/favicon.ico",
+                        image: "https://soundcloud.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Apple Music",
+                        url: "https://music.apple.com/",
+                        description: "Stream 100 million songs ad-free, listen offline with Apple Music.",
+                        favicon: "https://music.apple.com/favicon.ico",
+                        image: "https://music.apple.com/assets/apple-music-og.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Amazon",
+                        url: "https://www.amazon.com/",
+                        description: "Free shipping on millions of items. Get the best of Shopping and Entertainment with Prime.",
+                        favicon: "https://www.amazon.com/favicon.ico",
+                        image: "https://images-na.ssl-images-amazon.com/images/G/01/AUIClients/AmazonUIBaseCSS-sprite_2x-ae8c6e....png",
+                        type: "web"
+                    },
+                    {
+                        title: "eBay",
+                        url: "https://www.ebay.com/",
+                        description: "Buy & sell electronics, cars, clothes, collectibles & more on eBay.",
+                        favicon: "https://www.ebay.com/favicon.ico",
+                        image: "https://ir.ebaystatic.com/pictures/aw/pics/logos/ebay_og_image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "AliExpress",
+                        url: "https://www.aliexpress.com/",
+                        description: "Smarter Shopping, Better Living! Aliexpress.com",
+                        favicon: "https://ae01.alicdn.com/kf/HTB1Q2vQXwHqK1RjSZFgq6y7JXXaF.ico",
+                        image: "https://ae01.alicdn.com/kf/HTB1Q2vQXwHqK1RjSZFgq6y7JXXaF.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Walmart",
+                        url: "https://www.walmart.com/",
+                        description: "Shop Walmart.com for Every Day Low Prices.",
+                        favicon: "https://www.walmart.com/favicon.ico",
+                        image: "https://i5.walmartimages.com/dfw/63fd9f59-2b2a/k2-_b1e2e2e2-2e2e-2e2e-2e2e-2e2e2e2e2e2e.v1.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Target",
+                        url: "https://www.target.com/",
+                        description: "Shop Target for all your needs.",
+                        favicon: "https://www.target.com/favicon.ico",
+                        image: "https://target.scene7.com/is/image/Target/Target_Logo_OG",
+                        type: "web"
+                    },
+                    {
+                        title: "BBC News",
+                        url: "https://www.bbc.com/news",
+                        description: "Visit BBC News for up-to-the-minute news, breaking news, video, audio and feature stories.",
+                        favicon: "https://www.bbc.com/favicon.ico",
+                        image: "https://news.files.bbci.co.uk/include/newsspec/19854/assets/app-project-assets/bbc-news-logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "CNN",
+                        url: "https://www.cnn.com/",
+                        description: "View the latest news and breaking news today for U.S., world, weather, entertainment, politics and health at CNN.com.",
+                        favicon: "https://cdn.cnn.com/cnn/.e1mo/img/4.0/logos/favicon.ico",
+                        image: "https://cdn.cnn.com/cnn/.e1mo/img/4.0/logos/cnn_logo_social.jpg",
+                        type: "web"
+                    },
+                    {
+                        title: "The New York Times",
+                        url: "https://www.nytimes.com/",
+                        description: "Live news, investigations, opinion, photos and video by the journalists of The New York Times.",
+                        favicon: "https://www.nytimes.com/favicon.ico",
+                        image: "https://static01.nyt.com/images/2021/09/20/briefing/20am-briefing-promo/20am-briefing-promo-facebookJumbo.jpg",
+                        type: "web"
+                    },
+                    {
+                        title: "The Guardian",
+                        url: "https://www.theguardian.com/international",
+                        description: "Latest international news, sport and comment from the Guardian.",
+                        favicon: "https://assets.guim.co.uk/images/favicons/4c6d05b6e2b7b2e2e2e2e2e2e2e2e2e2.ico",
+                        image: "https://assets.guim.co.uk/images/favicons/4c6d05b6e2b7b2e2e2e2e2e2e2e2e2e2.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Reuters",
+                        url: "https://www.reuters.com/",
+                        description: "Find latest news from Reuters.",
+                        favicon: "https://www.reuters.com/pf/resources/images/favicon.ico",
+                        image: "https://www.reuters.com/pf/resources/images/reuters-og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Bloomberg",
+                        url: "https://www.bloomberg.com/",
+                        description: "Bloomberg delivers business and markets news, data, analysis, and video.",
+                        favicon: "https://assets.bwbx.io/business/public/images/favicons/favicon-32x32.png",
+                        image: "https://assets.bwbx.io/business/public/images/social_default.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Yahoo Finance",
+                        url: "https://finance.yahoo.com/",
+                        description: "At Yahoo Finance, you get free stock quotes, up-to-date news, portfolio management resources, international market data, social interaction and mortgage rates.",
+                        favicon: "https://s.yimg.com/cv/apiv2/default/icons/favicon_y19_32x32_custom.svg",
+                        image: "https://s.yimg.com/uu/api/res/1.2/4Q4Q4Q4Q4Q4Q4Q4Q4Q4Q--~B/aD0xMjAwO3c9MTIwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en-US/homerun/finance.yahoo.com/4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e",
+                        type: "web"
+                    },
+                    {
+                        title: "CoinMarketCap",
+                        url: "https://coinmarketcap.com/",
+                        description: "View top cryptocurrencies by market cap.",
+                        favicon: "https://s2.coinmarketcap.com/static/cloud/img/coinmarketcap_white_1.svg",
+                        image: "https://s2.coinmarketcap.com/static/cloud/img/coinmarketcap_og.png",
+                        type: "web"
+                    },
+                    {
+                        title: "CoinGecko",
+                        url: "https://www.coingecko.com/",
+                        description: "Get cryptocurrency prices, market cap, charts, and more.",
+                        favicon: "https://www.coingecko.com/favicon.ico",
+                        image: "https://www.coingecko.com/assets/coingecko-hero-2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Khan Academy",
+                        url: "https://www.khanacademy.org/",
+                        description: "You can learn anything. Expert-created content and resources for every course and level.",
+                        favicon: "https://cdn.kastatic.org/images/favicon.ico",
+                        image: "https://cdn.kastatic.org/images/ka-og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Coursera",
+                        url: "https://www.coursera.org/",
+                        description: "Build skills with courses, certificates, and degrees online from world-class universities and companies.",
+                        favicon: "https://d3njjcbhbojbot.cloudfront.net/web/images/favicons/favicon-v2.ico",
+                        image: "https://d3njjcbhbojbot.cloudfront.net/web/images/favicons/coursera-og.png",
+                        type: "web"
+                    },
+                    {
+                        title: "edX",
+                        url: "https://www.edx.org/",
+                        description: "Access 2000 free online courses from 140 leading institutions worldwide.",
+                        favicon: "https://www.edx.org/favicon.ico",
+                        image: "https://prod-discovery.edx-cdn.org/media/course/image/4e4e4e4e-4e4e-4e4e-4e4e-4e4e4e4e4e4e-og.jpg",
+                        type: "web"
+                    },
+                    {
+                        title: "Udemy",
+                        url: "https://www.udemy.com/",
+                        description: "Udemy is an online learning and teaching marketplace with over 213,000 courses and 62 million students.",
+                        favicon: "https://www.udemy.com/staticx/udemy/images/v7/favicon-32x32.png",
+                        image: "https://www.udemy.com/staticx/udemy/images/v7/udemy-meta-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Duolingo",
+                        url: "https://www.duolingo.com/",
+                        description: "Learn 30+ languages online with bite-size lessons based on science.",
+                        favicon: "https://d35aaqx5ub95lt.cloudfront.net/favicon.ico",
+                        image: "https://d35aaqx5ub95lt.cloudfront.net/images/og/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Rosetta Stone",
+                        url: "https://www.rosettastone.com/",
+                        description: "Learn a new language with Rosetta Stone.",
+                        favicon: "https://www.rosettastone.com/favicon.ico",
+                        image: "https://www.rosettastone.com/content/dam/rosetta-stone/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Wolfram Alpha",
+                        url: "https://www.wolframalpha.com/",
+                        description: "Wolfram Alpha brings expert-level knowledge and capabilities to the broadest possible range of people.",
+                        favicon: "https://www.wolframalpha.com/favicon.ico",
+                        image: "https://www.wolframalpha.com/_next/static/media/og-image.4e4e4e4e.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Desmos",
+                        url: "https://www.desmos.com/",
+                        description: "Explore math with our free online graphing calculator.",
+                        favicon: "https://www.desmos.com/favicon.ico",
+                        image: "https://www.desmos.com/assets/img/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "GeoGebra",
+                        url: "https://www.geogebra.org/",
+                        description: "GeoGebra - the world’s favorite, free math tools used by millions of students and teachers.",
+                        favicon: "https://www.geogebra.org/favicon.ico",
+                        image: "https://www.geogebra.org/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Archive.org",
+                        url: "https://archive.org/",
+                        description: "Internet Archive is a non-profit library of millions of free books, movies, software, music, websites, and more.",
+                        favicon: "https://archive.org/images/favicon.ico",
+                        image: "https://archive.org/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Wayback Machine",
+                        url: "https://web.archive.org/",
+                        description: "Explore more than 686 billion web pages saved over time.",
+                        favicon: "https://archive.org/images/wayback-machine-logo-32x32.png",
+                        image: "https://archive.org/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "OpenAI",
+                        url: "https://openai.com/",
+                        description: "OpenAI’s mission is to ensure that artificial general intelligence benefits all of humanity.",
+                        favicon: "https://openai.com/favicon.ico",
+                        image: "https://openai.com/content/images/2022/05/openai-avatar.png",
+                        type: "web"
+                    },
+                    {
+                        title: "ChatGPT",
+                        url: "https://chat.openai.com/",
+                        description: "ChatGPT is an AI-powered language model developed by OpenAI.",
+                        favicon: "https://chat.openai.com/favicon.ico",
+                        image: "https://chat.openai.com/apple-touch-icon.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Hugging Face",
+                        url: "https://huggingface.co/",
+                        description: "Build, train and deploy state of the art models powered by the reference open source in machine learning.",
+                        favicon: "https://huggingface.co/front/assets/huggingface_logo-noborder.svg",
+                        image: "https://huggingface.co/front/assets/huggingface_logo-noborder.svg",
+                        type: "web"
+                    },
+                    {
+                        title: "DeepL Translator",
+                        url: "https://www.deepl.com/translator",
+                        description: "DeepL Translate: The world's most accurate translator.",
+                        favicon: "https://www.deepl.com/favicon.ico",
+                        image: "https://www.deepl.com/img/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Grammarly",
+                        url: "https://www.grammarly.com/",
+                        description: "Grammarly makes sure everything you type is clear, effective, and mistake-free.",
+                        favicon: "https://static.grammarly.com/assets/files/9d6e5e5e5e5e5e5e5e5e5e5e5e5e5e5e/favicon.ico",
+                        image: "https://static.grammarly.com/assets/files/9d6e5e5e5e5e5e5e5e5e5e5e5e5e5e5e/grammarly-og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Proton Mail",
+                        url: "https://proton.me/mail",
+                        description: "Secure email that protects your privacy.",
+                        favicon: "https://proton.me/favicon.ico",
+                        image: "https://proton.me/_nuxt/img/protonmail-og-image.4e4e4e4e.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Tutanota",
+                        url: "https://tutanota.com/",
+                        description: "Secure email service, easy to use and private by design.",
+                        favicon: "https://tutanota.com/favicon.ico",
+                        image: "https://tutanota.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Zoho Mail",
+                        url: "https://www.zoho.com/mail/",
+                        description: "Secure, encrypted, privacy-guaranteed email service for your business.",
+                        favicon: "https://www.zoho.com/favicon.ico",
+                        image: "https://www.zoho.com/mail/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Proton Drive",
+                        url: "https://proton.me/drive",
+                        description: "End-to-end encrypted cloud storage.",
+                        favicon: "https://proton.me/favicon.ico",
+                        image: "https://proton.me/_nuxt/img/protondrive-og-image.4e4e4e4e.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Jitsi Meet",
+                        url: "https://meet.jit.si/",
+                        description: "Secure, fully featured, and completely free video conferencing.",
+                        favicon: "https://meet.jit.si/favicon.ico",
+                        image: "https://jitsi.org/wp-content/uploads/2018/02/jitsi-logo-blue.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Element (Matrix)",
+                        url: "https://element.io/",
+                        description: "Element is a secure messenger and collaboration app based on the Matrix protocol.",
+                        favicon: "https://element.io/images/favicon.ico",
+                        image: "https://element.io/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Signal",
+                        url: "https://signal.org/",
+                        description: "Millions of people use Signal every day for free and instantaneous communication.",
+                        favicon: "https://signal.org/assets/favicon.ico",
+                        image: "https://signal.org/assets/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Telegram",
+                        url: "https://telegram.org/",
+                        description: "Telegram is a cloud-based mobile and desktop messaging app with a focus on security and speed.",
+                        favicon: "https://telegram.org/favicon.ico",
+                        image: "https://telegram.org/img/t_logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Mastodon",
+                        url: "https://mastodon.social/",
+                        description: "Mastodon is a free, open-source social network server based on ActivityPub.",
+                        favicon: "https://mastodon.social/favicon.ico",
+                        image: "https://joinmastodon.org/static/og_image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Lemmy",
+                        url: "https://join-lemmy.org/",
+                        description: "Lemmy is a link aggregator for the fediverse.",
+                        favicon: "https://join-lemmy.org/favicon.ico",
+                        image: "https://join-lemmy.org/static/og_image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "PeerTube",
+                        url: "https://joinpeertube.org/",
+                        description: "PeerTube, a decentralized video hosting network.",
+                        favicon: "https://joinpeertube.org/favicon.ico",
+                        image: "https://joinpeertube.org/static/og_image.png",
+                        type: "videos"
+                    },
+                    {
+                        title: "Nextcloud",
+                        url: "https://nextcloud.com/",
+                        description: "The self-hosted productivity platform that keeps you in control.",
+                        favicon: "https://nextcloud.com/wp-content/themes/nextcloud-theming/images/favicon/favicon.ico",
+                        image: "https://nextcloud.com/wp-content/themes/nextcloud-theming/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "CryptPad",
+                        url: "https://cryptpad.fr/",
+                        description: "CryptPad is a private-by-design alternative to popular office tools and cloud services.",
+                        favicon: "https://cryptpad.fr/favicon.ico",
+                        image: "https://cryptpad.fr/static/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Joplin",
+                        url: "https://joplinapp.org/",
+                        description: "Joplin is an open source note taking and to-do application.",
+                        favicon: "https://joplinapp.org/images/favicon.ico",
+                        image: "https://joplinapp.org/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Obsidian",
+                        url: "https://obsidian.md/",
+                        description: "Obsidian is a powerful knowledge base that works on top of a local folder of plain text Markdown files.",
+                        favicon: "https://obsidian.md/favicon.ico",
+                        image: "https://obsidian.md/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Standard Notes",
+                        url: "https://standardnotes.com/",
+                        description: "A simple and private notes app.",
+                        favicon: "https://standardnotes.com/favicon.ico",
+                        image: "https://standardnotes.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Todoist",
+                        url: "https://todoist.com/",
+                        description: "Regain clarity and calmness by getting all those tasks out of your head and onto your to-do list.",
+                        favicon: "https://todoist.com/favicon.ico",
+                        image: "https://todoist.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "TickTick",
+                        url: "https://ticktick.com/",
+                        description: "TickTick is a simple and effective to-do list and task manager app.",
+                        favicon: "https://ticktick.com/favicon.ico",
+                        image: "https://ticktick.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Habitica",
+                        url: "https://habitica.com/",
+                        description: "Habitica is a free habit and productivity app that treats your real life like a game.",
+                        favicon: "https://habitica.com/favicon.ico",
+                        image: "https://habitica.com/static/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "RescueTime",
+                        url: "https://www.rescuetime.com/",
+                        description: "RescueTime helps you understand your daily habits so you can focus and be more productive.",
+                        favicon: "https://www.rescuetime.com/favicon.ico",
+                        image: "https://www.rescuetime.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Forest",
+                        url: "https://www.forestapp.cc/",
+                        description: "Forest is an app that helps you stay focused on the important things in life.",
+                        favicon: "https://www.forestapp.cc/favicon.ico",
+                        image: "https://www.forestapp.cc/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Pomofocus",
+                        url: "https://pomofocus.io/",
+                        description: "A simple Pomodoro timer app that works on desktop & mobile browser.",
+                        favicon: "https://pomofocus.io/favicon.ico",
+                        image: "https://pomofocus.io/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Focusmate",
+                        url: "https://www.focusmate.com/",
+                        description: "Focusmate virtual coworking helps you get things done.",
+                        favicon: "https://www.focusmate.com/favicon.ico",
+                        image: "https://www.focusmate.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Freedom",
+                        url: "https://freedom.to/",
+                        description: "Freedom blocks distractions on all your devices so you can focus on what matters most.",
+                        favicon: "https://freedom.to/favicon.ico",
+                        image: "https://freedom.to/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Noisli",
+                        url: "https://www.noisli.com/",
+                        description: "Noisli is your digital place for focus.",
+                        favicon: "https://www.noisli.com/favicon.ico",
+                        image: "https://www.noisli.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Calm",
+                        url: "https://www.calm.com/",
+                        description: "Calm is the #1 app for sleep and meditation.",
+                        favicon: "https://www.calm.com/favicon.ico",
+                        image: "https://www.calm.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Headspace",
+                        url: "https://www.headspace.com/",
+                        description: "Headspace is your guide to mindfulness for your everyday life.",
+                        favicon: "https://www.headspace.com/favicon.ico",
+                        image: "https://www.headspace.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Sleep Cycle",
+                        url: "https://www.sleepcycle.com/",
+                        description: "Sleep Cycle tracks and analyzes your sleep, waking you up at the most perfect time.",
+                        favicon: "https://www.sleepcycle.com/favicon.ico",
+                        image: "https://www.sleepcycle.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "MyFitnessPal",
+                        url: "https://www.myfitnesspal.com/",
+                        description: "Free Calorie Counter, Diet & Exercise Journal.",
+                        favicon: "https://www.myfitnesspal.com/favicon.ico",
+                        image: "https://www.myfitnesspal.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Strava",
+                        url: "https://www.strava.com/",
+                        description: "Strava is the social network for athletes.",
+                        favicon: "https://www.strava.com/favicon.ico",
+                        image: "https://www.strava.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Fitbit",
+                        url: "https://www.fitbit.com/",
+                        description: "Fitbit helps you lead a healthier, more active life.",
+                        favicon: "https://www.fitbit.com/favicon.ico",
+                        image: "https://www.fitbit.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Google Fit",
+                        url: "https://www.google.com/fit/",
+                        description: "Google Fit helps you track your activity and reach your fitness goals.",
+                        favicon: "https://www.google.com/fit/static/images/favicon.ico",
+                        image: "https://www.google.com/fit/static/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Apple Health",
+                        url: "https://www.apple.com/ios/health/",
+                        description: "The Health app makes it easy to learn about your health and start reaching your goals.",
+                        favicon: "https://www.apple.com/favicon.ico",
+                        image: "https://www.apple.com/v/ios/health/a/images/overview/og_image__e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Pocket",
+                        url: "https://getpocket.com/",
+                        description: "When you find something you want to view later, put it in Pocket.",
+                        favicon: "https://getpocket.com/favicon.ico",
+                        image: "https://getpocket.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Feedly",
+                        url: "https://feedly.com/",
+                        description: "Feedly is a news aggregator application for various web browsers and mobile devices.",
+                        favicon: "https://feedly.com/favicon.ico",
+                        image: "https://feedly.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Inoreader",
+                        url: "https://www.inoreader.com/",
+                        description: "Inoreader is a content reader for power users who want to save time.",
+                        favicon: "https://www.inoreader.com/favicon.ico",
+                        image: "https://www.inoreader.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Raindrop.io",
+                        url: "https://raindrop.io/",
+                        description: "All-in-one bookmark manager.",
+                        favicon: "https://raindrop.io/favicon.ico",
+                        image: "https://raindrop.io/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Pinboard",
+                        url: "https://pinboard.in/",
+                        description: "Pinboard is a fast, no-nonsense bookmarking site for people who value privacy and speed.",
+                        favicon: "https://pinboard.in/favicon.ico",
+                        image: "https://pinboard.in/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Zotero",
+                        url: "https://www.zotero.org/",
+                        description: "Zotero is a free, easy-to-use tool to help you collect, organize, cite, and share research.",
+                        favicon: "https://www.zotero.org/favicon.ico",
+                        image: "https://www.zotero.org/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Mendeley",
+                        url: "https://www.mendeley.com/",
+                        description: "Mendeley is a free reference manager and academic social network.",
+                        favicon: "https://www.mendeley.com/favicon.ico",
+                        image: "https://www.mendeley.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Overleaf",
+                        url: "https://www.overleaf.com/",
+                        description: "Overleaf is a collaborative cloud-based LaTeX editor.",
+                        favicon: "https://www.overleaf.com/favicon.ico",
+                        image: "https://www.overleaf.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "ShareLaTeX",
+                        url: "https://www.sharelatex.com/",
+                        description: "ShareLaTeX is an online LaTeX editor that's easy to use.",
+                        favicon: "https://www.sharelatex.com/favicon.ico",
+                        image: "https://www.sharelatex.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Draw.io",
+                        url: "https://app.diagrams.net/",
+                        description: "Draw.io is a free online diagram software for making flowcharts, process diagrams, org charts, UML, ER and network diagrams.",
+                        favicon: "https://app.diagrams.net/favicon.ico",
+                        image: "https://app.diagrams.net/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Lucidchart",
+                        url: "https://www.lucidchart.com/",
+                        description: "Lucidchart is your solution for visual communication and cross-platform collaboration.",
+                        favicon: "https://www.lucidchart.com/favicon.ico",
+                        image: "https://www.lucidchart.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "MindMeister",
+                        url: "https://www.mindmeister.com/",
+                        description: "MindMeister is an online mind mapping tool that lets you capture, develop and share ideas visually.",
+                        favicon: "https://www.mindmeister.com/favicon.ico",
+                        image: "https://www.mindmeister.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Miro",
+                        url: "https://miro.com/",
+                        description: "Miro is the online collaborative whiteboard platform.",
+                        favicon: "https://miro.com/favicon.ico",
+                        image: "https://miro.com/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Coggle",
+                        url: "https://coggle.it/",
+                        description: "Coggle is a collaborative mind-mapping tool that helps you make sense of complex things.",
+                        favicon: "https://coggle.it/favicon.ico",
+                        image: "https://coggle.it/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "DrawPile",
+                        url: "https://drawpile.net/",
+                        description: "Drawpile is a free software collaborative drawing program.",
+                        favicon: "https://drawpile.net/favicon.ico",
+                        image: "https://drawpile.net/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Krita",
+                        url: "https://krita.org/",
+                        description: "Krita is a professional FREE and open source painting program.",
+                        favicon: "https://krita.org/wp-content/uploads/2016/11/cropped-favicon-32x32.png",
+                        image: "https://krita.org/wp-content/uploads/2016/11/krita-hero.png",
+                        type: "web"
+                    },
+                    {
+                        title: "GIMP",
+                        url: "https://www.gimp.org/",
+                        description: "GIMP is a cross-platform image editor available for GNU/Linux, macOS, Windows and more.",
+                        favicon: "https://www.gimp.org/images/favicon.ico",
+                        image: "https://www.gimp.org/images/frontpage/wilber-big.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Inkscape",
+                        url: "https://inkscape.org/",
+                        description: "Inkscape is professional quality vector graphics software.",
+                        favicon: "https://inkscape.org/static/images/inkscape-favicon.png",
+                        image: "https://inkscape.org/static/images/inkscape-og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Blender",
+                        url: "https://www.blender.org/",
+                        description: "Blender is the free and open source 3D creation suite.",
+                        favicon: "https://www.blender.org/favicon.ico",
+                        image: "https://www.blender.org/wp-content/uploads/2019/07/blender_logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Unity",
+                        url: "https://unity.com/",
+                        description: "Unity is the world’s leading platform for creating and operating interactive, real-time 3D content.",
+                        favicon: "https://unity.com/favicon.ico",
+                        image: "https://unity.com/sites/default/files/styles/og_image/public/2021-03/unity-og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Unreal Engine",
+                        url: "https://www.unrealengine.com/",
+                        description: "Unreal Engine is the world’s most open and advanced real-time 3D creation tool.",
+                        favicon: "https://www.unrealengine.com/favicon.ico",
+                        image: "https://cdn2.unrealengine.com/Unreal+Engine%2Fblog%2Fblog-og-image-1920x1080-1920x1080-2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Godot Engine",
+                        url: "https://godotengine.org/",
+                        description: "Godot is a feature-packed, cross-platform game engine to create 2D and 3D games.",
+                        favicon: "https://godotengine.org/themes/godotengine/assets/ico/favicon.ico",
+                        image: "https://godotengine.org/themes/godotengine/assets/og_image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "itch.io",
+                        url: "https://itch.io/",
+                        description: "itch.io is a simple way to find, download and distribute indie games online.",
+                        favicon: "https://itch.io/favicon.ico",
+                        image: "https://itch.io/static/images/itchio-textless-black.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Steam",
+                        url: "https://store.steampowered.com/",
+                        description: "Steam is the ultimate destination for playing, discussing, and creating games.",
+                        favicon: "https://store.steampowered.com/favicon.ico",
+                        image: "https://store.steampowered.com/public/shared/images/header/globalheader_logo.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Epic Games Store",
+                        url: "https://www.epicgames.com/store/en-US/",
+                        description: "Buy and download PC games, mods, DLC and add-ons.",
+                        favicon: "https://static-assets-prod.epicgames.com/favicon.ico",
+                        image: "https://static-assets-prod.epicgames.com/epic-og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "GOG.com",
+                        url: "https://www.gog.com/",
+                        description: "GOG.com is a digital distribution platform with a curated selection of games.",
+                        favicon: "https://www.gog.com/favicon.ico",
+                        image: "https://www.gog.com/static/images/og-image.png",
+                        type: "web"
+                    },
+                    {
+                        title: "Twitch",
+                        url: "https://www.twitch.tv/",
+                        description: "Twitch is the world's leading live streaming platform for gamers and the things we love.",
+                        favicon: "https://static.twitchcdn.net/assets/favicon-32-e29e246c157142c94346.png",
+                        image: "https://static.twitchcdn.net/assets/og-image-1200x630.png",
+                        type: "videos"
+                    },
+                    {
+                        title: "Mixer (archived)",
+                        url: "https://mixer.com/",
+                        description: "Mixer was a live streaming platform for gamers.",
+                        favicon: "https://mixer.com/favicon.ico",
+                        image: "https://mixer.com/images/og-image.png",
+                        type: "videos"
+                    },
+                    {
+                        title: "Dailymotion",
+                        url: "https://www.dailymotion.com/",
+                        description: "Dailymotion is a video-sharing technology platform.",
+                        favicon: "https://www.dailymotion.com/favicon.ico",
+                        image: "https://www.dailymotion.com/images/og-image.png",
+                        type: "videos"
+                    },
+                    {
+                        title: "Vine (archived)",
+                        url: "https://vine.co/",
+                        description: "Vine was a short-form video hosting service.",
+                        favicon: "https://vine.co/favicon.ico",
+                        image: "https://vine.co/images/og-image.png",
+                        type: "videos"
+                    },
+                    {
+                        title: "TED",
+                        url: "https://www.ted.com/",
+                        description: "TED is a nonprofit devoted to spreading ideas, usually in the form of short, powerful talks.",
+                        favicon: "https://www.ted.com/favicon.ico",
+                        image: "https://pi.tedcdn.com/r/pe.tedcdn.com/images/ted/ted-og-image.png",
+                        type: "videos"
+                    },
+                    {
+                        title: "Coursera (Videos)",
+                        url: "https://www.coursera.org/",
+                        description: "Online courses from top universities, including video lectures.",
+                        favicon: "https://d3njjcbhbojbot.cloudfront.net/web/images/favicons/favicon-v2.ico",
+                        image: "https://d3njjcbhbojbot.cloudfront.net/web/images/favicons/coursera-og.png",
+                        type: "videos"
+                    },
+                    {
+                        title: "Khan Academy (Videos)",
+                        url: "https://www.khanacademy.org/",
+                        description: "Free online courses, lessons & practice with video lectures.",
+                        favicon: "https://cdn.kastatic.org/images/favicon.ico",
+                        image: "https://cdn.kastatic.org/images/ka-og-image.png",
+                        type: "videos"
+                    }
+                ];
+
+                // Helper: fetch Wikipedia search results
+                async function fetchWikipedia(q) {
+                    try {
+                        // Get search results
+                        const resp = await fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(q)}&utf8=&format=json`);
+                        const data = await resp.json();
+                        if (!data.query || !data.query.search) return [];
+                        // Get pageids for image fetching
+                        const pageids = data.query.search.map(item => item.pageid).filter(Boolean);
+                        let imagesMap = {};
+                        if (pageids.length) {
+                            // Fetch page images (thumbnail)
+                            const imgResp = await fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&pageids=${pageids.join('|')}&prop=pageimages&format=json&pithumbsize=300`);
+                            const imgData = await imgResp.json();
+                            if (imgData.query && imgData.query.pages) {
+                                for (const pid in imgData.query.pages) {
+                                    const page = imgData.query.pages[pid];
+                                    if (page.thumbnail && page.thumbnail.source) {
+                                        imagesMap[pid] = page.thumbnail.source;
+                                    }
+                                }
+                            }
+                        }
+                        return data.query.search.map(item => ({
+                            title: item.title,
+                            url: `https://en.wikipedia.org/?curid=${item.pageid}`,
+                            description: item.snippet.replace(/<\/?[^>]+(>|$)/g, ""), // Remove HTML tags
+                            favicon: "https://en.wikipedia.org/static/favicon/wikipedia.ico",
+                            image: imagesMap[item.pageid] || "",
+                            type: imagesMap[item.pageid] ? "images" : "web"
+                        }));
+                    } catch {
+                        return [];
+                    }
+                }
+
+                // Helper: fetch GitHub repositories
+                async function fetchGitHub(q) {
+                    try {
+                        const resp = await fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(q)}&per_page=5`);
+                        const data = await resp.json();
+                        if (!data.items) return [];
+                        return data.items.map(repo => ({
+                            title: repo.full_name,
+                            url: repo.html_url,
+                            description: repo.description || "",
+                            favicon: "https://github.githubassets.com/favicons/favicon.svg",
+                            image: repo.owner && repo.owner.avatar_url ? repo.owner.avatar_url : "",
+                            type: repo.owner && repo.owner.avatar_url ? "images" : "web"
+                        }));
+                    } catch {
+                        return [];
+                    }
+                }
+                // Helper: fetch YouTube videos (no API key, fallback to search page only, no video links)
+                async function fetchYouTube(q) {
+                    // No API key: just return a link to YouTube search page, do not fetch or scrape
+                    return [{
+                        title: `Search "${q}" on YouTube`,
+                        url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,
+                        description: "Click to see YouTube search results for your query.",
+                        favicon: "https://www.youtube.com/s/desktop/6e8e3e5d/img/favicon.ico",
+                        image: "",
+                        type: "videos"
+                    }];
+                }
+
+                // Helper: fetch more results/pages/subdomains for a query (using DuckDuckGo Instant Answer API as example)
+                async function fetchMoreResults(q) {
+                    try {
+                        const resp = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_redirect=1&no_html=1`);
+                        const data = await resp.json();
+                        let results = [];
+                        if (data.RelatedTopics && Array.isArray(data.RelatedTopics)) {
+                            for (const topic of data.RelatedTopics) {
+                                if (topic.FirstURL && topic.Text) {
+                                    results.push({
+                                        title: topic.Text,
+                                        url: topic.FirstURL,
+                                        description: topic.Text,
+                                        favicon: "https://duckduckgo.com/favicon.ico",
+                                        image: topic.Icon && topic.Icon.URL ? `https://duckduckgo.com${topic.Icon.URL}` : "",
+                                        type: "web"
+                                    });
+                                }
+                                // Some topics have subtopics
+                                if (topic.Topics && Array.isArray(topic.Topics)) {
+                                    for (const sub of topic.Topics) {
+                                        if (sub.FirstURL && sub.Text) {
+                                            results.push({
+                                                title: sub.Text,
+                                                url: sub.FirstURL,
+                                                description: sub.Text,
+                                                favicon: "https://duckduckgo.com/favicon.ico",
+                                                image: sub.Icon && sub.Icon.URL ? `https://duckduckgo.com${sub.Icon.URL}` : "",
+                                                type: "web"
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return results;
+                    } catch {
+                        return [];
+                    }
+                }
+                // Helper: fetch YouTube videos (no API key, so use search page as fallback)
+                async function fetchYouTube(q) {
+                    // No API key: fallback to YouTube search page links
+                    return [{
+                        title: `Search "${q}" on YouTube`,
+                        url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,
+                        description: "Click to see YouTube search results for your query.",
+                        favicon: "https://www.youtube.com/s/desktop/6e8e3e5d/img/favicon.ico",
+                        image: "",
+                        type: "videos"
+                    }];
+                }
+
+                // Filter dataset by query and type
+                let filtered = dataset.filter(item => {
+                    const q = query ? query.toLowerCase() : "";
+                    const matchesQuery =
+                        !q ||
+                        (item.title && item.title.toLowerCase().includes(q)) ||
+                        (item.description && item.description.toLowerCase().includes(q));
+                    const matchesType =
+                        type === "all" ||
+                        (type === "images" && item.type === "images") ||
+                        (type === "videos" && item.type === "videos") ||
+                        (type === "web" && item.type === "web");
+                    return matchesQuery && matchesType;
+                });
+
+                // If not enough results, fetch from Wikipedia, GitHub, YouTube
+                if (query && filtered.length < limit) {
+                    const [wiki, gh, yt] = await Promise.all([
+                        fetchWikipedia(query),
+                        fetchGitHub(query),
+                        (type === 'videos' || type === 'all') ? fetchYouTube(query) : Promise.resolve([])
+                    ]);
+                    let extraResults = [...wiki, ...gh, ...yt];
+                    // Remove duplicates by URL
+                    const urls = new Set(filtered.map(r => r.url));
+                    extraResults = extraResults.filter(r => !urls.has(r.url));
+                    filtered = filtered.concat(extraResults);
+                }
+
+                // For images tab: try to extract images from web results if missing
+                if (type === 'images') {
+                    // Add images from all sources if they have a valid image
+                    let imagesResults = [];
+                    for (const item of filtered) {
+                        let imageUrl = item.image && item.image.length > 8 ? item.image : '';
+                        // If no image, try to fetch Open Graph image (best effort, CORS may block)
+                        if (!imageUrl && item.url) {
+                            try {
+                                const resp = await fetch("https://api.microlink.io/?url=" + encodeURIComponent(item.url));
+                                const data = await resp.json();
+                                if (data.status === "success" && data.data) {
+                                    if (data.data.image && data.data.image.url) {
+                                        imageUrl = data.data.image.url;
+                                    } else if (data.data.logo && data.data.logo.url) {
+                                        imageUrl = data.data.logo.url;
+                                    }
+                                }
+                            } catch {}
+                        }
+                        // If still no image, use favicon as a fallback
+                        if (!imageUrl && item.favicon) {
+                            imageUrl = item.favicon;
+                        }
+                        if (imageUrl) {
+                            imagesResults.push({ ...item, image: imageUrl, type: "images" });
+                        }
+                    }
+                    filtered = imagesResults;
+                }
+
+                const totalResults = filtered.length;
+                const totalPages = Math.max(1, Math.ceil(totalResults / limit));
+                const start = (page - 1) * limit;
+                const results = filtered.slice(start, start + limit);
+
+                return {
+                    results,
+                    totalResults,
+                    totalPages,
+                    page
+                };
+            }
+        };
+    </script>
 </body>
 </html>
