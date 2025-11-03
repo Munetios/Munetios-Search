@@ -24,8 +24,8 @@
       }
     });
   </script>
-    
- <script>
+
+      <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
@@ -35,7 +35,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-
       <meta name="keywords" content="Munetios, search, calendar, notes, tasks, weather, calculator, tetris, docs, productivity, web apps">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Munetios Search">
@@ -770,12 +769,6 @@ if ('serviceWorker' in navigator) {
                                         <option value="bottom">Bottom</option>
                                     </select>
                                 </label>
-                                <label style="font-size:15px;">Search Bar Position:
-                                    <select id="searchBarPositionSelect">
-                                        <option value="middle">Middle</option>
-                                        <option value="top">Top</option>
-                                    </select>
-                                </label>
                                 <label style="font-size:15px;">Topbar Icons Order:
                                     <ul id="topbarIconsOrderList" style="list-style:none;padding:0;margin:0;min-width:120px;">
                                         <li draggable="true" data-value="terms" style="padding:6px 10px;border:1px solid #ccc;border-radius:6px;margin-bottom:4px;cursor:grab;background:#f8f8f8;">Terms</li>
@@ -783,12 +776,6 @@ if ('serviceWorker' in navigator) {
                                         <li draggable="true" data-value="apps" style="padding:6px 10px;border:1px solid #ccc;border-radius:6px;margin-bottom:4px;cursor:grab;background:#f8f8f8;">Apps</li>
                                     </ul>
                                     <small style="display:block;font-size:12px;color:#666;">(Drag to reorder)</small>
-                                </label>
-                                <label style="font-size:15px;">Topbar Icons Side:
-                                    <select id="topbarIconsSideSelect">
-                                        <option value="right">Right</option>
-                                        <option value="left">Left</option>
-                                    </select>
                                 </label>
                                 <button id="resetCustomizeBtn" style="background:#e74c3c;color:#fff;border:none;border-radius:6px;padding:8px 0;font-size:15px;cursor:pointer;margin-top:10px;">Reset to Default</button>
                             </div>
@@ -806,9 +793,7 @@ if ('serviceWorker' in navigator) {
                             liquidGlass: true,
                             shortcutsPosition: "center",
                             buttonsPosition: "middle",
-                            searchBarPosition: "middle",
-                            topbarIconsOrder: ["terms", "privacy", "apps"],
-                            topbarIconsSide: "right"
+                            topbarIconsOrder: ["terms", "privacy", "apps"]
                         };
 
                         // Load state from localStorage
@@ -923,44 +908,97 @@ if ('serviceWorker' in navigator) {
                                     }
                                 }
                             }
-                            // Search bar position
-                            const searchBar = document.querySelector('.search-bar');
-                            if (searchBar && container) {
-                                searchBar.remove();
-                                if (customizeState.searchBarPosition === "top") {
-                                    container.insertBefore(searchBar, container.firstChild.nextSibling);
-                                } else {
-                                    // middle: after buttons
-                                    const btns = container.querySelectorAll('.btn');
-                                    if (btns.length) {
-                                        btns[btns.length - 1].after(searchBar);
-                                    } else {
-                                        container.appendChild(searchBar);
-                                    }
-                                }
-                            }
-                            // Topbar icons order and side
+                            // Topbar icons order (recreate icons to avoid disappearing)
                             const topbar = document.querySelector('.topbar');
-                            const topRight = document.querySelector('.top-right');
-                            const terms = Array.from(topRight.querySelectorAll('a')).find(a => /terms/i.test(a.textContent));
-                            const privacy = Array.from(topRight.querySelectorAll('a')).find(a => /privacy/i.test(a.textContent));
-                            const apps = topRight.querySelector('.apps-icon');
-                            // Remove all
-                            [terms, privacy, apps].forEach(el => el && el.remove());
-                            // Re-add in order
-                            const order = customizeState.topbarIconsOrder;
-                            order.forEach(key => {
-                                if (key === "terms" && terms) topRight.appendChild(terms);
-                                if (key === "privacy" && privacy) topRight.appendChild(privacy);
-                                if (key === "apps" && apps) topRight.appendChild(apps);
-                            });
-                            // Move to left if needed
-                            if (customizeState.topbarIconsSide === "left") {
-                                if (topRight.parentNode) topRight.parentNode.removeChild(topRight);
-                                topbar.insertBefore(topRight, topbar.firstChild.nextSibling);
-                            } else {
+                            let topRight = document.querySelector('.top-right');
+                            if (topRight) {
+                                // Remove all children
+                                while (topRight.firstChild) topRight.removeChild(topRight.firstChild);
+
+                                // Helper to create fresh DOM elements for each icon
+                                function createTopbarIcon(key) {
+                                    if (key === "terms") {
+                                        const a = document.createElement('a');
+                                        a.href = "https://www.munetios.com/policies/#/terms";
+                                        a.target = "_blank";
+                                        a.textContent = (window.translations && window.translations[localStorage.getItem('munetiosLang')]?.terms) || "Terms";
+                                        return a;
+                                    }
+                                    if (key === "privacy") {
+                                        const a = document.createElement('a');
+                                        a.href = "https://www.munetios.com/policies/#/privacy";
+                                        a.target = "_blank";
+                                        a.textContent = (window.translations && window.translations[localStorage.getItem('munetiosLang')]?.privacy) || "Privacy";
+                                        return a;
+                                    }
+                                    if (key === "apps") {
+                                        // Apps icon with launcher logic
+                                        const div = document.createElement('div');
+                                        div.className = "apps-icon";
+                                        div.innerHTML = `
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                                                <circle cx="5" cy="5" r="2" fill="currentColor"/>
+                                                <circle cx="15" cy="5" r="2" fill="currentColor"/>
+                                                <circle cx="25" cy="5" r="2" fill="currentColor"/>
+                                                <circle cx="5" cy="15" r="2" fill="currentColor"/>
+                                                <circle cx="15" cy="15" r="2" fill="currentColor"/>
+                                                <circle cx="25" cy="15" r="2" fill="currentColor"/>
+                                                <circle cx="5" cy="25" r="2" fill="currentColor"/>
+                                                <circle cx="15" cy="25" r="2" fill="currentColor"/>
+                                                <circle cx="25" cy="25" r="2" fill="currentColor"/>
+                                            </svg>
+                                        `;
+                                        // App launcher
+                                        let launcher = document.querySelector('.app-launcher');
+                                        if (!launcher) {
+                                            launcher = document.createElement('div');
+                                            launcher.className = 'app-launcher';
+                                            launcher.innerHTML = `<iframe src="https://www.munetios.com/apps" height="100vh" width="500" frameborder="0"></iframe>`;
+                                            document.body.appendChild(launcher);
+                                        }
+                                        // Remove any previous event listeners by replacing node
+                                        div.onclick = function(e) {
+                                            e.stopPropagation();
+                                            if (launcher.classList.contains('active')) {
+                                                launcher.classList.remove('active');
+                                            } else {
+                                                launcher.classList.add('active');
+                                            }
+                                        };
+                                        // Close on click outside
+                                        document.addEventListener('click', function(e) {
+                                            if (launcher.classList.contains('active') && !launcher.contains(e.target) && !div.contains(e.target)) {
+                                                launcher.classList.remove('active');
+                                            }
+                                        });
+                                        // Close on Escape key
+                                        document.addEventListener('keydown', function(e) {
+                                            if (launcher.classList.contains('active') && e.key === 'Escape') {
+                                                launcher.classList.remove('active');
+                                            }
+                                        });
+                                        return div;
+                                    }
+                                    return null;
+                                }
+
+                                // Re-add in order
+                                const order = customizeState.topbarIconsOrder;
+                                order.forEach(key => {
+                                    const el = createTopbarIcon(key);
+                                    if (el) topRight.appendChild(el);
+                                });
+
+                                // Always keep .top-right on the right (default)
                                 if (topRight.parentNode) topRight.parentNode.removeChild(topRight);
                                 topbar.appendChild(topRight);
+                                topRight.style.marginRight = "0";
+                                topRight.style.marginLeft = "auto";
+                                // Ensure .topbar uses flex row
+                                topbar.style.display = "flex";
+                                topbar.style.flexDirection = "row";
+                                topbar.style.alignItems = "center";
+                                topbar.style.justifyContent = "space-between";
                             }
                         }
 
@@ -975,8 +1013,6 @@ if ('serviceWorker' in navigator) {
                             document.getElementById('liquidGlassLabel').textContent = customizeState.liquidGlass ? "On" : "Off";
                             document.getElementById('shortcutsPositionSelect').value = customizeState.shortcutsPosition;
                             document.getElementById('buttonsPositionSelect').value = customizeState.buttonsPosition;
-                            document.getElementById('searchBarPositionSelect').value = customizeState.searchBarPosition;
-                            document.getElementById('topbarIconsSideSelect').value = customizeState.topbarIconsSide;
                             // Topbar icons order (drag list)
                             const orderList = document.getElementById('topbarIconsOrderList');
                             if (orderList) {
@@ -1040,6 +1076,8 @@ if ('serviceWorker' in navigator) {
                             customizeState.buttonsPosition = this.value;
                             saveCustomizeState();
                             applyCustomizations();
+                        };
+
                         // Drag-and-drop for topbar icons order
                         (function() {
                             const orderList = document.getElementById('topbarIconsOrderList');
@@ -1083,17 +1121,6 @@ if ('serviceWorker' in navigator) {
                                 });
                             }
                         })();
-                            applyCustomizations();
-                        };
-                        // document.getElementById('topbarIconsOrderSelect').onchange = function() {
-                        //     // Save selected order
-                        //     const sel = Array.from(this.selectedOptions).map(o => o.value);
-                        //     if (sel.length === 3) {
-                        //         customizeState.topbarIconsOrder = sel;
-                        //         saveCustomizeState();
-                        //         applyCustomizations();
-                        //     }
-                        // };
                         document.getElementById('resetCustomizeBtn').onclick = function() {
                             localStorage.removeItem('munetiosCustomize');
                             loadCustomizeState();
