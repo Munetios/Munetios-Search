@@ -66,6 +66,23 @@
             display: block;
             margin: 0 auto 10px auto;
         }
+        /* Only hide Munetios Ads and Store specifically, not all coming soon apps */
+        .app-item.coming-soon a.app-link {
+            /* fallback, do not hide all */
+        }
+        .app-item.coming-soon a.app-link:after {
+            content: "";
+        }
+        /* Hide by data-appid if possible */
+        .app-item[data-appid*="munetios_ads"],
+        .app-item[data-appid*="munetios_store"] {
+            display: none !important;
+        }
+        /* Hide by text content using JS-injected class */
+        .app-item.hide-force {
+            display: none !important;
+        }
+        
 
         footer {
             margin-top: 40px;
@@ -1223,7 +1240,86 @@
             });
             localStorage.setItem('appsMenuOrder', JSON.stringify(appState));
         };
+        // Firefox-specific default app order logic
+        (function() {
+            // Only run if no saved order and browser is Firefox
+            if (localStorage.getItem('appsMenuOrder')) return;
+            const isFirefox = typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent);
+            if (!isFirefox) return;
 
+            // Define the desired order for each section (by app name, case-insensitive, trimmed)
+            const sectionOrders = [
+            [
+                "Munetios Accounts", "Munetios AI", "Munetios Rewards", "Munetios Mail", "YouVidPlay",
+                "97529 Office", "Maps", "Meeting", "Munetios Search", "News", "Contacts", "Stocks", "Munetios Calendar", "Chat",
+                "Photos", "Sports", "Drive", "Munetios Apps Hub", "Present", "Docs", "Worksheets",
+                "Munetios Browser", "Munetios Calculator"
+            ],
+            [
+                "Tasks", "Notebook", "Munetios Games Hub", "Munetios Protection", "Pages", "Notes", "Books",
+                "Munetios Movies/TV", "Munetios Ads", "Earth", "Health", "Kids", "Munetios OS", "Whiteboard",
+                "Munetios Shopping", "Forms", "Font Maker", "Pets", "Munetios Arts", "Munetios Store", "Munetios Password Manager",
+                "Munetios Help", "Travel", "YouVidPlay Music", "Weather", "Wiki", "Wallet", "Munetios YouDriveCar"
+            ],
+            [
+                "Munetios Education"
+            ]
+            ];
+
+            // Collect all app-items by name (case-insensitive, trimmed)
+            const allItems = {};
+            document.querySelectorAll('.app-item').forEach(li => {
+            const a = li.querySelector('a');
+            if (!a) return;
+            const name = a.textContent.trim().toLowerCase();
+            allItems[name] = li;
+            });
+
+            // Get all .apps-list
+            const lists = Array.from(document.querySelectorAll('.apps-list'));
+            // Clear all lists
+            lists.forEach(list => list.innerHTML = '');
+
+            // Place items in order
+            sectionOrders.forEach((names, sectionIdx) => {
+            const list = lists[sectionIdx];
+            if (!list) return;
+            names.forEach(appName => {
+                const key = appName.trim().toLowerCase();
+                if (allItems[key]) {
+                list.appendChild(allItems[key]);
+                }
+            });
+            });
+
+            // Place any leftover items (not in the order arrays) at the end of the first section
+            Object.values(allItems).forEach(li => {
+            if (!li.parentElement) {
+                lists[0].appendChild(li);
+            }
+            });
+
+            // Save this order to localStorage
+            if (typeof saveAllAppOrders === 'function') saveAllAppOrders();
+        })();
+        (function() {
+            // Detect Brave or DuckDuckGo browser
+            const ua = navigator.userAgent.toLowerCase();
+            const isBrave = (navigator.brave && typeof navigator.brave.isBrave === "function") ||
+                ua.includes("brave");
+            const isDuckDuckGo = ua.includes("duckduckgo");
+            if (isBrave || isDuckDuckGo) {
+                // Hide or remove Munetios Ads and Store
+                document.querySelectorAll('.app-item').forEach(item => {
+                    const a = item.querySelector('a');
+                    if (!a) return;
+                    const name = a.textContent.trim().toLowerCase();
+                    if (name === "Munetios Ads" || name === "Munetios Store") {
+                        item.style.display = "none";
+                    }
+                });
+            }
+        })();
         // Load the section and order of all app-items
         function loadAllAppOrders() {
             const appState = JSON.parse(localStorage.getItem('appsMenuOrder'));
