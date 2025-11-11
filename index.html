@@ -1499,6 +1499,53 @@ if ('serviceWorker' in navigator) {
             }
         });
         (function() {
+            // Veterans Day: November 11
+            const today = new Date();
+            if (today.getMonth() === 10 && today.getDate() === 11) {
+            // Only show Veterans Day logo if November 11 AND user is in United States
+            function isUS() {
+                // Try navigator.language and Intl API
+                const lang = navigator.language || '';
+                if (lang.startsWith('en-US')) return true;
+                // Try Intl API
+                try {
+                    const region = new Intl.Locale(lang).region;
+                    if (region === 'US') return true;
+                } catch {}
+                // Try timezone (America/New_York, etc)
+                if (Intl && Intl.DateTimeFormat) {
+                    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+                    if (tz.startsWith('America/')) return true;
+                }
+                // Fallback: try geo API (if available)
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(pos) {
+                        // Optionally use a geo lookup API here
+                    });
+                }
+                return false;
+            }
+            if (isUS()) {
+                const logoImg = document.querySelector('.munetios-logo img');
+                if (logoImg) logoImg.src = 'Veterans.png';
+                // Make .munetios-logo clickable and link to Veterans Day search
+                const logoDiv = document.querySelector('.munetios-logo');
+                if (logoDiv && !logoDiv.querySelector('a')) {
+                    const logoImg = logoDiv.querySelector('img');
+                    if (!logoImg) return;
+                    const link = document.createElement('a');
+                    link.href = '/search/search.html?q=What+is+Veterans+Day';
+                    link.style.display = 'inline-block';
+                    link.appendChild(logoImg);
+                    // Remove old children
+                    while (logoDiv.firstChild) logoDiv.removeChild(logoDiv.firstChild);
+                    logoDiv.appendChild(link);
+                }
+            }
+            
+            }
+        })();
+        (function() {
             function isMobile() {
             // Check for mobile user agent or small screen
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
