@@ -355,7 +355,7 @@ if ('serviceWorker' in navigator) {
         <div class="munetios-logo">
             <img src="Munetios-Logo.png" height="150" alt="Munetios Logo">
         </div>
-        <button class="btn" onclick="showCustomizeModal()">Customize (Beta and unstable)</button>
+        <button class="btn" onclick="">Customize (Under Maintenance, Broken)</button>
         <div class="search-bar">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2"/>
@@ -1572,6 +1572,26 @@ if ('serviceWorker' in navigator) {
             
             }
         })();
+        (function() {
+            // Special: If today is 11/27/2025, change logo and link
+            const today = new Date();
+            if (today.getFullYear() === 2025 && today.getMonth() === 10 && today.getDate() === 27) {
+                const logoImg = document.querySelector('.munetios-logo img');
+                if (logoImg) logoImg.src = 'thanksgiving.png';
+                const logoDiv = document.querySelector('.munetios-logo');
+                if (logoDiv && !logoDiv.querySelector('a')) {
+                    const logoImg = logoDiv.querySelector('img');
+                    if (!logoImg) return;
+                    const link = document.createElement('a');
+                    link.href = '/pacmanthanksgiving.html';
+                    link.style.display = 'inline-block';
+                    link.appendChild(logoImg);
+                    while (logoDiv.firstChild) logoDiv.removeChild(logoDiv.firstChild);
+                    logoDiv.appendChild(link);
+                }
+            }
+        })();
+
         (function() {
             function isMobile() {
             // Check for mobile user agent or small screen
