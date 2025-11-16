@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Munetios Pacman – Thanksgiving 2025</title>
+
+  <!-- Munetios Beautiful CSS -->
+  <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css">
+
+  <!-- Lexend font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Lexend", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, #ffdf7e 0, #120b37 45%, #050315 100%);
+    }
+
+    .game-shell {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .game-card {
+      border-radius: 24px;
+      padding: 18px 18px 12px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow:
+        0 16px 40px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .game-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .title-block span {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .hud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 0.85rem;
+    }
+
+    .hud-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.16);
+      backdrop-filter: blur(10px);
+    }
+
+    .hud-label {
+      opacity: 0.7;
+    }
+
+    .hud-value {
+      font-weight: 600;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.7));
+      max-height: calc(100vh - 200px);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto; /* Keeps aspect ratio: 700 x 1000 */
+    }
+
+    .game-overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .game-overlay.visible {
+      display: flex;
+    }
+
+    .overlay-panel {
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(5, 3, 20, 0.9);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .overlay-panel h2 {
+      margin: 0 0 8px 0;
+      font-size: 1.1rem;
+    }
+
+    .overlay-panel p {
+      margin: 0 0 10px 0;
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    .overlay-panel button {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ffb347, #ff7b5c);
+      color: #050315;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .controls-row {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .controls-label {
+      font-size: 0.75rem;
+      opacity: 0.75;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      padding: 8px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(16px);
+    }
+
+    .control-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 0;
+      font-size: 0.9rem;
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.8));
+      color: #fefefe;
+      cursor: pointer;
+      outline: none;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+    }
+
+    .control-btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7) inset;
+      background: radial-gradient(circle at bottom, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.05));
+    }
+
+    .control-btn span {
+      pointer-events: none;
+    }
+
+    /* Music toggle button */
+    .music-btn {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.8));
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #fefefe;
+      outline: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .music-btn-icon {
+      font-size: 0.9rem;
+    }
+
+    .music-btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7) inset;
+    }
+
+    @media (max-width: 480px) {
+      .game-card {
+        padding: 14px 14px 10px 14px;
+      }
+
+      .title-block h1 {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-shell">
+    <div class="game-card liquid-glass blur-sm transparency-md">
+      <header class="game-header">
+        <div class="title-block">
+          <h1>Munetios Pacman – Thanksgiving 2025</h1>
+          <span>You = Pacman · Enemies = 4 hungry turkeys · Random walls</span>
+        </div>
+        <div class="hud">
+          <button id="musicToggle" class="music-btn liquid-glass blur-xs transparency-sm" type="button">
+            <span class="music-btn-icon" aria-hidden="true">▶</span>
+            <span class="music-btn-label">Music</span>
+          </button>
+          <div class="hud-pill">
+            <span class="hud-label">Score</span>
+            <span class="hud-value" id="scoreValue">0</span>
+          </div>
+          <div class="hud-pill">
+            <span class="hud-label">Lives</span>
+            <span class="hud-value" id="livesValue">3</span>
+          </div>
+          <div class="hud-pill">
+            <span class="hud-label">Dots</span>
+            <span class="hud-value" id="dotsValue">0</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="canvas-wrapper">
+        <canvas id="gameCanvas"></canvas>
+
+        <div class="game-overlay" id="gameOverlay">
+          <div class="overlay-panel liquid-glass blur-md transparency-lg">
+            <h2 id="overlayTitle">Game Over</h2>
+            <p id="overlayMessage"></p>
+            <button id="restartBtn">Restart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div class="controls-label">
+          Move with <strong>W / A / S / D</strong> on keyboard or use the buttons:
+        </div>
+        <div class="controls-grid liquid-glass blur-sm transparency-lg">
+          <button class="control-btn" data-dir="up" aria-label="Move up">
+            <span>▲</span>
+          </button>
+          <div></div>
+          <button class="control-btn" data-dir="right" aria-label="Move right">
+            <span>▶</span>
+          </button>
+          <button class="control-btn" data-dir="left" aria-label="Move left">
+            <span>◀</span>
+          </button>
+          <button class="control-btn" data-dir="down" aria-label="Move down">
+            <span>▼</span>
+          </button>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // Internal resolution (game world size)
+      const WIDTH = 700;
+      const HEIGHT = 1000;
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+
+      const scoreValue = document.getElementById("scoreValue");
+      const livesValue = document.getElementById("livesValue");
+      const dotsValue = document.getElementById("dotsValue");
+
+      const overlay = document.getElementById("gameOverlay");
+      const overlayTitle = document.getElementById("overlayTitle");
+      const overlayMessage = document.getElementById("overlayMessage");
+      const restartBtn = document.getElementById("restartBtn");
+
+      // Background music
+      const musicToggleBtn = document.getElementById("musicToggle");
+      const musicIcon = musicToggleBtn.querySelector(".music-btn-icon");
+      const musicLabel = musicToggleBtn.querySelector(".music-btn-label");
+
+      const bgm = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3");
+      bgm.loop = true;
+      bgm.volume = 0.6;
+
+      let musicOn = false;
+
+      async function toggleMusic() {
+        if (!musicOn) {
+          try {
+            await bgm.play();
+            musicOn = true;
+            musicIcon.textContent = "⏸";
+            musicLabel.textContent = "Music";
+          } catch (err) {
+            console.warn("Music playback blocked by browser:", err);
+          }
+        } else {
+          bgm.pause();
+          musicOn = false;
+          musicIcon.textContent = "▶";
+          musicLabel.textContent = "Music";
+        }
+      }
+
+      musicToggleBtn.addEventListener("click", () => {
+        toggleMusic();
+      });
+
+      musicToggleBtn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        toggleMusic();
+      }, { passive: false });
+
+      // Helper for circle-rect collision (for walls)
+      function circleRectCollision(cx, cy, cr, rx, ry, rw, rh) {
+        const closestX = Math.max(rx, Math.min(cx, rx + rw));
+        const closestY = Math.max(ry, Math.min(cy, ry + rh));
+        const dx = cx - closestX;
+        const dy = cy - closestY;
+        return dx * dx + dy * dy < cr * cr;
+      }
+
+      // Player (Pacman "You")
+      const player = {
+        x: WIDTH / 2,
+        y: HEIGHT / 2,
+        radius: 14,
+        speed: 3.1,
+        dirX: 0,
+        dirY: 0,
+        lives: 3,
+        score: 0,
+        invulnerableFrames: 0,
+        mouthOpen: true,
+        mouthTimer: 0,
+        lastDirAngle: 0
+      };
+
+      // Turkeys = enemies
+      const turkeys = [];
+
+      // Walls (randomly generated rectangles)
+      const walls = [];
+
+      // Dots / pellets
+      const pellets = [];
+      const PELLET_RADIUS = 5;
+      const PELLET_SCORE = 10;
+
+      let gameOver = false;
+      let win = false;
+
+      function resetPlayerPosition() {
+        player.x = WIDTH / 2;
+        player.y = HEIGHT / 2;
+        player.dirX = 0;
+        player.dirY = 0;
+      }
+
+      function createWalls() {
+        walls.length = 0;
+        const wallCount = 26;
+        const marginFromBorder = 40;
+        const safeRadius = 100; // keep clear area around player spawn
+
+        for (let i = 0; i < wallCount; i++) {
+          let attempts = 0;
+          while (attempts < 40) {
+            attempts++;
+            const horizontal = Math.random() < 0.6;
+            const w = horizontal
+              ? 60 + Math.random() * 120
+              : 40 + Math.random() * 80;
+            const h = horizontal
+              ? 40 + Math.random() * 80
+              : 60 + Math.random() * 140;
+
+            const x = marginFromBorder + Math.random() * (WIDTH - marginFromBorder * 2 - w);
+            const y = marginFromBorder + Math.random() * (HEIGHT - marginFromBorder * 2 - h);
+
+            // Avoid player spawn safe zone
+            if (circleRectCollision(WIDTH / 2, HEIGHT / 2, safeRadius, x, y, w, h)) continue;
+
+            // Avoid overlapping existing walls *too much* (simple check)
+            let overlaps = false;
+            for (const wall of walls) {
+              const noOverlap =
+                x + w < wall.x + 5 ||
+                x > wall.x + wall.w - 5 ||
+                y + h < wall.y + 5 ||
+                y > wall.y + wall.h - 5;
+              if (!noOverlap) {
+                overlaps = true;
+                break;
+              }
+            }
+            if (overlaps) continue;
+
+            walls.push({ x, y, w, h });
+            break;
+          }
+        }
+      }
+
+      function createPellets() {
+        pellets.length = 0;
+        const cols = 11;
+        const rows = 15;
+        const marginX = 40;
+        const marginY = 40;
+        const usableWidth = WIDTH - marginX * 2;
+        const usableHeight = HEIGHT - marginY * 2;
+
+        for (let i = 0; i < cols; i++) {
+          for (let j = 0; j < rows; j++) {
+            // Skip to create some variation
+            if ((i + j) % 3 === 0) continue;
+
+            const x = marginX + (usableWidth * i) / (cols - 1);
+            const y = marginY + (usableHeight * j) / (rows - 1);
+
+            // Don't spawn right on top of the center where player starts.
+            const dx = x - WIDTH / 2;
+            const dy = y - HEIGHT / 2;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 70) continue;
+
+            // Avoid walls (pellet should not be inside/through walls)
+            let inWall = false;
+            for (const wall of walls) {
+              if (circleRectCollision(x, y, PELLET_RADIUS + 2, wall.x, wall.y, wall.w, wall.h)) {
+                inWall = true;
+                break;
+              }
+            }
+            if (inWall) continue;
+
+            pellets.push({ x, y, eaten: false });
+          }
+        }
+
+        dotsValue.textContent = pellets.length.toString();
+      }
+
+      function createTurkeys() {
+        turkeys.length = 0;
+
+        const seedPositions = [
+          { x: WIDTH * 0.2, y: HEIGHT * 0.2 },
+          { x: WIDTH * 0.8, y: HEIGHT * 0.2 },
+          { x: WIDTH * 0.2, y: HEIGHT * 0.8 },
+          { x: WIDTH * 0.8, y: HEIGHT * 0.8 }
+        ];
+
+        seedPositions.forEach((pos, index) => {
+          let tx = pos.x;
+          let ty = pos.y;
+          let attempts = 0;
+          const r = 14;
+
+          while (attempts < 40) {
+            attempts++;
+            let collidesWall = false;
+            for (const wall of walls) {
+              if (circleRectCollision(tx, ty, r + 2, wall.x, wall.y, wall.w, wall.h)) {
+                collidesWall = true;
+                break;
+              }
+            }
+            if (!collidesWall) break;
+            tx = 40 + Math.random() * (WIDTH - 80);
+            ty = 40 + Math.random() * (HEIGHT - 80);
+          }
+
+          turkeys.push({
+            x: tx,
+            y: ty,
+            radius: r,
+            speed: 2.3,
+            vx: 0,
+            vy: 0,
+            aiTimer: 0,
+            chaseCooldown: 0,
+            colorBase: index % 2 === 0 ? "#f8a45b" : "#f2c16b"
+          });
+        });
+      }
+
+      function resetGame() {
+        player.score = 0;
+        player.lives = 3;
+        player.invulnerableFrames = 0;
+        gameOver = false;
+        win = false;
+        resetPlayerPosition();
+        createWalls();
+        createPellets();
+        createTurkeys();
+        scoreValue.textContent = "0";
+        livesValue.textContent = "3";
+        overlay.classList.remove("visible");
+      }
+
+      // Input handling
+      function setDirection(dx, dy) {
+        const length = Math.hypot(dx, dy);
+        if (length === 0) {
+          player.dirX = 0;
+          player.dirY = 0;
+          return;
+        }
+        player.dirX = dx / length;
+        player.dirY = dy / length;
+        player.lastDirAngle = Math.atan2(player.dirY, player.dirX);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (gameOver) {
+          if (e.key.toLowerCase() === "r") {
+            resetGame();
+          }
+          return;
+        }
+
+        const key = e.key.toLowerCase();
+        if (key === "w") setDirection(0, -1);
+        if (key === "s") setDirection(0, 1);
+        if (key === "a") setDirection(-1, 0);
+        if (key === "d") setDirection(1, 0);
+      });
+
+      // On-screen buttons
+      document.querySelectorAll(".control-btn").forEach((btn) => {
+        const dir = btn.getAttribute("data-dir");
+
+        function handle() {
+          if (gameOver) return;
+          if (dir === "up") setDirection(0, -1);
+          if (dir === "down") setDirection(0, 1);
+          if (dir === "left") setDirection(-1, 0);
+          if (dir === "right") setDirection(1, 0);
+        }
+
+        btn.addEventListener("click", handle);
+        btn.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          handle();
+        }, { passive: false });
+      });
+
+      restartBtn.addEventListener("click", () => {
+        resetGame();
+      });
+
+      // Update logic
+      function updatePlayer(dt) {
+        const moveSpeed = player.speed * dt;
+        const r = player.radius;
+
+        // Try sliding movement with wall collisions (separate X & Y)
+        let targetX = player.x + player.dirX * moveSpeed;
+        let targetY = player.y + player.dirY * moveSpeed;
+
+        // Clamp to arena edges for targets
+        targetX = Math.max(r, Math.min(WIDTH - r, targetX));
+        targetY = Math.max(r, Math.min(HEIGHT - r, targetY));
+
+        // X axis
+        let blockedX = false;
+        for (const wall of walls) {
+          if (circleRectCollision(targetX, player.y, r, wall.x, wall.y, wall.w, wall.h)) {
+            blockedX = true;
+            break;
+          }
+        }
+        if (!blockedX) {
+          player.x = targetX;
+        }
+
+        // Y axis
+        let blockedY = false;
+        for (const wall of walls) {
+          if (circleRectCollision(player.x, targetY, r, wall.x, wall.y, wall.w, wall.h)) {
+            blockedY = true;
+            break;
+          }
+        }
+        if (!blockedY) {
+          player.y = targetY;
+        }
+
+        // Mouth animation
+        player.mouthTimer += dt;
+        if (player.mouthTimer > 0.2) {
+          player.mouthTimer = 0;
+          player.mouthOpen = !player.mouthOpen;
+        }
+
+        if (player.invulnerableFrames > 0) {
+          player.invulnerableFrames -= 1 * dt * 60;
+          if (player.invulnerableFrames < 0) player.invulnerableFrames = 0;
+        }
+      }
+
+      function updateTurkeys(dt) {
+        turkeys.forEach((t) => {
+          t.aiTimer -= dt;
+          t.chaseCooldown -= dt;
+
+          // Decide new direction
+          if (t.aiTimer <= 0) {
+            t.aiTimer = 0.6 + Math.random() * 0.9; // every ~0.6–1.5 seconds
+            let dx, dy;
+
+            // Sometimes chase the player (if cooldown is done)
+            const shouldChase = Math.random() < 0.6 && t.chaseCooldown <= 0;
+            if (shouldChase) {
+              dx = player.x - t.x;
+              dy = player.y - t.y;
+              t.chaseCooldown = 1.2 + Math.random() * 1.2;
+            } else {
+              // Wander direction
+              const angle = Math.random() * Math.PI * 2;
+              dx = Math.cos(angle);
+              dy = Math.sin(angle);
+            }
+
+            const length = Math.hypot(dx, dy) || 1;
+            t.vx = (dx / length) * t.speed;
+            t.vy = (dy / length) * t.speed;
+          }
+
+          const r = t.radius;
+
+          // Target positions
+          let targetX = t.x + t.vx * dt;
+          let targetY = t.y + t.vy * dt;
+
+          // X axis with walls
+          let blockedX = false;
+          for (const wall of walls) {
+            if (circleRectCollision(targetX, t.y, r, wall.x, wall.y, wall.w, wall.h)) {
+              blockedX = true;
+              break;
+            }
+          }
+          if (!blockedX) {
+            t.x = targetX;
+          } else {
+            t.vx *= -1;
+            t.aiTimer = 0.3;
+          }
+
+          // Y axis with walls
+          let blockedY = false;
+          for (const wall of walls) {
+            if (circleRectCollision(t.x, targetY, r, wall.x, wall.y, wall.w, wall.h)) {
+              blockedY = true;
+              break;
+            }
+          }
+          if (!blockedY) {
+            t.y = targetY;
+          } else {
+            t.vy *= -1;
+            t.aiTimer = 0.3;
+          }
+
+          // Border bounce
+          if (t.x < r) {
+            t.x = r;
+            t.vx *= -1;
+          }
+          if (t.x > WIDTH - r) {
+            t.x = WIDTH - r;
+            t.vx *= -1;
+          }
+          if (t.y < r) {
+            t.y = r;
+            t.vy *= -1;
+          }
+          if (t.y > HEIGHT - r) {
+            t.y = HEIGHT - r;
+            t.vy *= -1;
+          }
+        });
+      }
+
+      function checkPelletCollisions() {
+        let remaining = 0;
+
+        pellets.forEach((p) => {
+          if (p.eaten) return;
+
+          const dx = p.x - player.x;
+          const dy = p.y - player.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < player.radius + PELLET_RADIUS) {
+            p.eaten = true;
+            player.score += PELLET_SCORE;
+            scoreValue.textContent = player.score.toString();
+          } else {
+            remaining++;
+          }
+        });
+
+        dotsValue.textContent = remaining.toString();
+
+        if (remaining === 0 && pellets.length > 0 && !gameOver) {
+          gameOver = true;
+          win = true;
+          overlayTitle.textContent = "You Win!";
+          overlayMessage.textContent =
+            "You gobbled every yellow dot in the maze and dodged the turkeys. Happy Thanksgiving 2025!";
+          overlay.classList.add("visible");
+        }
+      }
+
+      function checkTurkeyCollisions() {
+        if (player.invulnerableFrames > 0 || gameOver) return;
+
+        for (const t of turkeys) {
+          const dx = t.x - player.x;
+          const dy = t.y - player.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < player.radius + t.radius - 2) {
+            // Hit!
+            player.lives -= 1;
+            livesValue.textContent = player.lives.toString();
+            player.invulnerableFrames = 120; // ~2 seconds at 60fps
+            resetPlayerPosition();
+
+            if (player.lives <= 0) {
+              gameOver = true;
+              win = false;
+              overlayTitle.textContent = "Game Over";
+              overlayMessage.textContent =
+                "The turkeys trapped you in the maze! Press R or tap Restart to try again.";
+              overlay.classList.add("visible");
+            }
+            break;
+          }
+        }
+      }
+
+      // Drawing
+      function drawBackground() {
+        const gradient = ctx.createRadialGradient(
+          WIDTH / 2,
+          HEIGHT / 2,
+          80,
+          WIDTH / 2,
+          HEIGHT / 2,
+          HEIGHT
+        );
+        gradient.addColorStop(0, "#2b1545");
+        gradient.addColorStop(0.5, "#140c30");
+        gradient.addColorStop(1, "#050315");
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+        // Arena border
+        ctx.strokeStyle = "rgba(255, 200, 120, 0.7)";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(10, 10, WIDTH - 20, HEIGHT - 20);
+      }
+
+      function drawWalls() {
+        walls.forEach((wall) => {
+          const { x, y, w, h } = wall;
+          const grad = ctx.createLinearGradient(x, y, x + w, y + h);
+          grad.addColorStop(0, "rgba(55, 34, 84, 0.95)");
+          grad.addColorStop(1, "rgba(27, 17, 55, 0.98)");
+
+          ctx.fillStyle = grad;
+          ctx.fillRect(x, y, w, h);
+
+          ctx.strokeStyle = "rgba(255, 220, 160, 0.25)";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
+        });
+      }
+
+      function drawPellets() {
+        ctx.save();
+        ctx.fillStyle = "#ffd95b";
+        pellets.forEach((p) => {
+          if (p.eaten) return;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, PELLET_RADIUS, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.restore();
+      }
+
+      function drawPlayer() {
+        ctx.save();
+        ctx.translate(player.x, player.y);
+        ctx.rotate(player.lastDirAngle);
+
+        const r = player.radius;
+        const mouthAngle = player.mouthOpen ? Math.PI / 4 : Math.PI / 12;
+        const startAngle = mouthAngle;
+        const endAngle = Math.PI * 2 - mouthAngle;
+
+        if (player.invulnerableFrames > 0 && Math.floor(player.invulnerableFrames) % 10 < 5) {
+          ctx.globalAlpha = 0.4;
+        }
+
+        // Body
+        const gradient = ctx.createRadialGradient(0, 0, r * 0.3, 0, 0, r);
+        gradient.addColorStop(0, "#ffe76a");
+        gradient.addColorStop(1, "#f2b42a");
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, r, startAngle, endAngle, false);
+        ctx.closePath();
+        ctx.fill();
+
+        // Eye
+        ctx.fillStyle = "#1a1430";
+        ctx.beginPath();
+        ctx.arc(r * 0.2, -r * 0.4, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+
+        // Label
+        ctx.save();
+        ctx.fillStyle = "rgba(255,255,255,0.85)";
+        ctx.font = "10px Lexend, system-ui";
+        ctx.textAlign = "center";
+        ctx.fillText("You", player.x, player.y - player.radius - 8);
+        ctx.restore();
+      }
+
+      function drawTurkey(t) {
+        ctx.save();
+        ctx.translate(t.x, t.y);
+
+        // Body
+        const bodyRad = t.radius;
+        const bodyGrad = ctx.createRadialGradient(0, 0, bodyRad * 0.2, 0, 0, bodyRad);
+        bodyGrad.addColorStop(0, t.colorBase);
+        bodyGrad.addColorStop(1, "#6b3b28");
+        ctx.fillStyle = bodyGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, bodyRad, Math.PI * 0.25, Math.PI * 1.75, true);
+        ctx.closePath();
+        ctx.fill();
+
+        // Head
+        ctx.beginPath();
+        ctx.arc(0, -bodyRad * 0.8, bodyRad * 0.6, 0, Math.PI * 2);
+        ctx.fillStyle = "#f0c97b";
+        ctx.fill();
+
+        // Beak
+        ctx.beginPath();
+        ctx.moveTo(bodyRad * 0.6, -bodyRad * 0.8);
+        ctx.lineTo(bodyRad * 1.0, -bodyRad * 0.6);
+        ctx.lineTo(bodyRad * 0.6, -bodyRad * 0.4);
+        ctx.closePath();
+        ctx.fillStyle = "#f2a63d";
+        ctx.fill();
+
+        // Eye
+        ctx.fillStyle = "#1a1430";
+        ctx.beginPath();
+        ctx.arc(bodyRad * 0.2, -bodyRad * 0.9, 2.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Feet
+        ctx.strokeStyle = "#f4b44a";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-bodyRad * 0.3, bodyRad);
+        ctx.lineTo(-bodyRad * 0.3, bodyRad + 6);
+        ctx.moveTo(bodyRad * 0.3, bodyRad);
+        ctx.lineTo(bodyRad * 0.3, bodyRad + 6);
+        ctx.stroke();
+
+        ctx.restore();
+
+        // Label
+        ctx.save();
+        ctx.fillStyle = "rgba(255, 222, 180, 0.9)";
+        ctx.font = "10px Lexend, system-ui";
+        ctx.textAlign = "center";
+        ctx.fillText("Turkey", t.x, t.y - t.radius - 8);
+        ctx.restore();
+      }
+
+      function drawTurkeys() {
+        turkeys.forEach(drawTurkey);
+      }
+
+      function draw() {
+        drawBackground();
+        drawWalls();
+        drawPellets();
+        drawTurkeys();
+        drawPlayer();
+      }
+
+      // Main loop
+      let lastTime = 0;
+
+      function loop(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const delta = timestamp - lastTime;
+        lastTime = timestamp;
+
+        // Normalize to "frames": dt ≈ 1 at 60fps
+        const dt = Math.min(2, delta / 16.67);
+
+        if (!gameOver) {
+          updatePlayer(dt);
+          updateTurkeys(dt);
+          checkPelletCollisions();
+          checkTurkeyCollisions();
+        }
+
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      resetGame();
+      requestAnimationFrame(loop);
+    });
+  </script>
+</body>
+</html>
