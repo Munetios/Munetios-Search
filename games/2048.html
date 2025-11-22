@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2048 Game</title>
+    <link href="https://fonts.googleapis.com/css?family=Lexend:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #faf8ef;
+            font-family: 'Lexend', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-top: 40px;
+            color: #776e65;
+            font-size: 48px;
+            font-weight: 700;
+        }
+        #game-container {
+            background: #bbada0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-template-rows: repeat(4, 80px);
+            gap: 10px;
+        }
+        .tile {
+            width: 80px;
+            height: 80px;
+            background: #cdc1b4;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: #776e65;
+            transition: background 0.2s, color 0.2s;
+            user-select: none;
+        }
+        .tile-2    { background: #eee4da; color: #776e65; }
+        .tile-4    { background: #ede0c8; color: #776e65; }
+        .tile-8    { background: #f2b179; color: #f9f6f2; }
+        .tile-16   { background: #f59563; color: #f9f6f2; }
+        .tile-32   { background: #f67c5f; color: #f9f6f2; }
+        .tile-64   { background: #f65e3b; color: #f9f6f2; }
+        .tile-128  { background: #edcf72; color: #f9f6f2; }
+        .tile-256  { background: #edcc61; color: #f9f6f2; }
+        .tile-512  { background: #edc850; color: #f9f6f2; }
+        .tile-1024 { background: #edc53f; color: #f9f6f2; }
+        .tile-2048 { background: #edc22e; color: #f9f6f2; }
+        #controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            font-family: 'Lexend', sans-serif;
+            font-size: 18px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 4px;
+            background: #8f7a66;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #a39489;
+        }
+        #score {
+            margin-top: 15px;
+            font-size: 22px;
+            color: #776e65;
+            font-weight: 700;
+            background: #eee4da;
+            padding: 8px 20px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        #game-over {
+            margin-top: 20px;
+            font-size: 28px;
+            color: #f65e3b;
+            font-weight: 700;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>2048</h1>
+    <div id="score">Score: 0</div>
+    <div id="game-container">
+        <div id="board"></div>
+    </div>
+    <div id="controls">
+        <button onclick="move('up')">⬆️ Up</button>
+        <button onclick="move('left')">⬅️ Left</button>
+        <button onclick="move('down')">⬇️ Down</button>
+        <button onclick="move('right')">➡️ Right</button>
+        <button onclick="restartGame()">🔄 Restart</button>
+    </div>
+    <div id="game-over">Game Over!</div>
+    <script>
+        const size = 4;
+        let board, score, gameOver;
+
+        function initBoard() {
+            board = Array.from({length: size}, () => Array(size).fill(0));
+            score = 0;
+            gameOver = false;
+            addRandomTile();
+            addRandomTile();
+            updateBoard();
+            document.getElementById('game-over').style.display = 'none';
+        }
+
+        function addRandomTile() {
+            let empty = [];
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    if (board[r][c] === 0) empty.push([r, c]);
+                }
+            }
+            if (empty.length === 0) return;
+            let [r, c] = empty[Math.floor(Math.random() * empty.length)];
+            board[r][c] = Math.random() < 0.9 ? 2 : 4;
+        }
+
+        function updateBoard() {
+            const boardDiv = document.getElementById('board');
+            boardDiv.innerHTML = '';
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile' + (board[r][c] ? ' tile-' + board[r][c] : '');
+                    tile.textContent = board[r][c] ? board[r][c] : '';
+                    boardDiv.appendChild(tile);
+                }
+            }
+            document.getElementById('score').textContent = 'Score: ' + score;
+        }
+
+        function move(direction) {
+            if (gameOver) return;
+            let moved = false;
+            let prevBoard = board.map(row => row.slice());
+            switch (direction) {
+                case 'up':
+                    for (let c = 0; c < size; c++) {
+                        let col = [];
+                        for (let r = 0; r < size; r++) col.push(board[r][c]);
+                        let merged = merge(col);
+                        for (let r = 0; r < size; r++) board[r][c] = merged[r];
+                    }
+                    break;
+                case 'down':
+                    for (let c = 0; c < size; c++) {
+                        let col = [];
+                        for (let r = size - 1; r >= 0; r--) col.push(board[r][c]);
+                        let merged = merge(col);
+                        for (let r = size - 1, i = 0; r >= 0; r--, i++) board[r][c] = merged[i];
+                    }
+                    break;
+                case 'left':
+                    for (let r = 0; r < size; r++) {
+                        let merged = merge(board[r]);
+                        board[r] = merged;
+                    }
+                    break;
+                case 'right':
+                    for (let r = 0; r < size; r++) {
+                        let reversed = board[r].slice().reverse();
+                        let merged = merge(reversed);
+                        board[r] = merged.reverse();
+                    }
+                    break;
+            }
+            moved = !boardsEqual(prevBoard, board);
+            if (moved) {
+                addRandomTile();
+                updateBoard();
+                if (isGameOver()) {
+                    document.getElementById('game-over').style.display = 'block';
+                    gameOver = true;
+                }
+            }
+        }
+
+        function merge(row) {
+            let arr = row.filter(x => x);
+            for (let i = 0; i < arr.length - 1; i++) {
+                if (arr[i] === arr[i + 1]) {
+                    arr[i] *= 2;
+                    score += arr[i];
+                    arr[i + 1] = 0;
+                }
+            }
+            arr = arr.filter(x => x);
+            while (arr.length < size) arr.push(0);
+            return arr;
+        }
+
+        function boardsEqual(a, b) {
+            for (let r = 0; r < size; r++)
+                for (let c = 0; c < size; c++)
+                    if (a[r][c] !== b[r][c]) return false;
+            return true;
+        }
+
+        function isGameOver() {
+            for (let r = 0; r < size; r++)
+                for (let c = 0; c < size; c++)
+                    if (board[r][c] === 0) return false;
+            // Check moves
+            for (let r = 0; r < size; r++)
+                for (let c = 0; c < size; c++) {
+                    if (r < size - 1 && board[r][c] === board[r + 1][c]) return false;
+                    if (c < size - 1 && board[r][c] === board[r][c + 1]) return false;
+                }
+            return true;
+        }
+
+        function restartGame() {
+            initBoard();
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            if (gameOver) return;
+            switch (e.key) {
+                case 'ArrowUp': move('up'); break;
+                case 'ArrowDown': move('down'); break;
+                case 'ArrowLeft': move('left'); break;
+                case 'ArrowRight': move('right'); break;
+            }
+        });
+
+        // Initialize game
+        initBoard();
+    </script>
+</body>
+</html>
