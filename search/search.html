@@ -15702,5 +15702,104 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })();
     </script>
+        <script>
+        (function() {
+            // Simple bot/user-agent detection with OS check
+            function isBot() {
+            const ua = navigator.userAgent || '';
+            // OS detection (Windows, Mac, Linux, Munetios OS, etc)
+            const osPatterns = [
+                /windows/i, /macintosh/i, /mac os/i, /linux/i, /x11/i, /ubuntu/i, /fedora/i, /debian/i, /mint/i, /arch/i, /android/i, /iphone/i, /ipad/i, /munetios/i
+            ];
+            // If UA contains a known OS, do not show captcha even if UA is unknown
+            if (osPatterns.some(re => re.test(ua))) return false;
+            // Common bot keywords (expanded list)
+            const botPatterns = [
+                /bot/i, /crawl/i, /spider/i, /slurp/i, /search/i, /archive/i, /python/i, /wget/i, /curl/i, /httpclient/i, /scrapy/i, /node/i, /phantomjs/i, /headless/i,
+                /fetch/i, /monitor/i, /checker/i, /validator/i, /analyzer/i, /harvest/i, /dataminr/i, /datadog/i, /uptime/i, /pingdom/i, /statuscake/i, /siteimprove/i,
+                /ahrefs/i, /semrush/i, /mj12bot/i, /dotbot/i, /bingbot/i, /yandex/i, /baiduspider/i, /duckduckbot/i, /facebot/i, /facebookexternalhit/i, /twitterbot/i,
+                /linkedinbot/i, /applebot/i, /petalbot/i, /sogou/i, /exabot/i, /seznambot/i, /qwantify/i, /pinterest/i, /discordbot/i, /telegrambot/i, /whatsapp/i,
+                /skypeuripreview/i, /slackbot/i, /vkshare/i, /redditbot/i, /flipboardproxy/i, /nuzzel/i, /tumblr/i, /quora link preview/i, /outbrain/i, /panscient/i,
+                /gptbot/i, /bytespider/i, /coccocbot/i, /screaming frog/i, /siteaudit/i, /sitechecker/i, /serpstatbot/i, /serpapi/i, /serpfox/i, /serpwoo/i,
+                /uptimerobot/i, /uptimebot/i, /uptime.com/i, /uptimechecker/i, /uptime-monitor/i, /uptime-robot/i, /uptime-bot/i, /uptime.com/i, /uptime.combot/i,
+                /googlebot/i, /mediapartners-google/i, /adsbot-google/i, /apis-google/i, /google favicon/i, /google page speed/i, /google web preview/i,
+                /baiduspider/i, /yandexbot/i, /sogou web spider/i, /360spider/i, /sosospider/i, /ia_archiver/i, /archive.org_bot/i, /heritrix/i, /wayback/i,
+                /mj12bot/i, /rogerbot/i, /dotbot/i, /gigabot/i, /seznambot/i, /blexbot/i, /yeti/i, /naverbot/i, /daumoa/i, /baiduspider/i, /sosospider/i,
+                /sogou/i, /exabot/i, /facebot/i, /facebookexternalhit/i, /twitterbot/i, /applebot/i, /petalbot/i, /pinterestbot/i, /discordbot/i, /telegrambot/i,
+                /whatsapp/i, /skypeuripreview/i, /slackbot/i, /vkshare/i, /redditbot/i, /flipboardproxy/i, /nuzzel/i, /tumblr/i, /quora link preview/i, /outbrain/i,
+                /panscient/i, /gptbot/i, /bytespider/i, /coccocbot/i, /screaming frog/i, /siteaudit/i, /sitechecker/i, /serpstatbot/i, /serpapi/i, /serpfox/i,
+                /serpwoo/i, /uptimerobot/i, /uptimebot/i, /uptime.com/i, /uptimechecker/i, /uptime-monitor/i, /uptime-robot/i, /uptime-bot/i, /uptime.com/i,
+                /uptime.combot/i, /python-requests/i, /axios/i, /okhttp/i, /java/i, /go-http-client/i, /libwww-perl/i, /perl/i, /ruby/i, /mechanize/i, /http.rb/i,
+                /java\/[0-9.]+/i, /libcurl/i, /wget/i, /curl/i, /powershell/i, /httpclient/i, /aiohttp/i, /restsharp/i, /scrapy/i, /selenium/i, /puppeteer/i,
+                /playwright/i, /phantomjs/i, /headlesschrome/i, /headless/i, /chrome-lighthouse/i, /lighthouse/i, /sitebulb/i, /netcraft/i, /w3c_validator/i,
+                /validator/i, /linkchecker/i, /link-checker/i, /link checker/i, /site-analyzer/i, /site analyzer/i, /siteanalyzer/i, /siteimprove/i, /datadog/i,
+                /dataminr/i, /uptime/i, /monitor/i, /fetch/i, /harvest/i, /analyzer/i, /checker/i, /validator/i, /crawler/i, /probe/i, /spider/i, /bot/i, /ai/i
+            ];
+            // If userAgent is empty or matches bot patterns, treat as bot/unknown
+            if (!ua.trim()) return true;
+            return botPatterns.some(re => re.test(ua));
+            }
+
+            // Always show captcha if bot/unknown UA (no sessionStorage check)
+            if (isBot()) {
+            // Create modal
+            const modal = document.createElement('div');
+            modal.id = 'captchaModal';
+            modal.style.cssText = `
+                position:fixed;z-index:3000;left:0;top:0;width:100vw;height:100vh;
+                background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;
+            `;
+            const box = document.createElement('div');
+            box.style.cssText = `
+                background:rgba(26,0,51,0.97);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.25);
+                padding:32px 28px;min-width:260px;max-width:90vw;text-align:center;color:#fff;
+                border:1px solid #3a1a70;
+            `;
+            // Generate math captcha
+            const a = Math.floor(10 + Math.random() * 90);
+            const b = Math.floor(10 + Math.random() * 90);
+            const op = ['+', '-', '*'][Math.floor(Math.random() * 3)];
+            let answer;
+            switch(op) {
+                case '+': answer = a + b; break;
+                case '-': answer = a - b; break;
+                case '*': answer = a * b; break;
+            }
+            // Multi-captcha: x = answer
+            box.innerHTML = `
+                <h2 style="margin-top:0;">Are you a human?</h2>
+                <p style="font-size:16px;">Please solve the math problem to continue:</p>
+                <div style="font-size:22px;font-weight:600;margin:18px 0;">${a} ${op} ${b} = <b>x</b></div>
+                <input id="captchaInput" type="number" style="font-size:18px;padding:6px 12px;border-radius:8px;border:1px solid #7c4dff;width:100px;text-align:center;">
+                <br><br>
+                <button id="captchaSubmit" class="btn" style="font-size:16px;">Submit</button>
+                <div id="captchaError" style="color:#ff8a8a;margin-top:10px;min-height:22px;"></div>
+            `;
+            modal.appendChild(box);
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+
+            // Focus input
+            setTimeout(() => document.getElementById('captchaInput').focus(), 100);
+
+            // Submit handler
+            function checkCaptcha() {
+                const val = document.getElementById('captchaInput').value;
+                if (parseInt(val, 10) === answer) {
+                document.body.removeChild(modal);
+                document.body.style.overflow = '';
+                } else {
+                document.getElementById('captchaError').textContent = 'Incorrect, try again.';
+                document.getElementById('captchaInput').value = '';
+                document.getElementById('captchaInput').focus();
+                }
+            }
+            document.getElementById('captchaSubmit').onclick = checkCaptcha;
+            document.getElementById('captchaInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') checkCaptcha();
+            });
+            }
+        })();
+    </script>
 </body>
 </html>
