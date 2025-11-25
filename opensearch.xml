@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+    <ShortName>Munetios Search</ShortName>
+    <Description>The official privacy-first search engine of Munetios.</Description>
+    <InputEncoding>UTF-8</InputEncoding>
+
+    <Url 
+        type="text/html"
+        method="GET"
+        template="https://www.munetios.com/search/search.html?q={searchTerms}">
+    </Url>
+
+    <Image height="16" width="16" type="image/png">
+        https://www.munetios.com/favicon.ico
+    </Image>
+
+    <Developer>Munetios</Developer>
+    <Attribution>© 2025 Munetios</Attribution>
+</OpenSearchDescription>
