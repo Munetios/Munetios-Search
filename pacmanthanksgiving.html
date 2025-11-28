@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Munetios Pacman – Thanksgiving 2025</title>
+  <title>Munetios Pacman</title>
 
   <!-- Munetios Beautiful CSS -->
   <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css">
@@ -256,8 +256,8 @@
     <div class="game-card liquid-glass blur-sm transparency-md">
       <header class="game-header">
         <div class="title-block">
-          <h1>Munetios Pacman – Thanksgiving 2025</h1>
-          <span>You = Pacman · Enemies = 4 hungry turkeys · Random walls</span>
+          <h1>Munetios Pacman</h1>
+          <span>You = Pacman · Enemies = 4  · Random walls</span>
         </div>
         <div class="hud">
           <button id="musicToggle" class="music-btn liquid-glass blur-xs transparency-sm" type="button">
@@ -323,7 +323,7 @@
 
       // Internal resolution (game world size)
       const WIDTH = 700;
-      const HEIGHT = 1000;
+      const HEIGHT = 800;
       canvas.width = WIDTH;
       canvas.height = HEIGHT;
 
@@ -343,19 +343,31 @@
 
       const bgm = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3");
       bgm.loop = true;
-      bgm.volume = 0.6;
+      bgm.volume = 1.0;
 
-      let musicOn = false;
+      let musicOn = true;
+
+      // Start music by default
+      bgm.play().then(() => {
+        musicOn = true;
+        musicIcon.textContent = "⏸";
+        musicLabel.textContent = "Music";
+      }).catch((err) => {
+        // If autoplay is blocked, show play icon
+        musicOn = false;
+        musicIcon.textContent = "▶";
+        musicLabel.textContent = "Music";
+      });
 
       async function toggleMusic() {
         if (!musicOn) {
           try {
-            await bgm.play();
-            musicOn = true;
-            musicIcon.textContent = "⏸";
-            musicLabel.textContent = "Music";
+        await bgm.play();
+        musicOn = true;
+        musicIcon.textContent = "⏸";
+        musicLabel.textContent = "Music";
           } catch (err) {
-            console.warn("Music playback blocked by browser:", err);
+        console.warn("Music playback blocked by browser:", err);
           }
         } else {
           bgm.pause();
@@ -388,10 +400,10 @@
         x: WIDTH / 2,
         y: HEIGHT / 2,
         radius: 14,
-        speed: 3.1,
+        speed: 3.5,
         dirX: 0,
         dirY: 0,
-        lives: 3,
+        lives: 5,
         score: 0,
         invulnerableFrames: 0,
         mouthOpen: true,
@@ -551,7 +563,7 @@
 
       function resetGame() {
         player.score = 0;
-        player.lives = 3;
+        player.lives = 5;
         player.invulnerableFrames = 0;
         gameOver = false;
         win = false;
@@ -560,7 +572,7 @@
         createPellets();
         createTurkeys();
         scoreValue.textContent = "0";
-        livesValue.textContent = "3";
+        livesValue.textContent = "5";
         overlay.classList.remove("visible");
       }
 
@@ -775,7 +787,7 @@
           win = true;
           overlayTitle.textContent = "You Win!";
           overlayMessage.textContent =
-            "You gobbled every yellow dot in the maze and dodged the turkeys. Happy Thanksgiving 2025!";
+            "You gobbled every yellow dot in the maze and dodged the enemies! Press R or tap Restart to play again.";
           overlay.classList.add("visible");
         }
       }
@@ -800,7 +812,7 @@
               win = false;
               overlayTitle.textContent = "Game Over";
               overlayMessage.textContent =
-                "The turkeys trapped you in the maze! Press R or tap Restart to try again.";
+                "The enemies trapped you in the maze! Press R or tap Restart to try again.";
               overlay.classList.add("visible");
             }
             break;
@@ -910,42 +922,31 @@
         const bodyRad = t.radius;
         const bodyGrad = ctx.createRadialGradient(0, 0, bodyRad * 0.2, 0, 0, bodyRad);
         bodyGrad.addColorStop(0, t.colorBase);
-        bodyGrad.addColorStop(1, "#6b3b28");
+        bodyGrad.addColorStop(1, "#2b2b2b");
         ctx.fillStyle = bodyGrad;
         ctx.beginPath();
-        ctx.arc(0, 0, bodyRad, Math.PI * 0.25, Math.PI * 1.75, true);
-        ctx.closePath();
+        ctx.arc(0, 0, bodyRad, 0, Math.PI * 2);
         ctx.fill();
 
-        // Head
+        // Eyes
+        ctx.fillStyle = "#fff";
         ctx.beginPath();
-        ctx.arc(0, -bodyRad * 0.8, bodyRad * 0.6, 0, Math.PI * 2);
-        ctx.fillStyle = "#f0c97b";
+        ctx.arc(-bodyRad * 0.3, -bodyRad * 0.3, bodyRad * 0.22, 0, Math.PI * 2);
+        ctx.arc(bodyRad * 0.3, -bodyRad * 0.3, bodyRad * 0.22, 0, Math.PI * 2);
         ctx.fill();
 
-        // Beak
+        // Pupils
+        ctx.fillStyle = "#222";
         ctx.beginPath();
-        ctx.moveTo(bodyRad * 0.6, -bodyRad * 0.8);
-        ctx.lineTo(bodyRad * 1.0, -bodyRad * 0.6);
-        ctx.lineTo(bodyRad * 0.6, -bodyRad * 0.4);
-        ctx.closePath();
-        ctx.fillStyle = "#f2a63d";
+        ctx.arc(-bodyRad * 0.3, -bodyRad * 0.3, bodyRad * 0.10, 0, Math.PI * 2);
+        ctx.arc(bodyRad * 0.3, -bodyRad * 0.3, bodyRad * 0.10, 0, Math.PI * 2);
         ctx.fill();
 
-        // Eye
-        ctx.fillStyle = "#1a1430";
-        ctx.beginPath();
-        ctx.arc(bodyRad * 0.2, -bodyRad * 0.9, 2.3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Feet
-        ctx.strokeStyle = "#f4b44a";
+        // Mouth
+        ctx.strokeStyle = "#e74c3c";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(-bodyRad * 0.3, bodyRad);
-        ctx.lineTo(-bodyRad * 0.3, bodyRad + 6);
-        ctx.moveTo(bodyRad * 0.3, bodyRad);
-        ctx.lineTo(bodyRad * 0.3, bodyRad + 6);
+        ctx.arc(0, bodyRad * 0.2, bodyRad * 0.35, 0, Math.PI, false);
         ctx.stroke();
 
         ctx.restore();
@@ -955,10 +956,9 @@
         ctx.fillStyle = "rgba(255, 222, 180, 0.9)";
         ctx.font = "10px Lexend, system-ui";
         ctx.textAlign = "center";
-        ctx.fillText("Turkey", t.x, t.y - t.radius - 8);
+        ctx.fillText("Enemy", t.x, t.y - t.radius - 8);
         ctx.restore();
       }
-
       function drawTurkeys() {
         turkeys.forEach(drawTurkey);
       }
