@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Munetios</title>
+    <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css">
     <meta name="description" content="Our Search engine so you can use it privately without being tracked.">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <!-- Do favicon 16, 32-->
@@ -11,6 +12,7 @@
     <link rel="icon" sizes="32x32" href="favicon-32x32.png" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta http-equiv="X-Frame-Options" content="DENY">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://api.munetios.com 'nonce-IKDjefjewhCujHJeuji3jhekowdijzizkcej'; style-src 'self' https://fonts.googleapis.com https://api.munetios.com 'unsafe-inline'; img-src 'self' data: https://static.cdninstagram.com https://www.munetios.com https://www.google.com https://www.youtube.com https://www.microsoft.com https://chatgpt.com  https://chat.openai.com https://www.facebook.com https://www.instagram.com https://www.espn.com https://www.yahoo.com; font-src 'self' https://fonts.gstatic.com; frame-src https://www.munetios.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
 <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Munetios Search">
         <meta name="google-site-verification" content="eNlW8gDjbwlEBSfYIkyc8N60d64cbCYkYydrbDoeYi8" />
@@ -25,7 +27,7 @@
     });
   </script>
 
-      <script>
+      <script nonce="IKDjefjewhCujHJeuji3jhekowdijzizkcej">
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
@@ -62,1596 +64,997 @@ if ('serviceWorker' in navigator) {
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style> 
         * {
-        font-family: Lexend, sans-serif;
-      }
-
+            font-family: 'Lexend', sans-serif;
+        }
         body {
-            font-family: Lexend,sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #130036;
-            color: white;
-            min-width: 320px;
-            overflow-x: hidden;
+            background-color: #190047;
+            color: #ffffff;
+        }
+        body.light-mode {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
         }
         .topbar {
-            background-color: transparent;
-            padding: 10px 20px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 60px;
             position: sticky;
             top: 0;
-            z-index: 100;
-            
-
+            z-index: 100000;
         }
+        .topbar .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            
+        }
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 4px 12px;
+        }
+        .topbar .top-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 2px 10px;
+        }
+        
         .logo {
             display: flex;
             align-items: center;
-            font-size: 24px;
+            gap: 10px;
+            font-size: 1.2em;
             font-weight: 600;
-            color: white;
-            gap: 10px;
-            background-color: rgba(30, 0, 80, 0.35);
-            border-radius: 48px;
-            padding: 6px 12px;
-            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
-            border: 1.5px solid rgba(120, 60, 200, 0.18);
-            backdrop-filter: blur(5px);
         }
-        a{
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
+        .logo img {
+            height: 30px;
         }
-        .top-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            background-color: rgba(30, 0, 80, 0.35);
-            border-radius: 48px;
-            padding: 6px 12px;
-            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
-            border: 1.5px solid rgba(120, 60, 200, 0.18);
-            backdrop-filter: blur(5px);
-        }
-        .apps-icon {
-            cursor: pointer;
-        }
-        .content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: calc(100vh - 60px);
-            text-align: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 900px;
-            padding: 0 20px;
-        }
-        .munetios-logo {
-            margin-bottom: 20px;
-        }
-        /* Language selector wrapper */
-        .footer .actions {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            background: rgba(30, 0, 80, 0.35);
-            border-radius: 18px;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
-            padding: 14px 22px;
-            /* Add border for glass effect */
-            border: 1.5px solid rgba(120, 60, 200, 0.18);
-        }
-
-        /* Custom select styling */
-        .footer .actions #languageSelect,
-        select#languageSelect {
-            appearance: none !important;
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
-            background: rgba(26,0,77,0.85) url('data:image/svg+xml;utf8,<svg fill="white" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 7l3 3 3-3" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>') no-repeat right 14px center/18px 18px !important;
-            color: #fff !important;
-            border: 1.5px solid #5f0ca3 !important;
-            border-radius: 12px !important;
-            padding: 8px 40px 8px 14px !important;
-            font-size: 16px !important;
-            font-family: inherit !important;
-            outline: none !important;
-            transition: border-color 0.2s, box-shadow 0.2s !important;
-            min-width: 140px !important;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.10) !important;
-            cursor: pointer !important;
-            backdrop-filter: blur(5px) !important;
-            -webkit-backdrop-filter: blur(5px) !important;
-        }
-        .footer .actions #languageSelect:focus,
-        select#languageSelect:focus {
-            border-color: #a36fff !important;
-            box-shadow: 0 0 0 2px #a36fff33 !important;
-        }
-        .footer .actions #languageSelect option,
-        select#languageSelect option {
-            background: #1a004d !important;
-            color: #fff !important;
-        }
-            @media (prefers-color-scheme: light) {
-            .footer .actions {
-            background: rgba(255,255,255,0.7);
-            }
-            #languageSelect {
-            background: #f0f0f0 url('data:image/svg+xml;utf8,<svg fill="black" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 7l3 3 3-3" stroke="black" stroke-width="2" fill="none" stroke-linecap="round"/></svg>') no-repeat right 12px center/18px 18px;
-            color: #130036;
-            border: 1.5px solid #ccc;
-            }
-            #languageSelect:focus {
-            border-color: #5f0ca3;
-            box-shadow: 0 0 0 2px #5f0ca333;
-            }
-        }
-        @media (max-width: 500px) {
-            .footer .actions {
-            flex-direction: column;
-            gap: 8px;
-            align-items: stretch;
-            padding: 10px 8px;
-            }
-            #languageSelect {
-            width: 100%;
-            min-width: 0;
-            }
-        }
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background-color: #1a004d;
-            border-radius: 30px;
-            padding: 10px 20px;
-            margin-right: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .search-bar svg {
-            margin-right: 10px;
-        }
-        .search-bar input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            color: white;
-            font-size: 18px;
-            outline: none;
-        }
-        .footer {
-            text-align: center;
-            padding: 15px 0;
-            background-color: transparent;
-            font-size: 14px;
-            color: white;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-        }
-        .btn {
-            background-color: #5f0ca3;
-            color: #fff;
-            border: none;
-            border-radius: 63px;
-            padding: 25px 40px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        .app-launcher {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            display: none;
-            z-index: 999;
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-            overflow: hidden;
-            transition: opacity 0.2s;
-            min-width: 320px;
-            width: 500px;
-            max-height: 80vh;
-        }
-        .app-launcher.active {
-            display: block;
-            opacity: 1;
-        }
-        .app-launcher iframe {
-            width: 500px;
-            height: 800px;
-            border: none;
-            background: #fff;
-            border-radius: 0 0 14px 14px;
-            display: block;
-        }
-        @media (max-width: 500px) {
-            .app-launcher iframe {
-                width: 95vw;
-                height: 70vh;
-            }
+        .logo-text {
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
         .apps-icon {
             position: relative;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .apps-icon:hover, .apps-icon:focus {
+            background: #3a1c71;
+            color: #fff;
+        }
+        .apps-dropdown {
+            display: none;
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: rgba(25, 0, 71, 0.95);
+            border: 1px solid #6c2eb7;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 200;
+        }
+        .apps-icon:hover .apps-dropdown, .apps-icon:focus .apps-dropdown {
+            display: block;
+        }
+        .content {
+            text-align: center;
+            margin-top: 80px;
+
+        }
+        .munetios-logo {
+            margin-bottom: 40px;
+        }
+        .search-bar {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 30px;
+            padding: 10px 20px;
+            width: 60%;
+            max-width: 800px;
+            gap: 5px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .search-bar input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: inherit;
+            font-size: 1em;
+            outline: none;
+        }
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 50px;
+            padding: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: background 0.3s, box-shadow 0.3s;
             z-index: 1000;
         }
-        @media (prefers-color-scheme: light) {
-            body {
-                background-color: #ffffff !important;
-                color: black !important;
-            }
-            a, .footer, .logo, .logo-text, .shortcuts span, .btn, .topbar a, .search-bar input, .search-bar svg, .topbar, .apps-icon, .app-launcher {
-                color: black !important;
-            }
-            .search-bar {
-                background-color: #f0f0f0 !important;
-            }
-            .btn {
-                background-color: #e0e0e0 !important;
-                color: #130036 !important;
-            }
-            .shortcuts span {
-                color: black !important;
-            }
+        .floating-button:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        .floating-button .label-button {
+            font-size: 1em;
+            font-weight: 600;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .shortcuts {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .add-shortcut-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .add-shortcut {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .add-shortcut:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        .label {
+            margin-top: 1px;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            display: block;
+            width: 100%;
+        }
+        /* Ensure each shortcut (icon + label) is a column */
+        .shortcut, .add-shortcut-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        @media (max-width: 500px) {
+        .dropdown-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: rgba(58, 28, 113, 0.1);
+            backdrop-filter: blur(2px) saturate(180%) contrast(85%) brightness(115%);
+            transition: background 0.2s;
+        }
+      
+        .dropdown-options {
+            display: none;
+            position: absolute;
+            background: rgba(25, 0, 71, 0.1);
+            border: 1px solid #6c2eb7;
+            backdrop-filter: blur(2px) saturate(180%) contrast(85%) brightness(115%);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 200;
+            min-width: 160px;
+        }
+        .dropdown-option {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .dropdown-option:hover {
+            background: #3a1c71;
+            color: #fff;
+        }
+        /* Responsive styles */
+        @media (max-width: 1200px) {
+            .search-bar {
+                width: 80%;
+            }
+            .apps-dropdown iframe {
+                width: 350px !important;
+                height: 600px !important;
+            }
+        }
+        @media (max-width: 900px) {
+            .search-bar {
+                width: 95%;
+                max-width: 98vw;
+            }
+            .apps-dropdown iframe {
+                width: 280px !important;
+                height: 480px !important;
+            }
+         
+        }
+        @media (max-width: 600px) {
+            
             .logo-text {
                 display: none;
             }
+            .topbar {
+                padding: 0 10px;
+            }
+            .munetios-logo img {
+                height: 110px !important;
+                margin-top: 20px !important;
+            }
+            .search-bar {
+                width: 99%;
+                min-width: 0;
+                padding: 8px 10px;
+                font-size: 0.98em;
+            }
+            .buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .shortcuts {
+                gap: 10px;
+                margin-top: 10px;
+            }
+            .shortcut img, .add-shortcut svg {
+                width: 28px !important;
+                height: 28px !important;
+            }
+            .floating-button {
+                right: 10px;
+                bottom: 10px;
+                padding: 8px;
+                font-size: 0.95em;
+            }
+            .apps-dropdown iframe {
+                width: 95vw !important;
+                height: 60vh !important;
+                min-width: 180px !important;
+            }
+            .label-button{
+                display: none;
+            } 
         }
-        @media (max-height: 600px) {
-            .content {
-                height: auto;
-                margin-top: 20px;
-                margin-bottom: 20px;
+        @media (max-width: 472px) {
+            .munetios-logo img {
+                height: 70px !important;
+            }
+            .search-bar {
+                font-size: 0.9em;
+                padding: 6px 4px;
+            }
+            .hide-450 {
+                display: none !important;
+            }
+            .shortcut img, .add-shortcut svg {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            .label, .label-button {
+                font-size: 0.8em;
+            }
+        }
+        @media (prefers-color-scheme: light) {
+            .search-bar {
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid #ccc;
+            }
+            .search-bar:hover {
+                background: rgba(255, 255, 255, 0.3);
+                border-color: #999;
             }
         }
     </style>
 </head>
 <body>
     <header class="topbar">
-        <div class="logo">
-            <img src="favicon-32x32.png" alt="Munetios Search Logo" width="30">
-            <div class="logo-text">Munetios</div>
-        </div>
-        <div class="top-right">
-            <a href="/maze/maze.html">Maze</a>
-            <a href="https://www.munetios.com/policies/#/terms" target="_blank">Terms</a>
-            <a href="https://www.munetios.com/policies/#/privacy" target="_blank">Privacy</a>
-            <div class="apps-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                    <circle cx="5" cy="5" r="2" fill="currentColor"/>
-                    <circle cx="15" cy="5" r="2" fill="currentColor"/>
-                    <circle cx="25" cy="5" r="2" fill="currentColor"/>
-                    <circle cx="5" cy="15" r="2" fill="currentColor"/>
-                    <circle cx="15" cy="15" r="2" fill="currentColor"/>
-                    <circle cx="25" cy="15" r="2" fill="currentColor"/>
-                    <circle cx="5" cy="25" r="2" fill="currentColor"/>
-                    <circle cx="15" cy="25" r="2" fill="currentColor"/>
-                    <circle cx="25" cy="25" r="2" fill="currentColor"/>
-                </svg>
-            </div>
-            <div class="app-launcher">
-                <iframe src="https://www.munetios.com/apps" height="100vh" width="500" frameborder="0"></iframe>
+        <div class="topbar-left">
+        <div class="top-left liquid-glass">
+            <div class="logo">
+                <a href="https://www.munetios.com">
+                    <img src="favicon-32x32.png" alt="Munetios Logo" style="height:30px;">
+                </a>
+                <div class="logo-text">Munetios</div>
             </div>
         </div>
+        <a class="liquid-glass hide-450" href="about.html" style="padding: 10px 15px;">About</a>
+    </div>
+    <div class="top-right liquid-glass">
+        <a href="/search/classic.html">Classic Search</a>
+        <a href="/games/games.html">Games</a>
+        <div class="apps-icon" id="apps-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <div class="apps-dropdown">
+                <iframe src="https://www.munetios.com/apps/" width="500" height="768" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
     </header>
-    <main class="content">
-    <div class="container">
+    <div class="content">
         <div class="munetios-logo">
-            <img src="Munetios-Logo.png" height="150" alt="Munetios Logo">
+            <img src="Munetios-Logo.png" alt="Munetios Logo" style="height:200px; margin-top:40px;">
         </div>
-        <button class="btn" onclick="showCustomizeModal()">Customize (Unstable)</button>
-        <div class="search-bar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2"/>
-                <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="white" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <input type="text" placeholder="Search" id="searchResult">
-            <!-- Microphone Icon Button -->
-            <button id="micBtn" type="button" aria-label="Speak" style="background: none; border: none; cursor: pointer; margin-left: 8px; display: flex; align-items: center;">
-                <svg id="micIcon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 15a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M19 11v1a7 7 0 0 1-14 0v-1" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="2"/>
-                    <line x1="9" y1="22" x2="15" y2="22" stroke="currentColor" stroke-width="2"/>
+        <div class="search-bar liquid-glass">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" placeholder="Search" id="searchInput">
+                <svg id="micIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                    <rect x="9" y="2" width="6" height="12" rx="3"></rect>
+                    <path d="M5 10v2a7 7 0 0 0 14 0v-2"></path>
+                    <line x1="12" y1="22" x2="12" y2="16"></line>
+                    <line x1="8" y1="22" x2="16" y2="22"></line>
                 </svg>
-            </button>
-            <script>
-            (function() {
-                const micBtn = document.getElementById('micBtn');
-                const micIcon = document.getElementById('micIcon');
-                const searchInput = document.getElementById('searchResult');
-                let recognizing = false;
-                let recognition;
-                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        </div>
+        <br><br><br>
+        <div class="buttons">
+            <button class="liquid-glass" onclick="performSearch()" style=" cursor: pointer; color: inherit; padding: 13px 16px;">Search</button>
+            <button class="liquid-glass" onclick="randomizeQueries()" style=" cursor: pointer; color: inherit; padding: 13px 16px;" >I'm Feeling Good</button>
+        </div>
+        <br><br>
+        <div class="shortcuts" id="shortcuts">
+            <!-- Shortcuts will be rendered here -->
+             <div class="add-shortcut" id="addshortcut">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+               
+             </div> <div class="label">Add</div>
+        </div>
+    </div>
+    <div class="floating-button liquid-glass" id="customizeBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sliders"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+        <div class="label-button">Customize</div>
+    </div>
+    <script nonce="IKDjefjewhCujHJeuji3jhekowdijzizkcej">
+        const micIcon = document.getElementById('micIcon');
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            micIcon.style.cursor = 'pointer';
+            let recognizing = false;
+            let recognition;
+            micIcon.onclick = function () {
+                if (!recognition) {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                     recognition = new SpeechRecognition();
-                    recognition.lang = localStorage.getItem('munetiosLang') || navigator.language || 'en-US';
+                    recognition.lang = 'en-US';
                     recognition.interimResults = false;
                     recognition.maxAlternatives = 1;
-                    recognition.onstart = function() {
-                        recognizing = true;
-                        micIcon.style.color = '#5f0ca3';
+                    recognition.onresult = function (event) {
+                        const transcript = event.results[0][0].transcript;
+                        document.getElementById('searchInput').value = transcript;
+                        performSearch();
                     };
-                    recognition.onend = function() {
+                    recognition.onerror = function () {
                         recognizing = false;
                         micIcon.style.color = '';
                     };
-                    recognition.onerror = function(e) {
+                    recognition.onend = function () {
                         recognizing = false;
                         micIcon.style.color = '';
                     };
-                    recognition.onresult = function(e) {
-                        if (e.results && e.results[0] && e.results[0][0]) {
-                            searchInput.value = e.results[0][0].transcript;
-                            searchInput.focus();
-                            // Optionally auto-search:
-                            const query = searchInput.value.trim();
-                            if (query) {
-                                const encodedQuery = encodeURIComponent(query);
-                                window.location.href = `/search/search.html?q=${encodedQuery}`;
-                            }
-                        }
-                    };
-                    micBtn.onclick = function(e) {
-                        e.preventDefault();
-                        if (recognizing) {
-                            recognition.stop();
-                        } else {
-                            recognition.lang = localStorage.getItem('munetiosLang') || navigator.language || 'en-US';
-                            recognition.start();
-                        }
-                    };
+                }
+                if (!recognizing) {
+                    recognition.start();
+                    recognizing = true;
+                    micIcon.style.color = '#00e676';
                 } else {
-                    micBtn.style.display = 'none';
+                    recognition.stop();
+                    recognizing = false;
+                    micIcon.style.color = '';
                 }
-            })();
-            </script>
-        </div>
-  
-       <div class="shortcuts">
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-top: 32px;">
-            <!-- Add Shortcut Button -->
-            <button id="addShortcutBtn" style="display: flex; flex-direction: column; align-items: center; border: none; background: none; cursor: pointer;">
-                <div style="width: 40px; height: 40px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center;">
-                    <svg width="24" height="24" fill="none" stroke="#130036" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="8" x2="12" y2="16"/>
-                        <line x1="8" y1="12" x2="16" y2="12"/>
-                    </svg>
+            };
+        } else {
+            micIcon.style.opacity = '0.5';
+            micIcon.title = 'Speech recognition not supported';
+            micIcon.style.cursor = 'not-allowed';
+        }
+        /* --- Customize Button Modal & Logic --- */
+        // Remove search bar color from settings and UI
+        // Remove from applySettings
+        // Remove from customize modal
+        // Remove from saveSettings and getStoredSettings
+        // Remove from localStorage
+
+        // Remove search bar color logic from applySettings
+        // (No code needed here, just delete the relevant lines in applySettings and modal)
+
+        const customizeBtn = document.getElementById('customizeBtn');
+        let customizeModal = null;
+
+        const safeFonts = [
+            "Arial", "Calibri", "Times New Roman", "Georgia", "Lexend", "Poppins",
+            "Tahoma", "Verdana", "Comic Sans MS", "Impact", "Open Sans", "Comic Neue", "Google Sans", "Google Sans Flex"
+        ];
+        const googleFonts = [
+            "Lexend", "Poppins", "Open Sans", "Comic Neue", "Google Sans", "Google Sans Flex"
+        ];
+
+        function getStoredSettings() {
+            try {
+            return JSON.parse(localStorage.getItem('munetiosSettings') || '{}');
+            } catch {
+            return {};
+            }
+        }
+        function saveSettings(settings) {
+            try {
+            localStorage.setItem('munetiosSettings', JSON.stringify(settings));
+            return true;
+            } catch {
+            showSaveError();
+            return false;
+            }
+        }
+        function showSaveError() {
+            let msg = document.getElementById('munetiosSaveError');
+            if (!msg) {
+            msg = document.createElement('div');
+            msg.id = 'munetiosSaveError';
+            msg.style.position = 'fixed';
+            msg.style.bottom = '24px';
+            msg.style.left = '50%';
+            msg.style.transform = 'translateX(-50%)';
+            msg.style.background = '#e53935';
+            msg.style.color = '#fff';
+            msg.style.padding = '14px 28px';
+            msg.style.borderRadius = '10px';
+            msg.style.fontSize = '1em';
+            msg.style.zIndex = '100000';
+            msg.style.boxShadow = '0 2px 12px rgba(0,0,0,0.18)';
+            msg.textContent = 'Failed to save your changes. Please turn on your saving data.';
+            document.body.appendChild(msg);
+            setTimeout(() => {
+                if (msg) msg.remove();
+            }, 5000);
+            }
+        }
+        function applySettings() {
+            const s = getStoredSettings();
+            // Background
+            if (s.bgType === 'color' && s.bgColor) {
+            document.body.style.background = s.bgColor;
+            document.body.style.backgroundImage = '';
+            } else if (s.bgType === 'image' && s.bgImage) {
+            document.body.style.background = '';
+            document.body.style.backgroundImage = s.bgImage.startsWith('url(') ? s.bgImage : `url('${s.bgImage}')`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            } else {
+            document.body.style.background = '';
+            document.body.style.backgroundImage = '';
+            }
+            // Text color
+            if (s.textColor) document.body.style.color = s.textColor;
+            // Search bar color
+            if (s.searchBarColor) {
+            document.querySelectorAll('.search-bar').forEach(el => {
+                el.style.setProperty('background', s.searchBarColor, 'important');
+            });
+            }
+            // Liquid glass toggle
+            document.querySelectorAll('.liquid-glass').forEach(el => {
+            el.style.backdropFilter = s.liquidGlass === false ? 'none' : '';
+            el.style.background = s.liquidGlass === false ? 'transparent' : '';
+            });
+            // Shortcuts location
+            const shortcuts = document.getElementById('shortcuts');
+            if (shortcuts && s.shortcutsLocation) {
+            shortcuts.style.position = 'absolute';
+            shortcuts.style.left = '';
+            shortcuts.style.right = '';
+            shortcuts.style.top = '';
+            shortcuts.style.bottom = '';
+            shortcuts.style.margin = '';
+            shortcuts.style.justifyContent = '';
+            shortcuts.style.flexDirection = '';
+            shortcuts.style.transform = '';
+            switch (s.shortcutsLocation) {
+                case 'left':
+                shortcuts.style.left = '20px';
+                shortcuts.style.top = '50%';
+                shortcuts.style.transform = 'translateY(-50%)';
+                shortcuts.style.justifyContent = 'flex-start';
+                shortcuts.style.flexDirection = 'column';
+                break;
+                case 'right':
+                shortcuts.style.right = '20px';
+                shortcuts.style.top = '50%';
+                shortcuts.style.transform = 'translateY(-50%)';
+                shortcuts.style.justifyContent = 'flex-end';
+                shortcuts.style.flexDirection = 'column';
+                break;
+                case 'up':
+                shortcuts.style.top = '80px';
+                shortcuts.style.left = '50%';
+                shortcuts.style.transform = 'translateX(-50%)';
+                shortcuts.style.justifyContent = 'center';
+                shortcuts.style.flexDirection = 'row';
+                break;
+                case 'down':
+                shortcuts.style.bottom = '40px';
+                shortcuts.style.left = '50%';
+                shortcuts.style.transform = 'translateX(-50%)';
+                shortcuts.style.justifyContent = 'center';
+                shortcuts.style.flexDirection = 'row';
+                break;
+                case 'center':
+                shortcuts.style.top = '50%';
+                shortcuts.style.left = '50%';
+                shortcuts.style.transform = 'translate(-50%,-50%)';
+                shortcuts.style.justifyContent = 'center';
+                shortcuts.style.flexDirection = 'row';
+                break;
+                case 'updown':
+                shortcuts.style.top = '80px';
+                shortcuts.style.left = '50%';
+                shortcuts.style.transform = 'translateX(-50%)';
+                shortcuts.style.justifyContent = 'center';
+                shortcuts.style.flexDirection = 'column';
+                break;
+                default:
+                shortcuts.style.position = '';
+                shortcuts.style.transform = '';
+                shortcuts.style.justifyContent = '';
+                shortcuts.style.flexDirection = '';
+                break;
+            }
+            }
+            // Font
+            if (s.fontFamily) {
+            let fontStack = s.fontFamily;
+            if (!safeFonts.includes(s.fontFamily)) fontStack += ', Arial, sans-serif';
+            const styleId = 'munetios-font-style';
+            let style = document.getElementById(styleId);
+            if (!style) {
+                style = document.createElement('style');
+                style.id = styleId;
+                document.head.appendChild(style);
+            }
+            style.innerHTML = `* { font-family: '${s.fontFamily}', Arial, sans-serif !important; }`;
+            // Google Fonts link
+            if (googleFonts.includes(s.fontFamily)) {
+                let linkId = 'munetios-google-font';
+                let link = document.getElementById(linkId);
+                if (!link) {
+                link = document.createElement('link');
+                link.id = linkId;
+                link.rel = 'stylesheet';
+                document.head.appendChild(link);
+                }
+                let fontParam = s.fontFamily.replace(/ /g, '+');
+                link.href = `https://fonts.googleapis.com/css2?family=${fontParam}:wght@300;400;500;600;700&display=swap`;
+            }
+            }
+        }
+        applySettings();
+
+        customizeBtn.onclick = function() {
+            if (customizeModal) return;
+            const s = getStoredSettings();
+            customizeModal = document.createElement('div');
+            customizeModal.style.position = 'fixed';
+            customizeModal.style.top = '0';
+            customizeModal.style.left = '0';
+            customizeModal.style.width = '100vw';
+            customizeModal.style.height = '100vh';
+            customizeModal.style.background = 'rgba(0,0,0,0.4)';
+            customizeModal.style.display = 'flex';
+            customizeModal.style.alignItems = 'center';
+            customizeModal.style.justifyContent = 'center';
+            customizeModal.style.zIndex = '99999';
+            customizeModal.innerHTML = `
+            <div style="background:#fff; color:#222; border-radius:18px; padding:32px 28px; min-width:340px; box-shadow:0 8px 32px rgba(0,0,0,0.18); display:flex; flex-direction:column; gap:18px; align-items:center; position:relative;max-width:95vw;">
+                <button id="closeCustomizeModal" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:1.5em;cursor:pointer;color:#888;">&times;</button>
+                <h2 style="margin:0 0 10px 0;font-size:1.2em;">Customize Munetios</h2>
+                <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+                <label><b>Background:</b></label>
+                <div>
+                    <input type="radio" name="bgType" value="color" id="bgTypeColor" ${!s.bgType || s.bgType === 'color' ? 'checked' : ''}> <label for="bgTypeColor">Color</label>
+                    <input type="radio" name="bgType" value="image" id="bgTypeImage" ${s.bgType === 'image' ? 'checked' : ''}> <label for="bgTypeImage">Image</label>
                 </div>
-                <span style="margin-top: 8px; font-size: 14px; color: white;">Add</span>
-            </button>
-         
-            <!-- Shortcut Modal -->
-            <div id="shortcutModal" style="display:none;position:fixed;z-index:1000;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
-                <div style="background:#fff;color:#222;padding:24px 20px 16px 20px;border-radius:12px;min-width:260px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.18);display:flex;flex-direction:column;gap:12px;position:relative;">
-                    <button id="closeShortcutModal" style="position:absolute;top:8px;right:10px;background:none;border:none;font-size:20px;color:#888;cursor:pointer;">&times;</button>
-                    <h3 style="margin:0 0 8px 0;font-size:18px;">Add Shortcut</h3>
-                    <label style="font-size:14px;margin-bottom:2px;">Name</label>
-                    <input id="shortcutNameInput" type="text" maxlength="32" style="padding:7px 10px;border-radius:6px;border:1px solid #ccc;font-size:15px;">
-                    <label style="font-size:14px;margin-bottom:2px;">URL</label>
-                    <input id="shortcutUrlInput" type="url" placeholder="https://example.com" style="padding:7px 10px;border-radius:6px;border:1px solid #ccc;font-size:15px;">
-                    <div id="shortcutModalError" style="color:#c00;font-size:13px;min-height:18px;"></div>
-                    <button id="saveShortcutBtn" style="margin-top:6px;background:#130036;color:#fff;border:none;border-radius:6px;padding:8px 0;font-size:15px;cursor:pointer;">Save</button>
+                <input type="color" id="bgColorInput" value="${s.bgColor || '#190047'}" style="width:60px;display:${!s.bgType || s.bgType === 'color' ? 'inline-block' : 'none'};">
+                <input type="file" id="bgImageInput" accept="image/*" style="display:${s.bgType === 'image' ? 'inline-block' : 'none'};">
+                <button id="clearBgBtn" style="margin-top:4px;font-size:0.9em;">Clear Background</button>
                 </div>
+                <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+                <label for="textColorInput"><b>Text Color:</b></label>
+                <input type="color" id="textColorInput" value="${s.textColor || '#ffffff'}" style="width:60px;">
+                </div>
+                <div style="display:none;flex-direction:column;gap:10px;width:100%;">
+                <label for="searchBarColorInput"><b>Search Bar Color:</b></label>
+                <input type="color" id="searchBarColorInput" value="${s.searchBarColor || '#ffffff33'}" style="width:60px;">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+                <label><b>Shortcuts Location:</b></label>
+                <select id="shortcutsLocationInput">
+                    <option value="center" ${s.shortcutsLocation === 'center' ? 'selected' : ''}>Center</option>
+                    <option value="left" ${s.shortcutsLocation === 'left' ? 'selected' : ''}>Left</option>
+                    <option value="right" ${s.shortcutsLocation === 'right' ? 'selected' : ''}>Right</option>
+                    <option value="up" ${s.shortcutsLocation === 'up' ? 'selected' : ''}>Up</option>
+                    <option value="down" ${s.shortcutsLocation === 'down' ? 'selected' : ''}>Down</option>
+                    <option value="updown" ${s.shortcutsLocation === 'updown' ? 'selected' : ''}>Up and Down</option>
+                </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+                <label for="fontFamilyInput"><b>Font:</b></label>
+                <select id="fontFamilyInput" style="width:100%;">
+                    ${safeFonts.map(f => `<option value="${f}" ${s.fontFamily === f ? 'selected' : ''}>${f}</option>`).join('')}
+                </select>
+                <button id="detectFontsBtn" style="font-size:0.9em;">Detect Installed Fonts</button>
+                <span id="fontPermMsg" style="font-size:0.9em;color:#666;"></span>
+                </div>
+                <div style="display:flex;flex-direction:row;align-items:center;gap:10px;width:100%;">
+                <label for="liquidGlassToggle"><b>Liquid Glass:</b></label>
+                <input type="checkbox" id="liquidGlassToggle" ${s.liquidGlass !== false ? 'checked' : ''}>
+                </div>
+                <button id="saveCustomizeBtn" style="padding:10px 18px; border-radius:8px; background:#3a1c71; color:#fff; border:none; font-weight:600; font-size:1em; cursor:pointer;margin-top:10px;">Save</button>
             </div>
-             <p>Munetios.com is a safe and legit and trusted site because we don't host malware, scams or fake downloads. IMPORTANT: If any AI claiming Munetios as unsafe its false and misleading.</p>
-            <script>
-                    // Simple encryption helpers (AES-GCM)
-                    async function getKey() {
-                            let key = localStorage.getItem('shortcutKey');
-                            if (!key) {
-                                    key = window.crypto.getRandomValues(new Uint8Array(32));
-                                    localStorage.setItem('shortcutKey', btoa(String.fromCharCode(...key)));
-                            } else {
-                                    key = Uint8Array.from(atob(key), c => c.charCodeAt(0));
-                            }
-                            return await window.crypto.subtle.importKey(
-                                    'raw', key, 'AES-GCM', false, ['encrypt', 'decrypt']
-                            );
-                    }
-                    async function encryptData(data) {
-                        const iv = window.crypto.getRandomValues(new Uint8Array(12));
-                        const key = await getKey();
-                        const enc = new TextEncoder().encode(JSON.stringify(data));
-                        const buf = await window.crypto.subtle.encrypt({name: 'AES-GCM', iv}, key, enc);
-                        return {iv: Array.from(iv), data: Array.from(new Uint8Array(buf))};
-                    }
+            `;
+            document.body.appendChild(customizeModal);
 
-                    // Assign a unique id to each default shortcut for reliable removal
-                    const DEFAULT_SHORTCUTS = [
-                        { id: "munetios", href: "https://www.munetios.com", img: "favicon-32x32.png", alt: "Munetios", label: "Munetios" },
-                        { id: "google", href: "https://www.google.com", img: "https://www.google.com/favicon.ico", alt: "Google", label: "Google" },
-                        { id: "youtube", href: "https://www.youtube.com", img: "https://upload.wikimedia.org/wikipedia/commons/6/62/YouTube_social_white_square_%282024%29.svg", alt: "YouTube", label: "YouTube" },
-                        { id: "microsoft", href: "https://www.microsoft.com", img: "https://www.microsoft.com/favicon.ico", alt: "Microsoft", label: "Microsoft" },
-                        { id: "chatgpt" , href: "https://chat.openai.com", img: "https://chat.openai.com/favicon.ico", alt: "ChatGPT", label: "ChatGPT" },
-                        { id: "facebook", href: "https://www.facebook.com", img: "https://www.facebook.com/favicon.ico", alt: "Facebook", label: "Facebook" },
-                        { id: "twitter", href: "https://www.twitter.com", img: "https://www.twitter.com/favicon.ico", alt: "Twitter", label: "Twitter" },
-                        { id: "maps", href: "https://maps.google.com", img: "https://maps.google.com/favicon.ico", alt: "Google Maps", label: "Maps" },
-                        { id: "yahoo", href: "https://www.yahoo.com", img: "https://s.yimg.com/rz/l/favicon.ico", alt: "Yahoo", label: "Yahoo" },
-                        { id: "amazon", href: "https://www.amazon.com", img: "https://www.amazon.com/favicon.ico", alt: "Amazon", label: "Amazon" },
-                        { id: "walmart", href: "https://www.walmart.com", img: "https://www.walmart.com/favicon.ico", alt: "Walmart", label: "Walmart" }
-                    ];
+            // Modal logic
+            function updateBgInputs() {
+            const isColor = document.getElementById('bgTypeColor').checked;
+            document.getElementById('bgColorInput').style.display = isColor ? 'inline-block' : 'none';
+            document.getElementById('bgImageInput').style.display = !isColor ? 'inline-block' : 'none';
+            }
+            document.getElementById('bgTypeColor').onchange = updateBgInputs;
+            document.getElementById('bgTypeImage').onchange = updateBgInputs;
 
-                    // Allow removing default shortcuts by unique id
-                    function enableDefaultShortcutRemoval() {
-                        const container = document.querySelector('.shortcuts > div');
-                        container.querySelectorAll('.default-shortcut').forEach((a) => {
-                            if (!a.querySelector('.remove-default-shortcut')) {
-                                const btn = document.createElement('button');
-                                btn.title = "Remove";
-                                btn.className = "remove-default-shortcut";
-                                btn.style = "margin-top:2px;background:none;border:none;color:#888;cursor:pointer;font-size:12px;";
-                                btn.innerHTML = "&times;";
-                                // Use data-id attribute for reliable removal
-                                btn.onclick = function(e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    const shortcutId = a.getAttribute('data-id');
-                                    removeDefaultShortcut(shortcutId);
-                                };
-                                a.appendChild(btn);
-                            }
-                        });
-                    }
+            document.getElementById('clearBgBtn').onclick = function() {
+            document.getElementById('bgColorInput').value = '#190047';
+            document.getElementById('bgImageInput').value = '';
+            };
 
-                    // Remove default shortcut by id and persist in localStorage
-                    function removeDefaultShortcut(id) {
-                        let removed = JSON.parse(localStorage.getItem('removedDefaultShortcuts') || "[]");
-                        if (!removed.includes(id)) removed.push(id);
-                        localStorage.setItem('removedDefaultShortcuts', JSON.stringify(removed));
-                        renderDefaultShortcuts();
-                    }
+            document.getElementById('closeCustomizeModal').onclick = function() {
+            customizeModal.remove();
+            customizeModal = null;
+            };
 
-                    // Render default shortcuts, skipping removed ones by id
-                    function renderDefaultShortcuts() {
-                        const container = document.querySelector('.shortcuts > div');
-                        // Remove all default shortcuts
-                        container.querySelectorAll('.default-shortcut').forEach(e => e.remove());
-                        let removed = JSON.parse(localStorage.getItem('removedDefaultShortcuts') || "[]");
-                        DEFAULT_SHORTCUTS.forEach((sc) => {
-                            if (removed.includes(sc.id)) return;
-                            const a = document.createElement('a');
-                            a.href = sc.href;
-                            a.title = sc.label;
-                            a.target = '_blank';
-                            a.className = 'default-shortcut';
-                            a.setAttribute('data-id', sc.id);
-                            a.style = "display: flex; flex-direction: column; align-items: center;";
-                            a.innerHTML = `
-                                <img src="${sc.img}" alt="${sc.alt}" width="40" height="40" style="border-radius: 8px; background: #fff;">
-                                <span style="margin-top: 8px; font-size: 14px;">${sc.label}</span>
-                            `;
-                            container.insertBefore(a, container.querySelector('#addShortcutBtn'));
-                        });
-                        enableDefaultShortcutRemoval();
-                    }
-
-                    // On page load, replace static default shortcuts with dynamic ones
-                    document.addEventListener('DOMContentLoaded', function() {
-                        renderDefaultShortcuts();
-                    });
-
-                    // App Launcher functionality
-                    (function() {
-                        const appsIcon = document.querySelector('.apps-icon');
-                        const appLauncher = document.querySelector('.app-launcher');
-                        let launcherOpen = false;
-
-                        function openLauncher() {
-                            appLauncher.classList.add('active');
-                            launcherOpen = true;
-                        }
-                        function closeLauncher() {
-                            appLauncher.classList.remove('active');
-                            launcherOpen = false;
-                        }
-
-                        appsIcon.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            if (launcherOpen) {
-                                closeLauncher();
-                            } else {
-                                openLauncher();
-                            }
-                        });
-
-                        // Close on click outside
-                        document.addEventListener('click', function(e) {
-                            if (launcherOpen && !appLauncher.contains(e.target) && !appsIcon.contains(e.target)) {
-                                closeLauncher();
-                            }
-                        });
-
-                        // Close on Escape key
-                        document.addEventListener('keydown', function(e) {
-                            if (launcherOpen && e.key === 'Escape') {
-                                closeLauncher();
-                            }
-                        });
-                    })();
-                    async function decryptData(encObj) {
-                            if (!encObj) return [];
-                            const key = await getKey();
-                            const iv = new Uint8Array(encObj.iv);
-                            const data = new Uint8Array(encObj.data);
-                            try {
-                                    const dec = await window.crypto.subtle.decrypt({name: 'AES-GCM', iv}, key, data);
-                                    return JSON.parse(new TextDecoder().decode(dec));
-                            } catch {
-                                    return [];
-                            }
-                    }
-                    // IndexedDB helpers
-                    function openDB() {
-                        return new Promise((resolve, reject) => {
-                            const req = indexedDB.open('MunetiosShortcuts', 1);
-                            req.onupgradeneeded = function(e) {
-                                const db = e.target.result;
-                                if (!db.objectStoreNames.contains('shortcuts')) {
-                                    db.createObjectStore('shortcuts');
-                                }
-                            };
-                            req.onsuccess = () => resolve(req.result);
-                            req.onerror = () => reject(req.error);
-                        });
-                    }
-                    async function getShortcuts() {
-                        const db = await openDB();
-                        return new Promise((resolve) => {
-                            const tx = db.transaction('shortcuts', 'readonly');
-                            const store = tx.objectStore('shortcuts');
-                            const req = store.get('data');
-                            req.onsuccess = async () => {
-                                resolve(await decryptData(req.result));
-                            };
-                            req.onerror = () => resolve([]);
-                        });
-                    }
-                    async function setShortcuts(arr) {
-                        const db = await openDB();
-                        const enc = await encryptData(arr);
-                        return new Promise((resolve) => {
-                            const tx = db.transaction('shortcuts', 'readwrite');
-                            const store = tx.objectStore('shortcuts');
-                            store.put(enc, 'data');
-                            tx.oncomplete = resolve;
-                        });
-                    }
-                    // Render custom shortcuts
-                    async function renderShortcuts() {
-                        // Always render into .shortcuts (not .shortcuts > div)
-                        const shortcutsSection = document.querySelector('.shortcuts');
-                        if (!shortcutsSection) return;
-                        // Remove all previous custom shortcuts
-                        shortcutsSection.querySelectorAll('.custom-shortcut').forEach(e => e.remove());
-                        const arr = await getShortcuts();
-                        arr.forEach((sc, i) => {
-                            const a = document.createElement('a');
-                            a.href = sc.url;
-                            a.title = sc.name;
-                            a.target = '_blank';
-                            a.className = 'custom-shortcut';
-                            a.style = "display: flex; flex-direction: column; align-items: center;";
-                            a.innerHTML = `
-                                <div style="width:40px;height:40px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                                    <img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(sc.url)}&sz=64" alt="${sc.name}" width="32" height="32">
-                                </div>
-                                <span style="margin-top:8px;font-size:14px;">${sc.name}</span>
-                                <button title="Remove" style="margin-top:2px;background:none;border:none;color:#888;cursor:pointer;font-size:12px;" onclick="event.stopPropagation();event.preventDefault();removeShortcut(${i});">&times;</button>
-                            `;
-                            shortcutsSection.appendChild(a);
-                        });
-                    }
-                    async function removeShortcut(idx) {
-                        const arr = await getShortcuts();
-                        arr.splice(idx, 1);
-                        await setShortcuts(arr);
-                        renderShortcuts();
-                    }
-                    // Modal logic
-                    const shortcutModal = document.getElementById('shortcutModal');
-                    const closeShortcutModal = document.getElementById('closeShortcutModal');
-                    const saveShortcutBtn = document.getElementById('saveShortcutBtn');
-                    const shortcutNameInput = document.getElementById('shortcutNameInput');
-                    const shortcutUrlInput = document.getElementById('shortcutUrlInput');
-                    const shortcutModalError = document.getElementById('shortcutModalError');
-
-                    function openShortcutModal() {
-                        shortcutNameInput.value = '';
-                        shortcutUrlInput.value = '';
-                        shortcutModalError.textContent = '';
-                        shortcutModal.style.display = 'flex';
-                        setTimeout(() => shortcutNameInput.focus(), 100);
-                    }
-                    function closeModal() {
-                        shortcutModal.style.display = 'none';
-                    }
-                    closeShortcutModal.onclick = closeModal;
-                    shortcutModal.onclick = function(e) {
-                        if (e.target === shortcutModal) closeModal();
-                    };
-                    saveShortcutBtn.onclick = async function() {
-                        const name = shortcutNameInput.value.trim();
-                        let url = shortcutUrlInput.value.trim();
-                        shortcutModalError.textContent = '';
-                        if (!name) {
-                            shortcutModalError.textContent = 'Please enter a name.';
-                            shortcutNameInput.focus();
-                            return;
-                        }
-                        if (!url) {
-                            shortcutModalError.textContent = 'Please enter a URL.';
-                            shortcutUrlInput.focus();
-                            return;
-                        }
-                        if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-                        try {
-                            new URL(url);
-                        } catch {
-                            shortcutModalError.textContent = 'Invalid URL.';
-                            shortcutUrlInput.focus();
-                            return;
-                        }
-                        const arr = await getShortcuts();
-                        arr.push({ name, url });
-                        await setShortcuts(arr);
-                        renderShortcuts();
-                        closeModal();
-                    };
-                    document.getElementById('addShortcutBtn').onclick = openShortcutModal;
-                    // Keyboard: Enter to save, Escape to close
-                    shortcutModal.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter') saveShortcutBtn.click();
-                        if (e.key === 'Escape') closeModal();
-                    });
-                    // Initial render
-                    renderShortcuts();
-                    // Expose removeShortcut for inline onclick
-                    window.removeShortcut = removeShortcut;
-
-                    /* --- Customize Modal & Logic --- */
-                    (function() {
-                        // Helper: get all installed fonts (using FontFaceSet API if available, else fallback)
-                        async function getInstalledFonts() {
-                            // Try to use the Local Font Access API (Chromium-based browsers)
-                            if ('queryLocalFonts' in window) {
-                                try {
-                                    const fonts = await window.queryLocalFonts();
-                                    return Array.from(new Set(fonts.map(f => f.fullName))).sort();
-                                } catch {}
-                            }
-                            // Fallback: common web-safe fonts
-                            return [
-                                "Lexend", "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond",
-                                "Courier New", "Lucida Console", "Segoe UI", "Roboto", "Open Sans", "Lato", "Montserrat", "Oswald",
-                                "Comic Sans MS", "Impact", "Palatino", "Calibri", "Candara", "Franklin Gothic Medium", "Century Gothic"
-                            ];
-                        }
-
-                        // Modal HTML
-                        const customizeModal = document.createElement('div');
-                        customizeModal.id = 'customizeModal';
-                        customizeModal.style = 'display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;';
-                        customizeModal.innerHTML = `
-                            <div style="background:#fff;color:#222;padding:28px 24px 20px 24px;border-radius:16px;min-width:320px;max-width:98vw;box-shadow:0 8px 32px rgba(0,0,0,0.18);display:flex;flex-direction:column;gap:16px;position:relative;max-height:90vh;overflow:auto;">
-                                <button id="closeCustomizeModal" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;color:#888;cursor:pointer;">&times;</button>
-                                <h2 style="margin:0 0 12px 0;font-size:22px;">Customize Home</h2>
-                                <label style="font-size:15px;">Background Color: <input type="color" id="bgColorPicker"></label>
-                                <label style="font-size:15px;">Background Image: <input type="file" id="bgImagePicker" accept="image/*"></label>
-                                <button id="removeBgImageBtn" style="display:none;background:#eee;color:#222;border:none;border-radius:6px;padding:5px 10px;font-size:14px;cursor:pointer;">Remove Image</button>
-                                <label style="font-size:15px;">Text Color: <input type="color" id="textColorPicker"></label>
-                                <label style="font-size:15px;">Search Bar Color: <input type="color" id="searchBarColorPicker"></label>
-                                <label style="font-size:15px;">Font Family: <select id="fontFamilySelect" style="min-width:180px;"></select></label>
-                                <label style="font-size:15px;">Liquid Glass: <input type="checkbox" id="liquidGlassToggle"> <span id="liquidGlassLabel">On</span></label>
-                                <label style="font-size:15px;">Shortcuts Position:
-                                    <select id="shortcutsPositionSelect">
-                                        <option value="center">Center</option>
-                                        <option value="left">Left</option>
-                                        <option value="right">Right</option>
-                                        <option value="top">Top</option>
-                                        <option value="bottom">Bottom</option>
-                                    </select>
-                                </label>
-                                <label style="font-size:15px;">Move Buttons:
-                                    <select id="buttonsPositionSelect">
-                                        <option value="top">Top</option>
-                                        <option value="middle">Middle</option>
-                                        <option value="bottom">Bottom</option>
-                                    </select>
-                                </label>
-                                <label style="font-size:15px;">Topbar Icons Order:
-                                    <ul id="topbarIconsOrderList" style="list-style:none;padding:0;margin:0;min-width:120px;">
-                                        <li draggable="true" data-value="terms" style="padding:6px 10px;border:1px solid #ccc;border-radius:6px;margin-bottom:4px;cursor:grab;background:#f8f8f8;">Terms</li>
-                                        <li draggable="true" data-value="privacy" style="padding:6px 10px;border:1px solid #ccc;border-radius:6px;margin-bottom:4px;cursor:grab;background:#f8f8f8;">Privacy</li>
-                                        <li draggable="true" data-value="apps" style="padding:6px 10px;border:1px solid #ccc;border-radius:6px;margin-bottom:4px;cursor:grab;background:#f8f8f8;">Apps</li>
-                                    </ul>
-                                    <small style="display:block;font-size:12px;color:#666;">(Drag to reorder)</small>
-                                </label>
-                                <button id="resetCustomizeBtn" style="background:#e74c3c;color:#fff;border:none;border-radius:6px;padding:8px 0;font-size:15px;cursor:pointer;margin-top:10px;">Reset to Default</button>
-                            </div>
-                        `;
-                        document.body.appendChild(customizeModal);
-
-                        // State
-                        let customizeState = {};
-                        const defaultState = {
-                            bgColor: "#130036",
-                            bgImage: "",
-                            textColor: "#ffffff",
-                            searchBarColor: "#1a004d",
-                            fontFamily: "Lexend",
-                            liquidGlass: true,
-                            shortcutsPosition: "center",
-                            buttonsPosition: "middle",
-                            topbarIconsOrder: ["maze", "terms", "privacy", "apps"]
-                        };
-
-                        // Load state from localStorage
-                        function loadCustomizeState() {
-                            try {
-                                const s = JSON.parse(localStorage.getItem('munetiosCustomize') || '{}');
-                                customizeState = Object.assign({}, defaultState, s);
-                            } catch {
-                                customizeState = Object.assign({}, defaultState);
-                            }
-                        }
-                        // Save state to localStorage
-                        function saveCustomizeState() {
-                            localStorage.setItem('munetiosCustomize', JSON.stringify(customizeState));
-                        }
-
-                        // Apply all customizations to the page
-                        function applyCustomizations() {
-                            // Background color & image (override system theme)
-                            document.body.style.backgroundColor = customizeState.bgColor;
-                            document.body.style.setProperty('background-color', customizeState.bgColor, 'important');
-                            if (customizeState.bgImage) {
-                                document.body.style.backgroundImage = `url('${customizeState.bgImage}')`;
-                                document.body.style.backgroundSize = 'cover';
-                                document.body.style.backgroundRepeat = 'no-repeat';
-                                document.body.style.backgroundPosition = 'center center';
-                            } else {
-                                document.body.style.backgroundImage = '';
-                            }
-                            // Text color (override system theme)
-                            document.body.style.color = customizeState.textColor;
-                            document.body.style.setProperty('color', customizeState.textColor, 'important');
-                            document.querySelectorAll('a, .footer, .logo, .logo-text, .shortcuts span, .btn, .topbar a, .search-bar input, .search-bar svg, .apps-icon, .app-launcher').forEach(el => {
-                                el.style.color = customizeState.textColor;
-                                el.style.setProperty('color', customizeState.textColor, 'important');
-                            });
-                            // Search bar color
-                            document.querySelectorAll('.search-bar').forEach(el => {
-                                el.style.backgroundColor = customizeState.searchBarColor;
-                                // Also update input background for full effect
-                                const input = el.querySelector('input');
-                                if (input) input.style.backgroundColor = customizeState.searchBarColor;
-                                // Update SVG stroke/fill color for icons
-                                el.querySelectorAll('svg').forEach(svg => {
-                                    svg.style.color = customizeState.textColor;
-                                    svg.querySelectorAll('circle, line, rect, path').forEach(shape => {
-                                        if (shape.hasAttribute('stroke')) shape.setAttribute('stroke', customizeState.textColor);
-                                        if (shape.hasAttribute('fill')) shape.setAttribute('fill', customizeState.textColor);
-                                    });
-                                });
-                            });
-                            // Font family
-                            document.body.style.fontFamily = customizeState.fontFamily + ",sans-serif";
-                            document.querySelectorAll('*').forEach(el => {
-                                el.style.fontFamily = customizeState.fontFamily + ",sans-serif";
-                            });
-                            // Liquid glass
-                            const glassEls = document.querySelectorAll('.logo, .top-right, .footer .actions, .app-launcher, .search-bar, .btn, .shortcuts > div, .footer');
-                            glassEls.forEach(el => {
-                                if (customizeState.liquidGlass) {
-                                    el.style.background = '';
-                                    el.style.backdropFilter = 'blur(5px)';
-                                    el.style.webkitBackdropFilter = 'blur(5px)';
-                                    el.style.boxShadow = '';
-                                    el.style.border = '';
-                                    el.style.opacity = '';
-                                } else {
-                                    el.style.background = 'none';
-                                    el.style.backdropFilter = 'none';
-                                    el.style.webkitBackdropFilter = 'none';
-                                    el.style.boxShadow = 'none';
-                                    el.style.border = 'none';
-                                    el.style.opacity = '1';
-                                }
-                            });
-                            // Shortcuts position
-                            const shortcutsDiv = document.querySelector('.shortcuts > div');
-                            if (shortcutsDiv) {
-                                shortcutsDiv.style.justifyContent =
-                                    customizeState.shortcutsPosition === "center" ? "center" :
-                                    customizeState.shortcutsPosition === "left" ? "flex-start" :
-                                    customizeState.shortcutsPosition === "right" ? "flex-end" : "center";
-                                shortcutsDiv.style.flexDirection =
-                                    (customizeState.shortcutsPosition === "top" || customizeState.shortcutsPosition === "bottom") ? "column" : "row";
-                                shortcutsDiv.parentElement.style.alignItems =
-                                    customizeState.shortcutsPosition === "left" ? "flex-start" :
-                                    customizeState.shortcutsPosition === "right" ? "flex-end" : "center";
-                                if (customizeState.shortcutsPosition === "top") {
-                                    shortcutsDiv.parentElement.style.order = "-1";
-                                } else if (customizeState.shortcutsPosition === "bottom") {
-                                    shortcutsDiv.parentElement.style.order = "2";
-                                } else {
-                                    shortcutsDiv.parentElement.style.order = "1";
-                                }
-                            }
-                            // Buttons position (Customize only, Maze removed from center)
-                            const btns = Array.from(document.querySelectorAll('.btn'));
-                            const container = document.querySelector('.container');
-                            // Remove Maze button from center
-                            btns.forEach(btn => {
-                                if (btn.textContent.trim().toLowerCase() === "maze") {
-                                    btn.style.display = "none";
-                                } else {
-                                    btn.style.margin = "0 0 20px 0";
-                                    btn.style.display = "block";
-                                }
-                            });
-                            if (container) {
-                                // Only move Customize button
-                                const customizeBtn = btns.find(btn => btn.textContent.trim().toLowerCase() === "customize");
-                                if (customizeBtn) {
-                                    customizeBtn.remove();
-                                    if (customizeState.buttonsPosition === "top") {
-                                        container.insertBefore(customizeBtn, container.firstChild);
-                                    } else if (customizeState.buttonsPosition === "bottom") {
-                                        container.appendChild(customizeBtn);
-                                    } else {
-                                        // middle: after logo
-                                        const logo = container.querySelector('.munetios-logo');
-                                        if (logo) {
-                                            logo.after(customizeBtn);
-                                        }
-                                    }
-                                }
-                            }
-                            // Topbar icons order (recreate icons to avoid disappearing)
-                            const topbar = document.querySelector('.topbar');
-                            let topRight = document.querySelector('.top-right');
-                            if (topRight) {
-                                // Remove all children
-                                while (topRight.firstChild) topRight.removeChild(topRight.firstChild);
-
-                                // Helper to create fresh DOM elements for each icon
-                                function createTopbarIcon(key) {
-                                    if (key === "maze") {
-                                        const a = document.createElement('a');
-                                        a.href = "/maze/maze.html";
-                                        a.target = "_blank";
-                                        a.textContent = (window.translations && window.translations[localStorage.getItem('munetiosLang')]?.maze) || "Maze";
-                                        return a;
-                                    }
-                                    if (key === "terms") {
-                                        const a = document.createElement('a');
-                                        a.href = "https://www.munetios.com/policies/#/terms";
-                                        a.target = "_blank";
-                                        a.textContent = (window.translations && window.translations[localStorage.getItem('munetiosLang')]?.terms) || "Terms";
-                                        return a;
-                                    }
-                                    if (key === "privacy") {
-                                        const a = document.createElement('a');
-                                        a.href = "https://www.munetios.com/policies/#/privacy";
-                                        a.target = "_blank";
-                                        a.textContent = (window.translations && window.translations[localStorage.getItem('munetiosLang')]?.privacy) || "Privacy";
-                                        return a;
-                                    }
-                                    if (key === "apps") {
-                                        // Apps icon with launcher logic
-                                        const div = document.createElement('div');
-                                        div.className = "apps-icon";
-                                        div.innerHTML = `
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                                                <circle cx="5" cy="5" r="2" fill="currentColor"/>
-                                                <circle cx="15" cy="5" r="2" fill="currentColor"/>
-                                                <circle cx="25" cy="5" r="2" fill="currentColor"/>
-                                                <circle cx="5" cy="15" r="2" fill="currentColor"/>
-                                                <circle cx="15" cy="15" r="2" fill="currentColor"/>
-                                                <circle cx="25" cy="15" r="2" fill="currentColor"/>
-                                                <circle cx="5" cy="25" r="2" fill="currentColor"/>
-                                                <circle cx="15" cy="25" r="2" fill="currentColor"/>
-                                                <circle cx="25" cy="25" r="2" fill="currentColor"/>
-                                            </svg>
-                                        `;
-                                        // App launcher
-                                        let launcher = document.querySelector('.app-launcher');
-                                        if (!launcher) {
-                                            launcher = document.createElement('div');
-                                            launcher.className = 'app-launcher';
-                                            launcher.innerHTML = `<iframe src="https://www.munetios.com/apps" height="100vh" width="500" frameborder="0"></iframe>`;
-                                            document.body.appendChild(launcher);
-                                        }
-                                        // Remove any previous event listeners by replacing node
-                                        div.onclick = function(e) {
-                                            e.stopPropagation();
-                                            if (launcher.classList.contains('active')) {
-                                                launcher.classList.remove('active');
-                                            } else {
-                                                launcher.classList.add('active');
-                                            }
-                                        };
-                                        // Close on click outside
-                                        document.addEventListener('click', function(e) {
-                                            if (launcher.classList.contains('active') && !launcher.contains(e.target) && !div.contains(e.target)) {
-                                                launcher.classList.remove('active');
-                                            }
-                                        });
-                                        // Close on Escape key
-                                        document.addEventListener('keydown', function(e) {
-                                            if (launcher.classList.contains('active') && e.key === 'Escape') {
-                                                launcher.classList.remove('active');
-                                            }
-                                        });
-                                        return div;
-                                    }
-                                    return null;
-                                }
-
-                                // Re-add in order
-                                const order = customizeState.topbarIconsOrder;
-                                order.forEach(key => {
-                                    const el = createTopbarIcon(key);
-                                    if (el) topRight.appendChild(el);
-                                });
-
-                                // Always keep .top-right on the right (default)
-                                if (topRight.parentNode) topRight.parentNode.removeChild(topRight);
-                                topbar.appendChild(topRight);
-                                topRight.style.marginRight = "0";
-                                topRight.style.marginLeft = "auto";
-                                // Ensure .topbar uses flex row
-                                topbar.style.display = "flex";
-                                topbar.style.flexDirection = "row";
-                                topbar.style.alignItems = "center";
-                                topbar.style.justifyContent = "space-between";
-                            }
-                        }
-
-                        // Modal open/close logic
-                        window.showCustomizeModal = function() {
-                            loadCustomizeState();
-                            // Set modal fields
-                            const bgColorPicker = document.getElementById('bgColorPicker');
-                            bgColorPicker.value = customizeState.bgColor;
-                            bgColorPicker.setAttribute('value', customizeState.bgColor);
-                            document.getElementById('textColorPicker').value = customizeState.textColor;
-                            document.getElementById('searchBarColorPicker').value = customizeState.searchBarColor;
-                            document.getElementById('liquidGlassToggle').checked = !!customizeState.liquidGlass;
-                            document.getElementById('liquidGlassLabel').textContent = customizeState.liquidGlass ? "On" : "Off";
-                            document.getElementById('shortcutsPositionSelect').value = customizeState.shortcutsPosition;
-                            document.getElementById('buttonsPositionSelect').value = customizeState.buttonsPosition;
-                            // Topbar icons order (drag list)
-                            const orderList = document.getElementById('topbarIconsOrderList');
-                            if (orderList) {
-                                // Remove all children
-                                while (orderList.firstChild) orderList.removeChild(orderList.firstChild);
-                                // Add in saved order
-                                customizeState.topbarIconsOrder.forEach(key => {
-                                    let text = key === "maze" ? "Maze" : key === "terms" ? "Terms" : key === "privacy" ? "Privacy" : "Apps";
-                                    const li = document.createElement('li');
-                                    li.draggable = true;
-                                    li.dataset.value = key;
-                                    li.textContent = text;
-                                    li.style = "padding:6px 10px;border:1px solid #ccc;border-radius:6px;margin-bottom:4px;cursor:grab;background:#f8f8f8;";
-                                    orderList.appendChild(li);
-                                });
-                            }
-                            // Font family
-                            const fontSel = document.getElementById('fontFamilySelect');
-                            fontSel.value = customizeState.fontFamily;
-                            // Bg image
-                            document.getElementById('removeBgImageBtn').style.display = customizeState.bgImage ? '' : 'none';
-                            // Show modal
-                            customizeModal.style.display = 'flex';
-                            setTimeout(() => customizeModal.querySelector('h2').focus(), 100);
-                        };
-                        document.getElementById('closeCustomizeModal').onclick = function() {
-                            customizeModal.style.display = 'none';
-                        };
-                        customizeModal.onclick = function(e) {
-                            if (e.target === customizeModal) customizeModal.style.display = 'none';
-                        };
-                        document.getElementById('bgColorPicker').oninput = function() {
-                            customizeState.bgColor = this.value;
-                            saveCustomizeState();
-                            applyCustomizations();
-                            // Ensure picker value stays in sync after save
-                            this.setAttribute('value', this.value);
-                        };
-                        document.getElementById('textColorPicker').oninput = function() {
-                            customizeState.textColor = this.value;
-                            saveCustomizeState();
-                            applyCustomizations();
-                        };
-                        document.getElementById('searchBarColorPicker').oninput = function() {
-                            customizeState.searchBarColor = this.value;
-                            saveCustomizeState();
-                            applyCustomizations();
-                        };
-                        document.getElementById('liquidGlassToggle').onchange = function() {
-                            customizeState.liquidGlass = this.checked;
-                            document.getElementById('liquidGlassLabel').textContent = this.checked ? "On" : "Off";
-                            saveCustomizeState();
-                            applyCustomizations();
-                        };
-                        document.getElementById('shortcutsPositionSelect').onchange = function() {
-                            customizeState.shortcutsPosition = this.value;
-                            saveCustomizeState();
-                            applyCustomizations();
-                        };
-                        document.getElementById('buttonsPositionSelect').onchange = function() {
-                            customizeState.buttonsPosition = this.value;
-                            saveCustomizeState();
-                            applyCustomizations();
-                        };
-
-                        // Drag-and-drop for topbar icons order
-                        (function() {
-                            const orderList = document.getElementById('topbarIconsOrderList');
-                            let dragSrcEl = null;
-                            if (orderList) {
-                                orderList.addEventListener('dragstart', function(e) {
-                                    dragSrcEl = e.target;
-                                    e.dataTransfer.effectAllowed = 'move';
-                                    e.dataTransfer.setData('text/plain', e.target.dataset.value);
-                                    e.target.style.opacity = '0.5';
-                                });
-                                orderList.addEventListener('dragend', function(e) {
-                                    e.target.style.opacity = '';
-                                });
-                                orderList.addEventListener('dragover', function(e) {
-                                    e.preventDefault();
-                                    e.dataTransfer.dropEffect = 'move';
-                                });
-                                orderList.addEventListener('drop', function(e) {
-                                    e.preventDefault();
-                                    if (dragSrcEl && dragSrcEl !== e.target && e.target.tagName === 'LI') {
-                                        const nodes = Array.from(orderList.children);
-                                        const srcIdx = nodes.indexOf(dragSrcEl);
-                                        const tgtIdx = nodes.indexOf(e.target);
-                                        if (srcIdx > -1 && tgtIdx > -1) {
-                                            orderList.removeChild(dragSrcEl);
-                                            if (srcIdx < tgtIdx) {
-                                                orderList.insertBefore(dragSrcEl, e.target.nextSibling);
-                                            } else {
-                                                orderList.insertBefore(dragSrcEl, e.target);
-                                            }
-                                            // Save new order
-                                            const newOrder = Array.from(orderList.children).map(li => li.dataset.value);
-                                            if (newOrder.length === 4) {
-                                                customizeState.topbarIconsOrder = newOrder;
-                                                saveCustomizeState();
-                                                applyCustomizations();
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        })();
-                        document.getElementById('resetCustomizeBtn').onclick = function() {
-                            localStorage.removeItem('munetiosCustomize');
-                            loadCustomizeState();
-                            applyCustomizations();
-                            customizeModal.style.display = 'none';
-                        };
-
-                        // Font family select: populate with installed fonts
-                        getInstalledFonts().then(fonts => {
-                            const fontSel = document.getElementById('fontFamilySelect');
-                            fontSel.innerHTML = '';
-                            fonts.forEach(f => {
-                                const opt = document.createElement('option');
-                                opt.value = f;
-                                opt.textContent = f;
-                                fontSel.appendChild(opt);
-                            });
-                            fontSel.value = customizeState.fontFamily;
-                            fontSel.onchange = function() {
-                                customizeState.fontFamily = this.value;
-                                saveCustomizeState();
-                                applyCustomizations();
-                            };
-                        });
-
-                        // Background image picker
-                        document.getElementById('bgImagePicker').onchange = function(e) {
-                            const file = e.target.files[0];
-                            if (!file) return;
-                            const reader = new FileReader();
-                            reader.onload = function(ev) {
-                                customizeState.bgImage = ev.target.result;
-                                saveCustomizeState();
-                                applyCustomizations();
-                                document.getElementById('removeBgImageBtn').style.display = '';
-                            };
-                            reader.readAsDataURL(file);
-                        };
-                        document.getElementById('removeBgImageBtn').onclick = function() {
-                            customizeState.bgImage = "";
-                            saveCustomizeState();
-                            applyCustomizations();
-                            this.style.display = 'none';
-                        };
-
-                        // Keyboard: Escape to close
-                        customizeModal.addEventListener('keydown', function(e) {
-                            if (e.key === 'Escape') customizeModal.style.display = 'none';
-                        });
-
-                        // On page load, apply customizations
-                        loadCustomizeState();
-                        applyCustomizations();
-                    })();
-            </script>
-        </div>
-       </div>
-    </div>        
-    <footer class="footer">
-        <p>&copy; 2025 Munetios Technologies &trade; . All rights reserved.</p>
-        <div class="actions">
-            <!-- Dark Mode Toggle -->
-            <button id="darkModeToggle" style="margin: 0 10px; background: #222; color: #fff; border: none; border-radius: 6px; padding: 6px 14px; font-size: 15px; cursor: pointer;">
-                <span id="darkModeIcon" aria-label="Toggle dark mode" style="display:inline-block;vertical-align:middle;">
-                    <!-- Moon SVG (dark mode) -->
-                    <svg id="moonIcon" width="20" height="20" viewBox="0 0 20 20" fill="none" style="display:inline;" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16.5 13.5A7 7 0 0 1 7 3.5a7 7 0 1 0 9.5 10z" fill="currentColor"/>
-                    </svg>
-                    <!-- Sun SVG (light mode, hidden by default) -->
-                    <svg id="sunIcon" width="20" height="20" viewBox="0 0 20 20" fill="none" style="display:none;" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="10" cy="10" r="4" fill="currentColor"/>
-                        <g stroke="currentColor" stroke-width="1.5">
-                            <line x1="10" y1="1.5" x2="10" y2="3"/>
-                            <line x1="10" y1="17" x2="10" y2="18.5"/>
-                            <line x1="3.22" y1="3.22" x2="4.28" y2="4.28"/>
-                            <line x1="15.72" y1="15.72" x2="16.78" y2="16.78"/>
-                            <line x1="1.5" y1="10" x2="3" y2="10"/>
-                            <line x1="17" y1="10" x2="18.5" y2="10"/>
-                            <line x1="3.22" y1="16.78" x2="4.28" y2="15.72"/>
-                            <line x1="15.72" y1="4.28" x2="16.78" y2="3.22"/>
-                        </g>
-                    </svg>
-                </span>
-            </button>
-            <!-- Language Selector -->
-            <select id="languageSelect" style="margin: 0 10px; border-radius: 6px; padding: 6px 10px; font-size: 15px;">
-                <option value="en">English</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="it">Italiano</option>
-                <option value="pt">Português</option>
-                <option value="ru">Русский</option>
-                <option value="zh">中文</option>
-                <option value="ja">日本語</option>
-                <option value="ko">한국어</option>
-                <option value="ar">العربية</option>
-                <option value="hi">हिन्दी</option>
-                <option value="tr">Türkçe</option>
-                <option value="pl">Polski</option>
-                <option value="nl">Nederlands</option>
-            </select>
-            <script>
-            (function() {
-                // --- Dark Mode ---
-                const darkModeToggle = document.getElementById('darkModeToggle');
-                const darkModeIcon = document.getElementById('darkModeIcon');
-                function setDarkMode(on) {
-                    const moonIcon = document.getElementById('moonIcon');
-                    const sunIcon = document.getElementById('sunIcon');
-                    // Elements to update color
-                    const elementsToBlack = [
-                        ...document.querySelectorAll('a, .footer, .logo, .logo-text, .shortcuts span, .btn, .topbar a, .search-bar input, .search-bar svg, .apps-icon, .app-launcher')
-                    ];
-                    if (on) {
-                        document.body.style.backgroundColor = '#130036';
-                        document.body.style.color = 'white';
-                        if (moonIcon) moonIcon.style.display = 'inline';
-                        if (sunIcon) sunIcon.style.display = 'none';
-                        localStorage.setItem('munetiosDark', '1');
-                        // Set text color to white for dark mode
-                        elementsToBlack.forEach(el => {
-                            el.style.color = 'white';
-                        });
-                        // Special backgrounds
-                        document.querySelectorAll('.search-bar').forEach(el => el.style.backgroundColor = '#1a004d');
-                        document.querySelectorAll('.btn').forEach(el => {
-                            el.style.backgroundColor = '#5f0ca3';
-                            el.style.color = '#fff';
-                        });
-                    } else {
-                        document.body.style.backgroundColor = '#fff';
-                        document.body.style.color = 'black';
-                        if (moonIcon) moonIcon.style.display = 'none';
-                        if (sunIcon) sunIcon.style.display = 'inline';
-                        localStorage.setItem('munetiosDark', '0');
-                        // Set text color to black for light mode
-                        elementsToBlack.forEach(el => {
-                            el.style.color = 'black';
-                        });
-                        // Special backgrounds
-                        document.querySelectorAll('.search-bar').forEach(el => el.style.backgroundColor = '#f0f0f0');
-                        document.querySelectorAll('.btn').forEach(el => {
-                            el.style.backgroundColor = '#e0e0e0';
-                            el.style.color = '#130036';
-                        });
-                    }
-                }
-                function getDarkPref() {
-                    return localStorage.getItem('munetiosDark') === '1' ||
-                        (localStorage.getItem('munetiosDark') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                }
-                darkModeToggle.onclick = function() {
-                    setDarkMode(!getDarkPref());
+            document.getElementById('saveCustomizeBtn').onclick = function() {
+            const bgType = document.getElementById('bgTypeColor').checked ? 'color' : 'image';
+            const bgColor = document.getElementById('bgColorInput').value;
+            let bgImage = s.bgImage || '';
+            const bgImageInput = document.getElementById('bgImageInput');
+            if (bgType === 'image' && bgImageInput.files && bgImageInput.files[0]) {
+                const file = bgImageInput.files[0];
+                bgImage = '';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                bgImage = e.target.result;
+                saveAndApply();
                 };
-                // On load, use system preference if no localStorage, else use stored
-                setDarkMode(getDarkPref());
-                // --- System Language & Theme Sync ---
-                // System theme: listen for OS changes and update
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                    if (localStorage.getItem('munetiosDark') === null) {
-                        setDarkMode(e.matches);
-                    }
-                });
-
-                // --- Language ---
-                const languageSelect = document.getElementById('languageSelect');
-                const supportedLangs = Array.from(languageSelect.options).map(o => o.value);
-                // On load, set language from storage or browser
-                lang = localStorage.getItem('munetiosLang') || navigator.language.slice(0,2);
-                if (!supportedLangs.includes(lang)) lang = 'en';
-                // System language: if user hasn't chosen, update UI if browser language changes
-                let lastLang = lang;
-                setInterval(() => {
-                    if (localStorage.getItem('munetiosLang')) return;
-                    const sysLang = navigator.language.slice(0,2);
-                    if (sysLang !== lastLang && supportedLangs.includes(sysLang)) {
-                        lastLang = sysLang;
-                        languageSelect.value = sysLang;
-                        updateUIText(sysLang);
-                    }
-                }, 2000);
-
-                // Simple translations for demo (expand as needed)
-                const translations = {
-                    en: {
-                        searchPlaceholder: "Search",
-                        add: "Add",
-                        terms: "Terms",
-                        privacy: "Privacy",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . All rights reserved."
-                    },
-                    es: {
-                        searchPlaceholder: "Buscar",
-                        add: "Añadir",
-                        terms: "Términos",
-                        privacy: "Privacidad",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Todos los derechos reservados."
-                    },
-                    fr: {
-                        searchPlaceholder: "Recherche",
-                        add: "Ajouter",
-                        terms: "Conditions",
-                        privacy: "Confidentialité",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Tous droits réservés."
-                    },
-                    de: {
-                        searchPlaceholder: "Suche",
-                        add: "Hinzufügen",
-                        terms: "Bedingungen",
-                        privacy: "Datenschutz",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Alle Rechte vorbehalten."
-                    },
-                    // Add more translations as needed...
-                    it: {
-                        searchPlaceholder: "Cerca",
-                        add: "Aggiungi",
-                        terms: "Termini",
-                        privacy: "Privacy",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Tutti i diritti riservati."
-                    },
-                    pt: {
-                        searchPlaceholder: "Pesquisar",
-                        add: "Adicionar",
-                        terms: "Termos",
-                        privacy: "Privacidade",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Todos os direitos reservados."
-                    },
-                    ru: {
-                        searchPlaceholder: "Поиск",
-                        add: "Добавить",
-                        terms: "Условия",
-                        privacy: "Конфиденциальность",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Все права защищены."
-                    },
-                    zh: {
-                        searchPlaceholder: "搜索",
-                        add: "添加",
-                        terms: "条款",
-                        privacy: "隐私",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . 保留所有权利。"
-                    },
-                    ja: {
-                        searchPlaceholder: "検索",
-                        add: "追加",
-                        terms: "利用規約",
-                        privacy: "プライバシー",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . 無断転載を禁じます。"
-                    },
-                    ko: {
-                        searchPlaceholder: "검색",
-                        add: "추가",
-                        terms: "이용약관",
-                        privacy: "개인정보",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . 모든 권리 보유."
-                    },
-                    ar: {
-                        searchPlaceholder: "بحث",
-                        add: "إضافة",
-                        terms: "الشروط",
-                        privacy: "الخصوصية",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 تقنيات مونيتيوس &trade; . جميع الحقوق محفوظة."
-                    },
-                    hi: {
-                        searchPlaceholder: "खोजें",
-                        add: "जोड़ें",
-                        terms: "नियम",
-                        privacy: "गोपनीयता",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 म्यूनिटियस टेक्नोलॉजीज &trade; . सर्वाधिकार सुरक्षित।"
-                    },
-                    tr: {
-                        searchPlaceholder: "Ara",
-                        add: "Ekle",
-                        terms: "Şartlar",
-                        privacy: "Gizlilik",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Tüm hakları saklıdır."
-                    },
-                    pl: {
-                        searchPlaceholder: "Szukaj",
-                        add: "Dodaj",
-                        terms: "Warunki",
-                        privacy: "Prywatność",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Wszelkie prawa zastrzeżone."
-                    },
-                    nl: {
-                        searchPlaceholder: "Zoeken",
-                        add: "Toevoegen",
-                        terms: "Voorwaarden",
-                        privacy: "Privacy",
-                        munetios: "Munetios",
-                        copyright: "&copy; 2025 Munetios Technologies &trade; . Alle rechten voorbehouden."
-                    }
+                reader.readAsDataURL(file);
+                return;
+            }
+            function saveAndApply() {
+                const settings = {
+                bgType,
+                bgColor: bgType === 'color' ? bgColor : undefined,
+                bgImage: bgType === 'image' ? bgImage : undefined,
+                textColor: document.getElementById('textColorInput').value,
+                searchBarColor: document.getElementById('searchBarColorInput').value,
+                shortcutsLocation: document.getElementById('shortcutsLocationInput').value,
+                fontFamily: document.getElementById('fontFamilyInput').value,
+                liquidGlass: document.getElementById('liquidGlassToggle').checked
                 };
-
-                function updateUIText(lang) {
-                    const t = translations[lang] || translations.en;
-                    // Search placeholder
-                    const searchInput = document.getElementById('searchResult');
-                    if (searchInput) searchInput.placeholder = t.searchPlaceholder;
-                    // Add button
-                    const addBtn = document.querySelector('#addShortcutBtn span');
-                    if (addBtn) addBtn.textContent = t.add;
-                    // Terms and Privacy links
-                    const termsLink = Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim() === translations.en.terms || a.textContent.trim() === translations[lang]?.terms);
-                    if (termsLink) termsLink.textContent = t.terms;
-                    const privacyLink = Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim() === translations.en.privacy || a.textContent.trim() === translations[lang]?.privacy);
-                    if (privacyLink) privacyLink.textContent = t.privacy;
-                    // Munetios logo text
-                    const logoText = document.querySelector('.logo-text');
-                    if (logoText) logoText.textContent = t.munetios;
-                    // Copyright
-                    const copyright = document.querySelector('.footer p');
-                    if (copyright) copyright.innerHTML = t.copyright;
-                }
-
-                function setLang(lang) {
-                    if (!supportedLangs.includes(lang)) lang = 'en';
-                    localStorage.setItem('munetiosLang', lang);
-                    languageSelect.value = lang;
-                    updateUIText(lang);
-                    // Update URL for /search page
-                    if (window.location.pathname.startsWith('/search')) {
-                        const url = new URL(window.location.href);
-                        url.searchParams.set('hl', lang);
-                        window.location.replace(url.toString());
-                    }
-                }
-                // On load, set language from storage or browser
-                lang = localStorage.getItem('munetiosLang') || navigator.language.slice(0,2);
-                if (!supportedLangs.includes(lang)) lang = 'en';
-                languageSelect.value = lang;
-                updateUIText(lang);
-                languageSelect.onchange = function() {
-                    setLang(languageSelect.value);
-                    // Only reload if not on /search (setLang already reloads on /search)
-                    if (!window.location.pathname.startsWith('/search')) {
-                        // Instead of reload, update UI text
-                        updateUIText(languageSelect.value);
-                    }
-                };
-                // If on /search, ensure hl param is set
-                if (window.location.pathname.startsWith('/search')) {
-                    const url = new URL(window.location.href);
-                    if (url.searchParams.get('hl') !== lang) {
-                        url.searchParams.set('hl', lang);
-                        window.location.replace(url.toString());
-                    }
-                }
-            })();
-            </script>
-        </div>
-    </footer>
-    </main>
-    <script>
-        document.getElementById('searchResult').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                const query = e.target.value.trim();
-                if (query) {
-                    const encodedQuery = encodeURIComponent(query);
-                    window.location.href = `/search/search.html?q=${encodedQuery}`;
+                if (saveSettings(settings)) {
+                applySettings();
+                customizeModal.remove();
+                customizeModal = null;
                 }
             }
-        });
-        (function() {
-            // Veterans Day: November 11
-            const today = new Date();
-            if (today.getMonth() === 10 && today.getDate() === 11) {
-            // Only show Veterans Day logo if November 11 AND user is in United States
-            function isUS() {
-                // Try navigator.language and Intl API
-                const lang = navigator.language || '';
-                if (lang.startsWith('en-US')) return true;
-                // Try Intl API
+            if (bgType === 'image' && bgImageInput.files && bgImageInput.files[0]) {
+                // Will be handled by FileReader above
+            } else {
+                saveAndApply();
+            }
+            };
+
+            // Font detection
+            document.getElementById('detectFontsBtn').onclick = async function() {
+            const fontPermMsg = document.getElementById('fontPermMsg');
+            if ('fonts' in navigator && navigator.fonts.query) {
                 try {
-                    const region = new Intl.Locale(lang).region;
-                    if (region === 'US') return true;
-                } catch {}
-                // Try timezone (America/New_York, etc)
-                if (Intl && Intl.DateTimeFormat) {
-                    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-                    if (tz.startsWith('America/')) return true;
+                const status = await navigator.permissions.query({ name: 'local-fonts' });
+                if (status.state === 'denied') {
+                    fontPermMsg.textContent = "Permission denied. Using safe fonts.";
+                    return;
                 }
-                // Fallback: try geo API (if available)
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(pos) {
-                        // Optionally use a geo lookup API here
-                    });
+                const fonts = await navigator.fonts.query();
+                const fontNames = Array.from(fonts).map(f => f.family).filter(f => !!f);
+                const uniqueFonts = Array.from(new Set([...safeFonts, ...fontNames])).sort();
+                fillFonts(uniqueFonts);
+                fontPermMsg.textContent = "Detected installed fonts.";
+                } catch {
+                fillFonts(safeFonts);
+                fontPermMsg.textContent = "Font detection not supported. Using safe fonts.";
                 }
-                return false;
+            } else {
+                fillFonts(safeFonts);
+                fontPermMsg.textContent = "Font detection not supported. Using safe fonts.";
             }
-            if (isUS()) {
-                const logoImg = document.querySelector('.munetios-logo img');
-                if (logoImg) logoImg.src = 'Veterans.png';
-                // Make .munetios-logo clickable and link to Veterans Day search
-                const logoDiv = document.querySelector('.munetios-logo');
-                if (logoDiv && !logoDiv.querySelector('a')) {
-                    const logoImg = logoDiv.querySelector('img');
-                    if (!logoImg) return;
-                    const link = document.createElement('a');
-                    link.href = '/search/search.html?q=What+is+Veterans+Day';
-                    link.style.display = 'inline-block';
-                    link.appendChild(logoImg);
-                    // Remove old children
-                    while (logoDiv.firstChild) logoDiv.removeChild(logoDiv.firstChild);
-                    logoDiv.appendChild(link);
-                }
+            };
+            function fillFonts(fonts) {
+            const sel = document.getElementById('fontFamilyInput');
+            sel.innerHTML = fonts.map(f => `<option value="${f}">${f}</option>`).join('');
             }
-            
-            }
-        })();
-        (function() {
-            // Special: If today is 11/27/2025, change logo and link
-            const today = new Date();
-            if (today.getFullYear() === 2025 && today.getMonth() === 10 && today.getDate() === 27) {
-                const logoImg = document.querySelector('.munetios-logo img');
-                if (logoImg) logoImg.src = 'thanksgiving.png';
-                const logoDiv = document.querySelector('.munetios-logo');
-                if (logoDiv && !logoDiv.querySelector('a')) {
-                    const logoImg = logoDiv.querySelector('img');
-                    if (!logoImg) return;
-                    const link = document.createElement('a');
-                    link.href = '/pacmanthanksgiving.html';
-                    link.style.display = 'inline-block';
-                    link.appendChild(logoImg);
-                    while (logoDiv.firstChild) logoDiv.removeChild(logoDiv.firstChild);
-                    logoDiv.appendChild(link);
-                }
-            }
-        })();
+        };
 
-        (function() {
-            function isMobile() {
-            // Check for mobile user agent or small screen
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-                || window.innerWidth <= 500;
+        // Shortcuts logic with Add Shortcut Modal and Favicon
+        const shortcutsContainer = document.getElementById('shortcuts');
+        const addShortcutBtn = document.getElementById('addshortcut');
+        let shortcuts;
+        try {
+            shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [
+            { name: 'Munetios', url: 'https://www.munetios.com'},
+            { name: 'Google', url: 'https://www.google.com'},
+            { name: 'YouTube', url: 'https://www.youtube.com' },
+            { name: 'Microsoft', url: 'https://www.microsoft.com' },
+            { name: 'ChatGPT', url: 'https://chat.openai.com' },
+            { name: 'Facebook', url: 'https://www.facebook.com' },
+            { name: 'Instagram', url: 'https://www.instagram.com' },
+            { name: 'ESPN', url: 'https://www.espn.com' },
+            { name: 'Yahoo', url: 'https://www.yahoo.com' }
+            ];
+        } catch {
+            shortcuts = [
+            { name: 'Munetios', url: 'https://www.munetios.com'},
+            { name: 'Google', url: 'https://www.google.com'},
+            { name: 'YouTube', url: 'https://www.youtube.com' },
+            { name: 'Microsoft', url: 'https://www.microsoft.com' },
+            { name: 'ChatGPT', url: 'https://chat.openai.com' },
+            { name: 'Facebook', url: 'https://www.facebook.com' },
+            { name: 'Instagram', url: 'https://www.instagram.com' },
+            { name: 'ESPN', url: 'https://www.espn.com' },
+            { name: 'Yahoo', url: 'https://www.yahoo.com' }
+            ];
+        }
+
+        function showShortcutSaveError() {
+            let msg = document.getElementById('shortcutSaveError');
+            if (!msg) {
+            msg = document.createElement('div');
+            msg.id = 'shortcutSaveError';
+            msg.style.position = 'fixed';
+            msg.style.bottom = '24px';
+            msg.style.left = '50%';
+            msg.style.transform = 'translateX(-50%)';
+            msg.style.background = '#e53935';
+            msg.style.color = '#fff';
+            msg.style.padding = '14px 28px';
+            msg.style.borderRadius = '10px';
+            msg.style.fontSize = '1em';
+            msg.style.zIndex = '100000';
+            msg.style.boxShadow = '0 2px 12px rgba(0,0,0,0.18)';
+            msg.textContent = 'Could not save your shortcuts. Please turn on your saving data.';
+            document.body.appendChild(msg);
+            setTimeout(() => {
+                if (msg) msg.remove();
+            }, 5000);
             }
-            function applyMobileLayout() {
-            // Make buttons min 44x44px, padding 10px 20px, full width
-            document.querySelectorAll('.btn').forEach(btn => {
-                btn.style.minWidth = '44px';
-                btn.style.minHeight = '44px';
-                btn.style.width = '100%';
-                btn.style.padding = '10px 20px';
-                btn.style.fontSize = '18px';
-            });
-            // Hide logo text
-            const logoText = document.querySelector('.logo-text');
-            if (logoText) logoText.style.display = 'none';
-            // Move Terms/Privacy to footer, small text
-            const footer = document.querySelector('.footer');
-            if (footer && !footer.querySelector('.mobile-links')) {
-                let links = document.createElement('div');
-                links.className = 'mobile-links';
-                links.style.fontSize = '12px';
-                links.style.marginTop = '8px';
-                links.style.display = 'flex';
-                links.style.justifyContent = 'center';
-                links.style.gap = '16px';
-                // Find existing links
-                const terms = Array.from(document.querySelectorAll('a')).find(a => /terms/i.test(a.textContent));
-                const privacy = Array.from(document.querySelectorAll('a')).find(a => /privacy/i.test(a.textContent));
-                if (terms && privacy) {
-                // Remove from topbar
-                if (terms.parentNode) terms.parentNode.removeChild(terms);
-                if (privacy.parentNode) privacy.parentNode.removeChild(privacy);
-                // Add to footer
-                links.appendChild(terms);
-                links.appendChild(privacy);
-                footer.appendChild(links);
+        }
+
+        function getFavicon(url) {
+            try {
+            const u = new URL(url);
+            // Special case for Instagram
+            if (u.hostname.includes('instagram.com')) {
+                return 'https://static.cdninstagram.com/rsrc.php/v4/yI/r/VsNE-OHk_8a.png';
+            }
+            return `${u.origin}/favicon.ico`;
+            } catch {
+            return 'favicon-32x32.png';
+            }
+        }
+
+        function renderShortcuts() {
+            // Remove all except the add shortcut button
+            shortcutsContainer.innerHTML = '';
+            shortcuts.forEach((shortcut, idx) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'shortcut';
+            wrapper.style.position = 'relative';
+
+            const a = document.createElement('a');
+            a.href = shortcut.url;
+            // Open in current tab, so no target or rel attributes
+
+            const img = document.createElement('img');
+            img.src = getFavicon(shortcut.url);
+            img.alt = shortcut.name;
+            img.style.width = '32px';
+            img.style.height = '32px';
+            img.style.borderRadius = '8px';
+            img.onerror = function() {
+                this.src = 'favicon-32x32.png';
+            };
+
+            a.appendChild(img);
+
+            const label = document.createElement('div');
+            label.className = 'label';
+            label.textContent = shortcut.name;
+
+            // Delete (X) icon
+            const del = document.createElement('span');
+            del.innerHTML = '&times;';
+            del.title = 'Delete';
+            del.style.position = 'absolute';
+            del.style.top = '0px';
+            del.style.right = '0px';
+            del.style.cursor = 'pointer';
+            del.style.color = '#fff';
+            del.style.background = 'rgba(0,0,0,0.5)';
+            del.style.borderRadius = '50%';
+            del.style.width = '20px';
+            del.style.height = '20px';
+            del.style.display = 'flex';
+            del.style.alignItems = 'center';
+            del.style.justifyContent = 'center';
+            del.style.fontSize = '16px';
+            del.style.zIndex = '10';
+            del.onclick = () => {
+                shortcuts.splice(idx, 1);
+                try {
+                localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
+                } catch {
+                showShortcutSaveError();
                 }
-            }
-            // Fix footer to always stay at bottom
-            footer.style.position = 'fixed';
-            footer.style.left = '0';
-            footer.style.right = '0';
-            footer.style.bottom = '0';
-            footer.style.width = '100vw';
-            footer.style.zIndex = '100';
-            footer.style.background = 'rgba(19,0,54,0.98)';
-            }
-            // If user is on mobile or requests mobile site
-            if (isMobile()) {
-            applyMobileLayout();
-            }
-            // Listen for resize to re-apply if needed
-            window.addEventListener('resize', function() {
-            if (isMobile()) applyMobileLayout();
+                renderShortcuts();
+            };
+
+            wrapper.appendChild(a);
+            wrapper.appendChild(label);
+            wrapper.appendChild(del);
+
+            shortcutsContainer.appendChild(wrapper);
             });
-        })();
-        
-    </script>
-</body>
-</html>
+
+            // Add shortcut button
+            const addWrapper = document.createElement('div');
+            addWrapper.className = 'add-shortcut-wrapper';
+            addWrapper.style.display = 'flex';
+            addWrapper.style.flexDirection = 'column';
+            addWrapper.style.alignItems = 'center';
+
+            const addBtn = document.createElement('div');
+            addBtn.className = 'add-shortcut';
+            addBtn.id = 'addshortcut';
+            addBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>`;
+            addBtn.onclick = openAddShortcutModal;
+
+            const addLabel = document.createElement('div');
+            addLabel.className = 'label';
+            addLabel.textContent = 'Add';
+
+            addWrapper.appendChild(addBtn);
+            addWrapper.appendChild(addLabel);
+
+            shortcutsContainer.appendChild(addWrapper);
+        }
+
+        // Modal UI
+        function createModal() {
+            if (document.getElementById('shortcutModal')) return;
+            const modal = document.createElement('div');
+            modal.id = 'shortcutModal';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.background = 'rgba(0,0,0,0.4)';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.zIndex = '9999';
+
+            modal.innerHTML = `
+            <div style="background:#fff; color:#222; border-radius:16px; padding:32px 24px; min-width:320px; box-shadow:0 8px 32px rgba(0,0,0,0.18); display:flex; flex-direction:column; gap:18px; align-items:center; position:relative;">
+            <button id="closeModalBtn" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:1.5em;cursor:pointer;color:#888;">&times;</button>
+            <h2 style="margin:0 0 10px 0;font-size:1.2em;">Add Shortcut</h2>
+            <input id="shortcutName" type="text" placeholder="Name" style="padding:8px 12px; border-radius:8px; border:1px solid #ccc; width:90%; font-size:1em;">
+            <input id="shortcutUrl" type="url" placeholder="URL (https://...)" style="padding:8px 12px; border-radius:8px; border:1px solid #ccc; width:90%; font-size:1em;">
+            <button id="saveShortcutBtn" style="padding:10px 18px; border-radius:8px; background:#3a1c71; color:#fff; border:none; font-weight:600; font-size:1em; cursor:pointer;">Add</button>
+            </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('closeModalBtn').onclick = closeAddShortcutModal;
+            document.getElementById('saveShortcutBtn').onclick = function() {
+            const name = document.getElementById('shortcutName').value.trim();
+            let url = document.getElementById('shortcutUrl').value.trim();
+            if (!name || !url) return;
+            if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+            shortcuts.unshift({ name, url });
+            try {
+                localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
+            } catch {
+                showShortcutSaveError();
+            }
+            closeAddShortcutModal();
+            renderShortcuts();
+            };
+        }
+
+        function openAddShortcutModal() {
+            createModal();
+        }
+        function closeAddShortcutModal() {
+            const modal = document.getElementById('shortcutModal');
+            if (modal) modal.remove();
+        }
+
+        // Initial render
+        renderShortcuts();
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                window.location.href = '/search/search.html?q=' + encodeURIComponent(query);
+            }
+        }
+
+        function randomizeQueries() {
+            const queries = [
+                "What is the weather today?",
+                "How to draw a cat?",
+                "How to bake a cake?",
+                "How to learn programming?",
+                "Munetios",
+                "Best programming languages in 2025",
+                "How to stay healthy?"
+            ];
+            const randomQuery = queries[Math.floor(Math.random() * queries.length)];
+            document.getElementById('searchInput').value = randomQuery;
+            performSearch();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enter key triggers search
+            document.getElementById('searchInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // Attach click handlers for buttons (CSP-safe)
+            document.querySelectorAll('button').forEach(btn => {
+                if (btn.textContent.trim() === 'Search') {
+                    btn.addEventListener('click', performSearch);
+                }
+                if (btn.textContent.trim() === "I'm Feeling Good") {
+                    btn.addEventListener('click', randomizeQueries);
+                }
+            });
+        });
+        </script>
+    </body>
+    </html>
+          
