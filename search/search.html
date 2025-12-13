@@ -3852,6 +3852,7 @@
                 <li><b>Q:</b> How do I reset all settings?<br><b>A:</b> Clear your browser's localStorage for this site.</li>
                 </ul>
             </div>
+        
             </div>
         </div>
         `;
@@ -4691,12 +4692,13 @@
                 }
                 const map = L.map('munetiosMap', {
                     zoomControl: true,
-                    attributionControl: false,
+                    attributionControl: true,
                 }).setView([20, 0], 2);
                 window.munetiosMapInstance = map;
                 // Use OpenStreetMap tiles (no tracking)
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
+                    attribution: 'Powered by <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
                 }).addTo(map);
                 // Search function using Nominatim (OpenStreetMap geocoder)
                 async function searchLocation(q) {
