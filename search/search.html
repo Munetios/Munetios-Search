@@ -346,12 +346,8 @@
                 min-width: 0;
             }
            
-            .search-bar {
-               display: none;
-            }
-            .mobile-search-bar {
-                display: flex !important;
-                margin: 8px 0 12px 0;
+            #appsIcon, #classicIcon {
+                display: none;
             }
             .logo {
                 display: none;
@@ -1124,7 +1120,7 @@
                     </select>
                     <input type="color" id="bgCustomColor" style="margin-left:8px;display:none;">
                 </div>
-
+      
                 <!-- Settings: Picture theme -->
                 <div style="margin-bottom:18px;">
                     <label for="bgImage" style="font-weight:600;">Picture theme:</label>
@@ -1192,6 +1188,7 @@
                     <span id="liquidGlassBrightnessVal">125%</span>
                 </div>
                 <script>
+                    
                 document.addEventListener('DOMContentLoaded', function() {
                     // Elements
                     const blur = document.getElementById('liquidGlassBlur');
@@ -1495,61 +1492,86 @@
                         }
                     }
 
+                    // --- IndexedDB helpers ---
+                    function openSettingsDB() {
+                        return new Promise((resolve, reject) => {
+                            const req = indexedDB.open('munetios-settings', 1);
+                            req.onupgradeneeded = function(e) {
+                                const db = e.target.result;
+                                if (!db.objectStoreNames.contains('settings')) {
+                                    db.createObjectStore('settings');
+                                }
+                            };
+                            req.onsuccess = function(e) { resolve(e.target.result); };
+                            req.onerror = function(e) { reject(e); };
+                        });
+                    }
+                    function idbGet(key) {
+                        return openSettingsDB().then(db => new Promise((resolve, reject) => {
+                            const tx = db.transaction('settings', 'readonly');
+                            const store = tx.objectStore('settings');
+                            const req = store.get(key);
+                            req.onsuccess = () => resolve(req.result);
+                            req.onerror = () => resolve(undefined);
+                        }));
+                    }
+                    function idbSet(key, value) {
+                        return openSettingsDB().then(db => new Promise((resolve, reject) => {
+                            const tx = db.transaction('settings', 'readwrite');
+                            const store = tx.objectStore('settings');
+                            const req = store.put(value, key);
+                            req.onsuccess = () => resolve();
+                            req.onerror = () => reject();
+                        }));
+                    }
+                    function idbDel(key) {
+                        return openSettingsDB().then(db => new Promise((resolve, reject) => {
+                            const tx = db.transaction('settings', 'readwrite');
+                            const store = tx.objectStore('settings');
+                            const req = store.delete(key);
+                            req.onsuccess = () => resolve();
+                            req.onerror = () => reject();
+                        }));
+                    }
+
                     // --- Load settings ---
-                    function loadSettings() {
+                    async function loadSettings() {
                         // Background theme
-                        let bg, custom, img, tc, tcEnabled, hf, cm, mm, lg;
-                        try {
-                            bg = localStorage.getItem('bgTheme') || 'default';
-                        } catch (e) { bg = 'default'; }
+                        let bg = await idbGet('bgTheme') || 'default';
                         bgThemeDropdown.value = bg;
-                        try {
-                            custom = localStorage.getItem('bgCustomColor') || '#190047';
-                        } catch (e) { custom = '#190047'; }
+                        let custom = await idbGet('bgCustomColor') || '#190047';
                         bgCustomColor.value = custom;
                         setBgTheme(bg, bg === 'custom' ? custom : null);
 
                         // Picture theme
-                        try {
-                            img = localStorage.getItem('bgImageUrl');
-                        } catch (e) { img = null; }
+                        let img = await idbGet('bgImageUrl');
                         if (img) setBgImageUrl(img);
 
                         // Text color
-                        try {
-                            tc = localStorage.getItem('textColor');
-                            tcEnabled = localStorage.getItem('enableTextColor') === 'true';
-                        } catch (e) { tc = ''; tcEnabled = false; }
+                        let tc = await idbGet('textColor');
+                        let tcEnabled = (await idbGet('enableTextColor')) === true || (await idbGet('enableTextColor')) === 'true';
                         textColor.value = tc || '';
                         textColorCheckbox.checked = tcEnabled;
                         setTextColor(tc);
 
                         // Hide favicon
-                        try {
-                            hf = localStorage.getItem('hideFavicon') === 'true';
-                        } catch (e) { hf = false; }
+                        let hf = (await idbGet('hideFavicon')) === true || (await idbGet('hideFavicon')) === 'true';
                         hideFavicon.checked = hf;
                         setHideFavicon(hf);
 
                         // Compact mode
-                        try {
-                            cm = localStorage.getItem('compactMode') === 'true';
-                        } catch (e) { cm = false; }
+                        let cm = (await idbGet('compactMode')) === true || (await idbGet('compactMode')) === 'true';
                         compactMode.checked = cm;
                         setCompactMode(cm);
 
                         // Minimal mode
-                        try {
-                            mm = localStorage.getItem('minimalMode') === 'true';
-                        } catch (e) { mm = false; }
+                        let mm = (await idbGet('minimalMode')) === true || (await idbGet('minimalMode')) === 'true';
                         minimalMode.checked = mm;
                         setMinimalMode(mm);
 
                         // Liquid glass
-                        try {
-                            lg = localStorage.getItem('liquidGlass');
-                        } catch (e) { lg = null; }
-                        liquidGlass.checked = lg === null ? true : lg === 'true';
+                        let lg = await idbGet('liquidGlass');
+                        liquidGlass.checked = lg === undefined ? true : (lg === true || lg === 'true');
                         setLiquidGlass(liquidGlass.checked);
 
                         // Enable/disable text color input
@@ -1564,7 +1586,7 @@
                     bgCustomColor.addEventListener('input', function() {
                         if (bgThemeDropdown.value === 'custom') {
                             setBgTheme('custom', this.value);
-                            try { localStorage.setItem('bgCustomColor', this.value); } catch (e) {}
+                            idbSet('bgCustomColor', this.value);
                         }
                     });
                     bgImage.addEventListener('change', function() {
@@ -1573,47 +1595,47 @@
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             setBgImageUrl(e.target.result);
-                            try { localStorage.setItem('bgImageUrl', e.target.result); } catch (err) {}
+                            idbSet('bgImageUrl', e.target.result);
                         };
                         reader.readAsDataURL(file);
                     });
                     removeBgImage.addEventListener('click', function() {
                         setBgImageUrl('');
-                        try { localStorage.removeItem('bgImageUrl'); } catch (e) {}
+                        idbDel('bgImageUrl');
                         bgImage.value = '';
                     });
                     textColor.addEventListener('input', function() {
                         if (textColorCheckbox.checked) {
                             setTextColor(this.value);
-                            try { localStorage.setItem('textColor', this.value); } catch (e) {}
+                            idbSet('textColor', this.value);
                         }
                     });
                     resetTextColor.addEventListener('click', function() {
                         setTextColor('');
                         textColor.value = '';
-                        try { localStorage.removeItem('textColor'); } catch (e) {}
+                        idbDel('textColor');
                     });
                     textColorCheckbox.addEventListener('change', function() {
                         textColor.disabled = !this.checked;
                         resetTextColor.disabled = !this.checked;
-                        try { localStorage.setItem('enableTextColor', this.checked); } catch (e) {}
+                        idbSet('enableTextColor', this.checked);
                         setTextColor(textColor.value);
                     });
                     hideFavicon.addEventListener('change', function() {
                         setHideFavicon(this.checked);
-                        try { localStorage.setItem('hideFavicon', this.checked); } catch (e) {}
+                        idbSet('hideFavicon', this.checked);
                     });
                     compactMode.addEventListener('change', function() {
                         setCompactMode(this.checked);
-                        try { localStorage.setItem('compactMode', this.checked); } catch (e) {}
+                        idbSet('compactMode', this.checked);
                     });
                     minimalMode.addEventListener('change', function() {
                         setMinimalMode(this.checked);
-                        try { localStorage.setItem('minimalMode', this.checked); } catch (e) {}
+                        idbSet('minimalMode', this.checked);
                     });
                     liquidGlass.addEventListener('change', function() {
                         setLiquidGlass(this.checked);
-                        try { localStorage.setItem('liquidGlass', this.checked); } catch (e) {}
+                        idbSet('liquidGlass', this.checked);
                     });
 
                     // --- Observe DOM changes for favicons/results (for dynamic search) ---
@@ -1719,16 +1741,6 @@
     </div>
 </div>
 </div>
-<div class="mobile-search-bar liquid-glass" style="display: none;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="Search" id="searchInput">
-            <svg id="micIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
-                <rect x="9" y="2" width="6" height="12" rx="3"></rect>
-                <path d="M5 10v2a7 7 0 0 0 14 0v-2"></path>
-                <line x1="12" y1="22" x2="12" y2="16"></line>
-                <line x1="8" y1="22" x2="16" y2="22"></line>
-            </svg>
-</div>
 </header>
 <div class="toolbar">
     <div class="types">
@@ -1738,13 +1750,14 @@
         <button class="btn type liquid-glass" id="imagesResult">Images</button>
         <button class="btn type liquid-glass" id="videosResult">Videos</button>
     <!--   <button class="btn type liquid-glass" id="newsResult">News</button> coming soon  --> 
-    <!--    <button class="btn type liquid-glass" id="mapsResult">Maps</button>
-        <button class="btn type liquid-glass" id="sportsResult">Sports</button> coming soon -->
+       <button class="btn type liquid-glass" id="mapsResult">Maps</button>
+      <!--   <button class="btn type liquid-glass" id="sportsResult">Sports</button> coming soon -->
         <button class="btn type liquid-glass" id="blogsResult">Blogs</button>
     </div>
 </div>
      
     <div class="content">
+        <div class="ai-overview-box liquid-glass" id="aiOverviewBox"></div>
         <div class="results" id="results">
             Please enter a search query above.
             <!-- Search results will be displayed here -->
@@ -1782,13 +1795,1455 @@
         </label>
         <label>
             <input type="checkbox" id="enableAIOverview" style="margin-right: 8px; margin-left:16px;">
-            Enable AI Overview (Coming Soon)
+            Enable AI Overview
         </label>
     </div>
 </div>
 
 </div>
     <script>
+        (function () {
+            // --- AI Overview Toggle ---
+            function isAIOverviewEnabled() {
+                return localStorage.getItem('enableAIOverview') === 'true' ||
+                    (document.getElementById('enableAIOverview') && document.getElementById('enableAIOverview').checked);
+            }
+            // Listen for Labs modal checkbox
+            document.getElementById('enableAIOverview').addEventListener('change', function () {
+                localStorage.setItem('enableAIOverview', this.checked);
+            });
+
+            // --- AI Overview Logic ---
+            const aiOverviewBox = document.getElementById('aiOverviewBox');
+            aiOverviewBox.classList.add('aioverviewbox');
+            aiOverviewBox.style.display = 'none';
+            aiOverviewBox.style.margin = '24px 0 0 0';
+            aiOverviewBox.style.padding = '0';
+            aiOverviewBox.style.borderRadius = '18px';
+            aiOverviewBox.style.boxShadow = '0 4px 24px rgba(25,0,71,0.08)';
+            aiOverviewBox.style.backdropFilter = 'blur(4px) saturate(180%) contrast(85%) brightness(115%)';
+            aiOverviewBox.style.webkitBackdropFilter = 'blur(4px) saturate(180%) contrast(85%) brightness(115%)';
+            aiOverviewBox.style.background = 'rgba(162,89,247,0.07)';
+            aiOverviewBox.style.transition = 'box-shadow 0.2s, background 0.2s';
+
+            // AI Overview Q&A (expandable)
+            const aiAnswers = [
+                {
+                    keywords: [/what\s+is\s+munetios/i, /munetios\s+(search|office|photos|calendar|tasks|notebook|api|blog)/i],
+                    answer: "Munetios is a suite of modern, privacy-friendly web apps including search, office, calendar, photos, tasks, and more. It aims to provide a beautiful, fast, and secure experience without tracking users. Learn more at <a href='https://www.munetios.com' target='_blank' rel='noopener'>munetios.com</a>."
+                },
+                {
+                    keywords: [/what\s+is\s+google/i, /is\s+google\s+safe/i, /who\s+owns\s+google/i],
+                    answer: "Google is a global technology company known for its search engine, cloud services, and products like Gmail, Maps, and Android. Google is generally safe to use, but it collects user data for advertising and analytics. For more privacy, consider alternatives."
+                },
+                {
+                    keywords: [/what\s+is\s+meta/i, /who\s+owns\s+facebook/i, /meta\s+platforms/i],
+                    answer: "Meta Platforms, formerly Facebook, is a technology company that owns Facebook, Instagram, WhatsApp, and other products. Meta focuses on social networking, messaging, and virtual reality."
+                },
+                {
+                    keywords: [/where\s+was\s+munetios\s+founded/i, /who\s+created\s+munetios/i],
+                    answer: "Munetios was founded in Abington, Massachusetts by an independent developer passionate about privacy and modern web experiences."
+                },
+                {
+                    keywords: [/when\s+was\s+munetios\s+founded/i, /munetios\s+founding\s+date/i, /munetios\s+established/i],
+                    answer: "Munetios was founded on January 12, 2025 in Abington, Massachusetts. It started as a project focused on privacy-friendly, modern web apps and has since grown to include search, office, calendar, photos, tasks, and more."
+                },
+                {
+                    keywords: [/tell\s+me\s+more\s+about\s+munetios/i, /about\s+munetios/i, /munetios\s+features/i, /what\s+can\s+munetios\s+do/i],
+                    answer: "Munetios offers a suite of privacy-focused web applications, including search, office tools, calendar, photos, tasks, and notebook. All Munetios apps are designed to be fast, modern, and easy to use, with a strong emphasis on user privacy and no tracking. Munetios also provides APIs and developer tools, and is committed to continuous improvement and user feedback. Learn more at <a href='https://www.munetios.com/about.html' target='_blank' rel='noopener'>munetios.com/about</a>."
+                },
+                {
+                    keywords: [/is\s+google\s+safe/i, /is\s+google\s+private/i],
+                    answer: "Google is safe for most users, but it collects data for ads and analytics. For more privacy, use search engines like DuckDuckGo or Startpage."
+                },
+                {
+                    keywords: [/what\s+is\s+github\s+copilot/i, /copilot\s+ai/i],
+                    answer: "GitHub Copilot is an AI-powered coding assistant developed by GitHub and OpenAI. It helps developers write code faster by suggesting code completions and snippets."
+                },
+                {
+                    keywords: [/what\s+is\s+gemini/i, /google\s+gemini/i],
+                    answer: "Google Gemini is an advanced AI model and assistant from Google, designed to help with search, productivity, and creativity tasks."
+                },
+                {
+                    keywords: [/what\s+is\s+stack\s*overflow/i],
+                    answer: "Stack Overflow is a popular Q&A platform for programmers and developers to ask and answer technical questions."
+                },
+                {
+                    keywords: [/what\s+is\s+github/i],
+                    answer: "GitHub is a platform for hosting and collaborating on code projects using Git version control. It is widely used by developers and open source communities."
+                },
+                {
+                    keywords: [/what\s+is\s+apple/i],
+                    answer: "Apple is a technology company known for products like the iPhone, iPad, Mac, and services such as iCloud and Apple Music."
+                },
+                {
+                    keywords: [/what\s+is\s+microsoft/i],
+                    answer: "Microsoft is a global technology company known for Windows, Office, Azure, and products like Copilot and Teams."
+                },
+                {
+                    keywords: [/what\s+is\s+amazon/i],
+                    answer: "Amazon is a multinational technology company focusing on e-commerce, cloud computing (AWS), digital streaming, and AI."
+                },
+                {
+                    keywords: [/what\s+is\s+reddit/i],
+                    answer: "Reddit is a social news aggregation and discussion website where users post content and participate in communities called subreddits."
+                },
+                {
+                    keywords: [/what\s+is\s+discord/i],
+                    answer: "Discord is a communication platform for voice, video, and text chat, popular among gamers and online communities."
+                },
+                {
+                    keywords: [/is\s+notion\s+safe/i, /what\s+is\s+notion/i],
+                    answer: "Notion is an all-in-one workspace for notes, tasks, wikis, and databases. It is generally safe to use, but always use strong passwords and enable two-factor authentication for added security."
+                },
+                {
+                    keywords: [/is\s+obsidian\s+safe/i, /what\s+is\s+obsidian/i],
+                    answer: "Obsidian is a knowledge base app that works on local Markdown files. It is safe because your notes are stored locally, but always back up your data."
+                },
+                {
+                    keywords: [/is\s+figma\s+safe/i, /what\s+is\s+figma/i],
+                    answer: "Figma is a collaborative interface design tool used by designers and teams. It is considered safe for professional use, but always review permissions when sharing files."
+                },
+                {
+                    keywords: [/is\s+canva\s+safe/i, /what\s+is\s+canva/i],
+                    answer: "Canva is an online design and publishing tool for creating graphics and documents. It is widely used and generally safe, but be cautious when sharing sensitive content."
+                },
+                {
+                    keywords: [/is\s+replit\s+safe/i, /what\s+is\s+replit/i],
+                    answer: "Replit is an online IDE and collaborative coding platform. It is safe for learning and prototyping, but avoid storing sensitive credentials in public projects."
+                },
+                {
+                    keywords: [/is\s+codesandbox\s+safe/i, /what\s+is\s+codesandbox/i],
+                    answer: "CodeSandbox is an online code editor and prototyping tool for web development. It is safe for most uses, but keep private code in private sandboxes."
+                },
+                {
+                    keywords: [/is\s+vercel\s+safe/i, /what\s+is\s+vercel/i],
+                    answer: "Vercel is a cloud platform for static sites and serverless functions. It is trusted by many developers and considered safe for hosting web projects."
+                },
+                {
+                    keywords: [/is\s+netlify\s+safe/i, /what\s+is\s+netlify/i],
+                    answer: "Netlify is a platform for deploying static websites and web apps. It is widely used and considered safe for hosting and deploying projects."
+                },
+                {
+                    keywords: [/is\s+dropbox\s+safe/i, /what\s+is\s+dropbox/i],
+                    answer: "Dropbox is a cloud storage service for file sharing and collaboration. It is generally safe, but always use strong passwords and enable two-factor authentication."
+                },
+                {
+                    keywords: [/is\s+slack\s+safe/i, /what\s+is\s+slack/i],
+                    answer: "Slack is a messaging app for teams and workplaces. It is safe for business communication, but sensitive data should be shared with care."
+                },
+                {
+                    keywords: [/is\s+trello\s+safe/i, /what\s+is\s+trello/i],
+                    answer: "Trello is a visual tool for organizing work and life using boards, lists, and cards. It is safe for project management, but keep private boards secure."
+                },
+                {
+                    keywords: [/is\s+asana\s+safe/i, /what\s+is\s+asana/i],
+                    answer: "Asana is a work management platform for teams to organize projects and tasks. It is considered safe for business use."
+                },
+                {
+                    keywords: [/is\s+zapier\s+safe/i, /what\s+is\s+zapier/i],
+                    answer: "Zapier is an automation tool that connects your favorite apps and services. It is safe, but review connected app permissions regularly."
+                },
+                {
+                    keywords: [/is\s+ifttt\s+safe/i, /what\s+is\s+ifttt/i],
+                    answer: "IFTTT is a web-based service that creates chains of simple conditional statements. It is safe, but always check what data is shared between services."
+                },
+                {
+                    keywords: [/is\s+miro\s+safe/i, /what\s+is\s+miro/i],
+                    answer: "Miro is an online collaborative whiteboard platform. It is safe for team collaboration, but use secure sharing settings for sensitive boards."
+                },
+                {
+                    keywords: [/is\s+lucidchart\s+safe/i, /what\s+is\s+lucidchart/i],
+                    answer: "Lucidchart is a web-based diagramming application. It is safe for creating diagrams and flowcharts, but protect confidential documents."
+                },
+                {
+                    keywords: [/is\s+notebooklm\s+safe/i, /what\s+is\s+notebooklm/i],
+                    answer: "NotebookLM is an AI-powered research and writing assistant from Google. It is safe to use, but always review privacy policies for AI tools."
+                },
+                {
+                    keywords: [/is\s+proton\s+mail\s+safe/i, /what\s+is\s+proton\s+mail/i],
+                    answer: "Proton Mail is a secure and private email service with end-to-end encryption. It is considered one of the safest email providers."
+                },
+                {
+                    keywords: [/is\s+signal\s+safe/i, /what\s+is\s+signal/i],
+                    answer: "Signal is a private messenger for encrypted communication. It is widely regarded as one of the safest messaging apps."
+                },
+                {
+                    keywords: [/is\s+telegram\s+safe/i, /what\s+is\s+telegram/i],
+                    answer: "Telegram is a cloud-based instant messaging service. It offers encryption, but for maximum privacy use Secret Chats."
+                },
+                {
+                    keywords: [/is\s+discord\s+safe/i],
+                    answer: "Discord is safe for most users, but be cautious when joining public servers and avoid sharing personal information."
+                },
+                {
+                    keywords: [/is\s+zoom\s+safe/i, /what\s+is\s+zoom/i],
+                    answer: "Zoom is a video conferencing platform. It is safe for meetings, but always use meeting passwords and waiting rooms for privacy."
+                },
+                {
+                    keywords: [/is\s+skype\s+safe/i, /what\s+is\s+skype/i],
+                    answer: "Skype is a communication tool for calls, video, and messaging. It is generally safe, but use privacy settings to control who can contact you."
+                },
+                {
+                    keywords: [/is\s+github\s+safe/i],
+                    answer: "GitHub is safe for hosting and collaborating on code. For private projects, use private repositories and enable two-factor authentication."
+                },
+                {
+                    keywords: [/is\s+stack\s*overflow\s+safe/i],
+                    answer: "Stack Overflow is safe for asking and answering programming questions. Avoid sharing sensitive or personal information in posts."
+                },
+                {
+                    keywords: [/is\s+reddit\s+safe/i],
+                    answer: "Reddit is safe for browsing and participating in communities, but be cautious about sharing personal information and follow subreddit rules."
+                },
+                {
+                    keywords: [/is\s+twitter\s+safe/i, /is\s+x\s+safe/i],
+                    answer: "Twitter (now X) is safe for social networking, but be mindful of privacy settings and avoid clicking suspicious links."
+                },
+                {
+                    keywords: [/is\s+facebook\s+safe/i],
+                    answer: "Facebook is safe for connecting with friends and family, but always review your privacy settings and be cautious with friend requests."
+                },
+                {
+                    keywords: [/is\s+instagram\s+safe/i],
+                    answer: "Instagram is safe for sharing photos and videos, but use privacy controls to manage who can see your content."
+                },
+                {
+                    keywords: [/is\s+tiktok\s+safe/i, /what\s+is\s+tiktok/i],
+                    answer: "TikTok is a platform for creating and sharing short videos. It is popular and generally safe, but review privacy settings and be cautious with personal data."
+                },
+                {
+                    keywords: [/is\s+snapchat\s+safe/i, /what\s+is\s+snapchat/i],
+                    answer: "Snapchat is a multimedia messaging app. It is safe for sharing moments, but remember that snaps can be saved by others."
+                },
+               
+                {
+                    keywords: [/can\s+i\s+use\s+gmail\s+under\s+13/i, /gmail\s+age\s+limit/i],
+                    answer: "Google requires users to be at least 13 years old to create a standard Gmail account. For children under 13, parents can create a supervised account using Family Link."
+                },
+                {
+                    keywords: [
+                        /can\s+i\s+make\s+a\s+proton\s+mail\s+account\s+when\s+under\s+13/i,
+                        /can\s+i\s+sign\s+up\s+for\s+proton\s+mail\s+if\s+i\s+am\s+under\s+13/i,
+                        /is\s+proton\s+mail\s+allowed\s+for\s+kids\s+under\s+13/i,
+                        /proton\s+mail\s+minimum\s+age/i,
+                        /proton\s+mail\s+age\s+requirement/i,
+                        /proton\s+mail\s+parental\s+consent/i,
+                        /proton\s+mail\s+COPPA/i
+                    ],
+                    answer: "Proton Mail requires users to be at least 13 years old to create an account. Children under 13 are not permitted to sign up for Proton Mail, even with parental consent."
+                },
+                {
+                    keywords: [
+                        /can\s+i\s+make\s+a\s+munetios\s+account\s+when\s+under\s+13/i,
+                        /can\s+i\s+sign\s+up\s+for\s+munetios\s+if\s+i\s+am\s+under\s+13/i,
+                        /is\s+munetios\s+allowed\s+for\s+kids\s+under\s+13/i,
+                        /munetios\s+minimum\s+age/i,
+                        /munetios\s+age\s+requirement/i,
+                        /munetios\s+parental\s+consent/i,
+                        /munetios\s+COPPA/i
+                    ],
+                    answer: "Munetios does not currently require user accounts. The service is generally suitable for users aged 4 and older. In accordance with COPPA, Munetios does not knowingly collect personal information from children under 13. Children under 13 should use Munetios only with parental guidance and appropriate settings."
+                },
+                {
+                    keywords: [
+                        /can\s+children\s+use\s+proton\s+mail\s+app/i,
+                        /is\s+proton\s+mail\s+safe\s+for\s+children/i
+                    ],
+                    answer: "Proton Mail is designed for users 16 and older. It is not intended for children under 16, and accounts for minors are not supported."
+                },
+                {
+                    keywords: [
+                        /can\s+children\s+use\s+munetios\s+app/i,
+                        /is\s+munetios\s+safe\s+for\s+children/i
+                    ],
+                    answer: "Munetios is generally suitable for users aged 4 and older. In accordance with COPPA, Munetios does not knowingly collect personal information from children under 13. Children under 13 should use Munetios only with parental guidance and appropriate settings."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+youtube\s+under\s+13/i, /youtube\s+age\s+limit/i],
+                    answer: "YouTube requires users to be at least 13 years old. Children under 13 can use YouTube Kids, which is designed for younger audiences."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+discord\s+under\s+13/i, /discord\s+age\s+limit/i],
+                    answer: "Discord requires users to be at least 13 years old. Accounts for users under 13 are not allowed."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+instagram\s+under\s+13/i, /instagram\s+age\s+limit/i],
+                    answer: "Instagram requires users to be at least 13 years old to create an account."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+tiktok\s+under\s+13/i, /tiktok\s+age\s+limit/i],
+                    answer: "TikTok requires users to be at least 13 years old. There is a limited experience for users under 13 in some regions."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+facebook\s+under\s+13/i, /facebook\s+age\s+limit/i],
+                    answer: "Facebook requires users to be at least 13 years old to create an account."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+snapchat\s+under\s+13/i, /snapchat\s+age\s+limit/i],
+                    answer: "Snapchat requires users to be at least 13 years old to sign up."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+twitter\s+under\s+13/i, /twitter\s+age\s+limit/i, /x\s+age\s+limit/i],
+                    answer: "Twitter (now X) requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+whatsapp\s+under\s+13/i, /whatsapp\s+age\s+limit/i],
+                    answer: "WhatsApp requires users to be at least 13 years old in most countries, but the minimum age may be higher in some regions."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+reddit\s+under\s+13/i, /reddit\s+age\s+limit/i],
+                    answer: "Reddit is a social news aggregation and discussion website. According to Reddit's official policy, users must be at least 13 years old to create an account and participate on the platform. This age requirement is in place to comply with the Children’s Online Privacy Protection Act (COPPA) and to help ensure a safer environment for younger users. If you are under 13, you are not permitted to sign up for Reddit or use its services. Parents and guardians should supervise internet use and review privacy settings for children."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+github\s+under\s+13/i, /github\s+age\s+limit/i],
+                    answer: "GitHub is a platform for hosting and collaborating on code projects. According to GitHub’s Terms of Service, you must be at least 13 years old to create an account. This age restriction is in place to comply with COPPA and other privacy regulations. If you are under 13, you are not allowed to sign up for a GitHub account, even with parental consent. Parents and educators can create supervised or organizational accounts for educational purposes if needed."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+stack\s*overflow\s+under\s+13/i, /stack\s*overflow\s+age\s+limit/i],
+                    answer: "Stack Overflow is a Q&A platform for programmers and developers. To comply with COPPA and privacy laws, Stack Overflow requires users to be at least 13 years old to register for an account and participate in the community. If you are under 13, you should not create an account or post content on Stack Overflow. Parents and teachers can help younger learners by supervising their use of programming resources and encouraging safe online practices."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+zoom\s+under\s+13/i, /zoom\s+age\s+limit/i],
+                    answer: "Zoom is a video conferencing platform used for meetings, classes, and social gatherings. According to Zoom’s terms and privacy policy, users must be at least 16 years old to sign up for a personal Zoom account. However, children under 16 (including those under 13) may use Zoom if their account is created and managed by a parent, guardian, or educational institution for school purposes. If you are under 13, you should only use Zoom under adult supervision and as part of a school or family account."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+slack\s+under\s+13/i, /slack\s+age\s+limit/i],
+                    answer: "Slack requires users to be at least 16 years old, or the minimum age required in your country."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+skype\s+under\s+13/i, /skype\s+age\s+limit/i],
+                    answer: "Skype requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+spotify\s+under\s+13/i, /spotify\s+age\s+limit/i],
+                    answer: "Spotify requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+netflix\s+under\s+13/i, /netflix\s+age\s+limit/i],
+                    answer: "Netflix accounts must be created by someone at least 18 years old, but child profiles can be set up for users under 13."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+amazon\s+under\s+13/i, /amazon\s+age\s+limit/i],
+                    answer: "Amazon accounts must be created by someone at least 18 years old. Children can use Amazon Kids with parental supervision."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+apple\s+id\s+under\s+13/i, /apple\s+id\s+age\s+limit/i],
+                    answer: "Apple IDs for users under 13 must be created by a parent or guardian as part of Family Sharing."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+microsoft\s+account\s+under\s+13/i, /microsoft\s+account\s+age\s+limit/i],
+                    answer: "Microsoft accounts for users under 13 require parental consent and supervision."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+notion\s+under\s+13/i, /notion\s+age\s+limit/i],
+                    answer: "Notion requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+figma\s+under\s+13/i, /figma\s+age\s+limit/i],
+                    answer: "Figma requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+canva\s+under\s+13/i, /canva\s+age\s+limit/i],
+                    answer: "Canva requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+replit\s+under\s+13/i, /replit\s+age\s+limit/i],
+                    answer: "Replit requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+codesandbox\s+under\s+13/i, /codesandbox\s+age\s+limit/i],
+                    answer: "CodeSandbox requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+vercel\s+under\s+13/i, /vercel\s+age\s+limit/i],
+                    answer: "Vercel requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+netlify\s+under\s+13/i, /netlify\s+age\s+limit/i],
+                    answer: "Netlify requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+dropbox\s+under\s+13/i, /dropbox\s+age\s+limit/i],
+                    answer: "Dropbox requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+trello\s+under\s+13/i, /trello\s+age\s+limit/i],
+                    answer: "Trello requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+asana\s+under\s+13/i, /asana\s+age\s+limit/i],
+                    answer: "Asana requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+zapier\s+under\s+13/i, /zapier\s+age\s+limit/i],
+                    answer: "Zapier requires users to be at least 16 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+ifttt\s+under\s+13/i, /ifttt\s+age\s+limit/i],
+                    answer: "IFTTT requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+miro\s+under\s+13/i, /miro\s+age\s+limit/i],
+                    answer: "Miro requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+lucidchart\s+under\s+13/i, /lucidchart\s+age\s+limit/i],
+                    answer: "Lucidchart requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+proton\s+mail\s+under\s+13/i, /proton\s+mail\s+age\s+limit/i],
+                    answer: "Proton Mail requires users to be at least 16 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+signal\s+under\s+13/i, /signal\s+age\s+limit/i],
+                    answer: "Signal requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+telegram\s+under\s+13/i, /telegram\s+age\s+limit/i],
+                    answer: "Telegram requires users to be at least 16 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+zoom\s+under\s+16/i, /zoom\s+age\s+limit/i],
+                    answer: "Zoom requires users to be at least 16 years old, or the minimum age required in your country."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+google\s+meet\s+under\s+13/i, /google\s+meet\s+age\s+limit/i],
+                    answer: "Google Meet requires users to be at least 13 years old. Children under 13 can join meetings if invited by a parent or teacher."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+google\s+drive\s+under\s+13/i, /google\s+drive\s+age\s+limit/i],
+                    answer: "Google Drive requires users to be at least 13 years old, unless using a supervised account via Family Link."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+google\s+photos\s+under\s+13/i, /google\s+photos\s+age\s+limit/i],
+                    answer: "Google Photos requires users to be at least 13 years old, unless using a supervised account via Family Link."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+google\s+classroom\s+under\s+13/i, /google\s+classroom\s+age\s+limit/i],
+                    answer: "Google Classroom can be used by children under 13 if their school provides access and parental consent is given."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+google\s+workspace\s+under\s+13/i, /google\s+workspace\s+age\s+limit/i],
+                    answer: "Google Workspace for Education allows children under 13 to use services with parental consent and school supervision."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+github\s+copilot\s+under\s+13/i, /github\s+copilot\s+age\s+limit/i],
+                    answer: "GitHub Copilot requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+gemini\s+under\s+13/i, /google\s+gemini\s+age\s+limit/i],
+                    answer: "Google Gemini requires users to be at least 13 years old, but a parent can enable Gemini in Family Link."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+openai\s+chatgpt\s+under\s+13/i, /chatgpt\s+age\s+limit/i],
+                    answer: "OpenAI ChatGPT requires users to be at least 13 years old, but it has parental controls features for younger users with consent."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+duolingo\s+under\s+13/i, /duolingo\s+age\s+limit/i],
+                    answer: "Duolingo allows users under 13 to use the app with parental consent."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+khan\s+academy\s+under\s+13/i, /khan\s+academy\s+age\s+limit/i],
+                    answer: "Khan Academy allows children under 13 to use the platform with parental consent."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+roblox\s+under\s+13/i, /roblox\s+age\s+limit/i],
+                    answer: "Roblox allows users under 13, but accounts are subject to stricter privacy and safety settings."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+minecraft\s+under\s+13/i, /minecraft\s+age\s+limit/i],
+                    answer: "Minecraft can be played by users under 13, but online features may require parental consent."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+fortnite\s+under\s+13/i, /fortnite\s+age\s+limit/i],
+                    answer: "Fortnite requires users to be at least 13 years old, or have parental consent if younger."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+steam\s+under\s+13/i, /steam\s+age\s+limit/i],
+                    answer: "Steam requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/can\s+i\s+use\s+epic\s+games\s+under\s+13/i, /epic\s+games\s+age\s+limit/i],
+                    answer: "Epic Games requires users to be at least 13 years old."
+                },
+                {
+                    keywords: [/how\s+to\s+code/i, /how\s+do\s+i\s+code/i, /how\s+can\s+i\s+code/i, /learn\s+to\s+code/i],
+                    answer: "To start coding, choose a programming language (like Python, JavaScript, or HTML), use online tutorials such as <a href='https://www.freecodecamp.org/' target='_blank' rel='noopener'>freeCodeCamp</a> or <a href='https://www.codecademy.com/' target='_blank' rel='noopener'>Codecademy</a>, and practice by building small projects."
+                },
+                {
+                    keywords: [/how\s+to\s+check\s+the\s+weather/i, /weather\s+near\s+me/i, /what'?s\s+the\s+weather/i, /how\s+to\s+see\s+weather/i],
+                    answer: "You can check the weather using apps like <a href='https://weather.munetios.com/' target='_blank' rel='noopener'>Munetios Weather</a>, your phone's built-in weather app, or by searching 'weather near me' on Google."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+website/i, /how\s+do\s+i\s+make\s+a\s+website/i],
+                    answer: "To make a website, learn HTML, CSS, and optionally JavaScript. You can use platforms like <a href='https://www.w3schools.com/' target='_blank' rel='noopener'>W3Schools</a> or <a href='https://developer.mozilla.org/' target='_blank' rel='noopener'>MDN Web Docs</a> for tutorials. Try building your site with <a href='https://pages.github.com/' target='_blank' rel='noopener'>GitHub Pages</a> or <a href='https://www.netlify.com/' target='_blank' rel='noopener'>Netlify</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+an\s+app/i, /how\s+do\s+i\s+make\s+an\s+app/i],
+                    answer: "To make an app, choose a platform (web, Android, iOS), learn a language (JavaScript, Java, Swift), and use tools like <a href='https://reactnative.dev/' target='_blank' rel='noopener'>React Native</a> or <a href='https://flutter.dev/' target='_blank' rel='noopener'>Flutter</a> for cross-platform apps."
+                },
+                {
+                    keywords: [/how\s+to\s+learn\s+python/i, /learn\s+python/i],
+                    answer: "Start learning Python at <a href='https://www.learnpython.org/' target='_blank' rel='noopener'>LearnPython.org</a> or <a href='https://www.codecademy.com/learn/learn-python-3' target='_blank' rel='noopener'>Codecademy</a>. Practice by writing small scripts and solving problems on <a href='https://www.hackerrank.com/domains/tutorials/10-days-of-python' target='_blank' rel='noopener'>HackerRank</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+learn\s+javascript/i, /learn\s+javascript/i],
+                    answer: "You can learn JavaScript using <a href='https://javascript.info/' target='_blank' rel='noopener'>javascript.info</a>, <a href='https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/' target='_blank' rel='noopener'>freeCodeCamp</a>, or <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide' target='_blank' rel='noopener'>MDN Web Docs</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+learn\s+html/i, /learn\s+html/i],
+                    answer: "Learn HTML basics at <a href='https://www.w3schools.com/html/' target='_blank' rel='noopener'>W3Schools HTML Tutorial</a> or <a href='https://developer.mozilla.org/en-US/docs/Web/HTML' target='_blank' rel='noopener'>MDN HTML Guide</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+learn\s+css/i, /learn\s+css/i],
+                    answer: "Start learning CSS at <a href='https://www.w3schools.com/css/' target='_blank' rel='noopener'>W3Schools CSS Tutorial</a> or <a href='https://developer.mozilla.org/en-US/docs/Web/CSS' target='_blank' rel='noopener'>MDN CSS Guide</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+blog/i, /how\s+do\s+i\s+make\s+a\s+blog/i],
+                    answer: "You can make a blog using platforms like <a href='https://www.blogger.com/' target='_blank' rel='noopener'>Blogger</a>, <a href='https://wordpress.com/' target='_blank' rel='noopener'>WordPress.com</a>, or by building your own site with HTML/CSS."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+game/i, /how\s+do\s+i\s+make\s+a\s+game/i],
+                    answer: "To make a game, start with a game engine like <a href='https://unity.com/' target='_blank' rel='noopener'>Unity</a> (C#), <a href='https://godotengine.org/' target='_blank' rel='noopener'>Godot</a> (GDScript), or <a href='https://www.construct.net/' target='_blank' rel='noopener'>Construct</a> (no code). Follow beginner tutorials and build simple games first."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+discord\s+bot/i, /discord\s+bot\s+tutorial/i],
+                    answer: "To make a Discord bot, use <a href='https://discord.js.org/' target='_blank' rel='noopener'>discord.js</a> (JavaScript) or <a href='https://discordpy.readthedocs.io/' target='_blank' rel='noopener'>discord.py</a> (Python). Follow guides on their official docs and try simple commands first."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+youtube\s+channel/i, /start\s+a\s+youtube\s+channel/i],
+                    answer: "Sign in to YouTube, click your profile, and select 'Create a channel'. Add a name, profile picture, and start uploading videos."
+                },
+                {
+                    keywords: [/how\s+to\s+upload\s+a\s+video\s+to\s+youtube/i, /upload\s+video\s+youtube/i],
+                    answer: "Click the camera icon with a plus sign on YouTube, select 'Upload video', choose your file, add details, and publish."
+                },
+                {
+                    keywords: [/how\s+to\s+edit\s+photos/i, /edit\s+photos/i],
+                    answer: "You can edit photos using apps like <a href='https://photos.munetios.com/' target='_blank' rel='noopener'>Munetios Photos</a>, <a href='https://www.canva.com/' target='_blank' rel='noopener'>Canva</a>, or <a href='https://www.photopea.com/' target='_blank' rel='noopener'>Photopea</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+draw/i, /learn\s+to\s+draw/i],
+                    answer: "Learn to draw by practicing basic shapes, following YouTube tutorials, or using drawing apps like <a href='https://www.autodesk.com/products/sketchbook/' target='_blank' rel='noopener'>Sketchbook</a> or <a href='https://www.krita.org/' target='_blank' rel='noopener'>Krita</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+resume/i, /create\s+a\s+resume/i],
+                    answer: "Use templates from <a href='https://www.canva.com/resumes/templates/' target='_blank' rel='noopener'>Canva</a>, <a href='https://www.resume.com/' target='_blank' rel='noopener'>Resume.com</a>, or Google Docs to create a professional resume."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+presentation/i, /create\s+a\s+presentation/i],
+                    answer: "Use <a href='https://docs.google.com/presentation/' target='_blank' rel='noopener'>Google Slides</a>, <a href='https://powerpoint.office.com/' target='_blank' rel='noopener'>PowerPoint</a>, or <a href='https://docs.munetios.com/' target='_blank' rel='noopener'>Munetios Office</a> to make presentations."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+spreadsheet/i, /create\s+a\s+spreadsheet/i],
+                    answer: "Try <a href='https://docs.google.com/spreadsheets/' target='_blank' rel='noopener'>Google Sheets</a>, <a href='https://excel.office.com/' target='_blank' rel='noopener'>Excel Online</a>, or <a href='https://docs.munetios.com/' target='_blank' rel='noopener'>Munetios Office</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+calendar/i, /create\s+a\s+calendar/i],
+                    answer: "Use <a href='https://calendar.munetios.com/' target='_blank' rel='noopener'>Munetios Calendar</a>, <a href='https://calendar.google.com/' target='_blank' rel='noopener'>Google Calendar</a>, or <a href='https://outlook.live.com/calendar/' target='_blank' rel='noopener'>Outlook Calendar</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+to[- ]?do\s+list/i, /create\s+a\s+to[- ]?do\s+list/i],
+                    answer: "Try <a href='https://tasks.munetios.com/' target='_blank' rel='noopener'>Munetios Tasks</a>, <a href='https://todo.microsoft.com/' target='_blank' rel='noopener'>Microsoft To Do</a>, or <a href='https://keep.google.com/' target='_blank' rel='noopener'>Google Keep</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+note/i, /create\s+a\s+note/i],
+                    answer: "Use <a href='https://notebook.munetios.com/' target='_blank' rel='noopener'>Munetios Notebook</a>, <a href='https://keep.google.com/' target='_blank' rel='noopener'>Google Keep</a>, or <a href='https://www.notion.so/' target='_blank' rel='noopener'>Notion</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+a\s+password/i, /create\s+a\s+password/i],
+                    answer: "Create a strong password by using a mix of uppercase, lowercase, numbers, and symbols. Use a password manager like <a href='https://bitwarden.com/' target='_blank' rel='noopener'>Bitwarden</a> or <a href='https://www.lastpass.com/' target='_blank' rel='noopener'>LastPass</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+reset\s+my\s+password/i, /forgot\s+my\s+password/i],
+                    answer: "Go to the login page of the service, click 'Forgot password?', and follow the instructions to reset your password via email or SMS."
+                },
+                {
+                    keywords: [/how\s+to\s+change\s+my\s+email/i, /change\s+email\s+address/i],
+                    answer: "Log in to your account settings on the service and look for an option to update your email address."
+                },
+                {
+                    keywords: [/how\s+to\s+delete\s+my\s+account/i, /delete\s+account/i],
+                    answer: "Go to your account settings, look for 'Delete account' or 'Close account', and follow the instructions. Some services require email confirmation."
+                },
+                {
+                    keywords: [/how\s+to\s+contact\s+support/i, /contact\s+support/i],
+                    answer: "Visit the service's help or support page for contact options like email, chat, or phone. For Munetios, email <a href='mailto:minecraftgamer97529@gmail.com'>minecraftgamer97529@gmail.com</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+update\s+my\s+browser/i, /update\s+browser/i],
+                    answer: "Go to your browser's menu, select 'About', and check for updates. Download the latest version from the official website if needed."
+                },
+                {
+                    keywords: [/how\s+to\s+clear\s+cache/i, /clear\s+browser\s+cache/i],
+                    answer: "Open your browser settings, search for 'Clear browsing data' or 'Clear cache', select the time range, and confirm."
+                },
+                {
+                    keywords: [/how\s+to\s+take\s+a\s+screenshot/i, /take\s+screenshot/i],
+                    answer: "On Windows, press PrtScn or Windows+Shift+S. On Mac, press Command+Shift+4. On mobile, press Power+Volume Down or Power+Home."
+                },
+                {
+                    keywords: [/how\s+to\s+record\s+my\s+screen/i, /screen\s+record/i],
+                    answer: "Use built-in tools like Xbox Game Bar (Windows+G), QuickTime Player (Mac), or screen recorder apps on your device."
+                },
+                {
+                    keywords: [/how\s+to\s+print\s+a\s+document/i, /print\s+document/i],
+                    answer: "Open the document, press Ctrl+P (Windows) or Command+P (Mac), select your printer, and click Print."
+                },
+                {
+                    keywords: [/how\s+to\s+scan\s+a\s+document/i, /scan\s+document/i],
+                    answer: "Use your printer's scanner, a mobile scanning app, or your device's built-in camera with a scanning feature."
+                },
+                {
+                    keywords: [/how\s+to\s+convert\s+pdf\s+to\s+word/i, /pdf\s+to\s+word/i],
+                    answer: "Use online tools like <a href='https://www.ilovepdf.com/pdf_to_word' target='_blank' rel='noopener'>iLovePDF</a> or <a href='https://www.adobe.com/acrobat/online/pdf-to-word.html' target='_blank' rel='noopener'>Adobe PDF to Word</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+convert\s+word\s+to\s+pdf/i, /word\s+to\s+pdf/i],
+                    answer: "Open your Word document and choose 'Save as PDF', or use online tools like <a href='https://www.ilovepdf.com/word_to_pdf' target='_blank' rel='noopener'>iLovePDF</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+zip\s+a\s+file/i, /zip\s+file/i],
+                    answer: "Right-click the file or folder, select 'Send to' > 'Compressed (zipped) folder' (Windows) or 'Compress' (Mac)."
+                },
+                {
+                    keywords: [/how\s+to\s+unzip\s+a\s+file/i, /unzip\s+file/i],
+                    answer: "Double-click the .zip file and extract its contents, or use right-click and select 'Extract All'."
+                },
+                {
+                    keywords: [/how\s+to\s+install\s+an\s+app/i, /install\s+app/i],
+                    answer: "Download the app from the official website or app store, then follow the installation instructions."
+                },
+                {
+                    keywords: [/how\s+to\s+uninstall\s+an\s+app/i, /uninstall\s+app/i],
+                    answer: "On Windows, go to Settings > Apps, select the app, and click Uninstall. On Mac, drag the app to the Trash."
+                },
+                {
+                    keywords: [/how\s+to\s+update\s+my\s+apps/i, /update\s+apps/i],
+                    answer: "Open your device's app store (Google Play, App Store, Microsoft Store) and check for updates."
+                },
+                {
+                    keywords: [/how\s+to\s+connect\s+to\s+wifi/i, /connect\s+to\s+wifi/i],
+                    answer: "Open your device's Wi-Fi settings, select the network, enter the password, and connect."
+                },
+                {
+                    keywords: [/how\s+to\s+reset\s+my\s+router/i, /reset\s+router/i],
+                    answer: "Find the reset button on your router, press and hold it for 10 seconds, then release. Wait for the router to restart."
+                },
+                {
+                    keywords: [/how\s+to\s+change\s+my\s+wifi\s+password/i, /change\s+wifi\s+password/i],
+                    answer: "Log in to your router's admin page (usually 192.168.1.1), go to Wi-Fi settings, and update the password."
+                },
+                {
+                    keywords: [/how\s+to\s+protect\s+my\s+privacy/i, /privacy\s+tips/i],
+                    answer: "Use strong passwords, enable two-factor authentication, keep software updated, and avoid sharing personal info online."
+                },
+                {
+                    keywords: [/how\s+to\s+block\s+ads/i, /block\s+ads/i],
+                    answer: "Install an ad blocker extension like <a href='https://ublockorigin.com/' target='_blank' rel='noopener'>uBlock Origin</a> or use a privacy-focused browser."
+                },
+                {
+                    keywords: [/how\s+to\s+use\s+incognito\s+mode/i, /private\s+browsing/i],
+                    answer: "Open your browser menu and select 'New Incognito Window' (Chrome), 'New Private Window' (Firefox), or similar."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+my\s+ip\s+address/i, /what'?s\s+my\s+ip/i],
+                    answer: "Search 'what is my IP' on Google or visit <a href='https://whatismyipaddress.com/' target='_blank' rel='noopener'>whatismyipaddress.com</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+speed\s+up\s+my\s+computer/i, /speed\s+up\s+computer/i],
+                    answer: "Uninstall unused programs, clear temporary files, disable startup apps, and restart your computer regularly."
+                },
+                {
+                    keywords: [/how\s+to\s+backup\s+my\s+files/i, /backup\s+files/i],
+                    answer: "Use cloud storage (Google Drive, OneDrive, Dropbox) or an external hard drive to back up important files."
+                },
+                {
+                    keywords: [/how\s+to\s+restore\s+deleted\s+files/i, /recover\s+deleted\s+files/i],
+                    answer: "Check your Recycle Bin (Windows) or Trash (Mac). For permanent deletions, use file recovery software."
+                },
+                {
+                    keywords: [/how\s+to\s+scan\s+for\s+viruses/i, /scan\s+for\s+malware/i],
+                    answer: "Use antivirus software like Windows Defender, Avast, or Malwarebytes to scan your computer."
+                },
+                {
+                    keywords: [/how\s+to\s+update\s+my\s+phone/i, /update\s+phone/i],
+                    answer: "Go to your phone's settings, look for 'Software Update', and follow the prompts to install updates."
+                },
+                {
+                    keywords: [/how\s+to\s+reset\s+my\s+phone/i, /reset\s+phone/i],
+                    answer: "Backup your data, then go to Settings > System > Reset (Android) or Settings > General > Reset (iPhone)."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+my\s+phone/i, /find\s+my\s+device/i],
+                    answer: "Use <a href='https://www.google.com/android/find' target='_blank' rel='noopener'>Find My Device</a> (Android) or <a href='https://www.icloud.com/find' target='_blank' rel='noopener'>Find My iPhone</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+share\s+my\s+location/i, /share\s+location/i],
+                    answer: "Use your phone's Maps app, tap your location, and select 'Share location' to send it to others."
+                },
+                {
+                    keywords: [/how\s+to\s+order\s+food\s+online/i, /order\s+food\s+online/i],
+                    answer: "Use apps like <a href='https://www.ubereats.com/' target='_blank' rel='noopener'>Uber Eats</a>, <a href='https://www.doordash.com/' target='_blank' rel='noopener'>DoorDash</a>, or <a href='https://www.grubhub.com/' target='_blank' rel='noopener'>Grubhub</a> to order food online."
+                },
+                {
+                    keywords: [/how\s+to\s+book\s+a\s+hotel/i, /book\s+hotel/i],
+                    answer: "Use hotel booking sites like <a href='https://www.booking.com/' target='_blank' rel='noopener'>Booking.com</a>, <a href='https://www.hotels.com/' target='_blank' rel='noopener'>Hotels.com</a>, or <a href='https://www.expedia.com/' target='_blank' rel='noopener'>Expedia</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+book\s+a\s+flight/i, /book\s+flight/i],
+                    answer: "Search for flights on <a href='https://www.google.com/flights' target='_blank' rel='noopener'>Google Flights</a>, <a href='https://www.kayak.com/' target='_blank' rel='noopener'>Kayak</a>, or <a href='https://www.expedia.com/' target='_blank' rel='noopener'>Expedia</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+get\s+directions/i, /get\s+directions/i],
+                    answer: "Use <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a> or <a href='https://maps.apple.com/' target='_blank' rel='noopener'>Apple Maps</a> to get directions to your destination."
+                },
+                {
+                    keywords: [/how\s+to\s+call\s+a\s+taxi/i, /call\s+a\s+taxi/i],
+                    answer: "Use ride-sharing apps like <a href='https://www.uber.com/' target='_blank' rel='noopener'>Uber</a> or <a href='https://www.lyft.com/' target='_blank' rel='noopener'>Lyft</a>, or call a local taxi service."
+                },
+                {
+                    keywords: [/how\s+to\s+send\s+money\s+online/i, /send\s+money\s+online/i],
+                    answer: "Use services like <a href='https://pay.google.com/' target='_blank' rel='noopener'>Google Pay</a>, <a href='https://www.paypal.com/' target='_blank' rel='noopener'>PayPal</a>, or <a href='https://cash.app/' target='_blank' rel='noopener'>Cash App</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+buy\s+bitcoin/i, /buy\s+bitcoin/i],
+                    answer: "Sign up for a cryptocurrency exchange like <a href='https://www.coinbase.com/' target='_blank' rel='noopener'>Coinbase</a> or <a href='https://www.binance.com/' target='_blank' rel='noopener'>Binance</a>, verify your identity, and follow their instructions to buy Bitcoin."
+                },
+                {
+                    keywords: [/how\s+to\s+invest\s+in\s+stocks/i, /invest\s+in\s+stocks/i],
+                    answer: "Open a brokerage account with platforms like <a href='https://www.robinhood.com/' target='_blank' rel='noopener'>Robinhood</a>, <a href='https://www.etoro.com/' target='_blank' rel='noopener'>eToro</a>, or <a href='https://www.fidelity.com/' target='_blank' rel='noopener'>Fidelity</a> and follow their guides."
+                },
+                {
+                    keywords: [/how\s+to\s+file\s+taxes/i, /file\s+taxes/i],
+                    answer: "Use tax filing software like <a href='https://turbotax.intuit.com/' target='_blank' rel='noopener'>TurboTax</a>, <a href='https://www.hrblock.com/' target='_blank' rel='noopener'>H&R Block</a>, or consult a tax professional."
+                },
+                {
+                    keywords: [/how\s+to\s+learn\s+math/i, /learn\s+math/i],
+                    answer: "Practice math on <a href='https://www.khanacademy.org/' target='_blank' rel='noopener'>Khan Academy</a> or <a href='https://www.mathsisfun.com/' target='_blank' rel='noopener'>Math is Fun</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+learn\s+english/i, /learn\s+english/i],
+                    answer: "Use language learning apps like <a href='https://www.duolingo.com/' target='_blank' rel='noopener'>Duolingo</a>, <a href='https://www.busuu.com/' target='_blank' rel='noopener'>Busuu</a>, or <a href='https://www.babbel.com/' target='_blank' rel='noopener'>Babbel</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+learn\s+a\s+language/i, /learn\s+a\s+language/i],
+                    answer: "Try <a href='https://www.duolingo.com/' target='_blank' rel='noopener'>Duolingo</a>, <a href='https://www.memrise.com/' target='_blank' rel='noopener'>Memrise</a>, or <a href='https://www.busuu.com/' target='_blank' rel='noopener'>Busuu</a> for language learning."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+friends/i, /make\s+friends/i],
+                    answer: "Join clubs, online communities, or attend local events. Be open, listen, and show genuine interest in others."
+                },
+                {
+                    keywords: [/how\s+to\s+be\s+healthy/i, /be\s+healthy/i],
+                    answer: "Eat a balanced diet, exercise regularly, get enough sleep, and manage stress. Consult a healthcare professional for personalized advice."
+                },
+                {
+                    keywords: [/how\s+to\s+sleep\s+better/i, /sleep\s+better/i],
+                    answer: "Maintain a regular sleep schedule, avoid screens before bed, and create a comfortable sleep environment."
+                },
+                {
+                    keywords: [/how\s+to\s+reduce\s+stress/i, /reduce\s+stress/i],
+                    answer: "Practice mindfulness, exercise, take breaks, and talk to friends or a counselor if needed."
+                },
+                {
+                    keywords: [/how\s+to\s+study\s+effectively/i, /study\s+tips/i],
+                    answer: "Set goals, take regular breaks, use active recall, and avoid multitasking. Try the Pomodoro technique for focused study sessions."
+                },
+                {
+                    keywords: [/how\s+to\s+memorize\s+things/i, /memorize\s+better/i],
+                    answer: "Use repetition, mnemonics, visualization, and teach others to reinforce your memory."
+                },
+                {
+                    keywords: [/how\s+to\s+write\s+an\s+essay/i, /write\s+an\s+essay/i],
+                    answer: "Start with an outline, write a clear thesis, support your points with evidence, and proofread your work."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+a\s+job/i, /find\s+a\s+job/i],
+                    answer: "Search on job boards like <a href='https://www.indeed.com/' target='_blank' rel='noopener'>Indeed</a>, <a href='https://www.linkedin.com/jobs/' target='_blank' rel='noopener'>LinkedIn Jobs</a>, and <a href='https://www.glassdoor.com/' target='_blank' rel='noopener'>Glassdoor</a>. Network and apply to relevant positions."
+                },
+                {
+                    keywords: [/how\s+to\s+write\s+a\s+cover\s+letter/i, /write\s+a\s+cover\s+letter/i],
+                    answer: "Address the employer, explain why you're a good fit, and highlight relevant experience. Keep it concise and professional."
+                },
+                {
+                    keywords: [/how\s+to\s+prepare\s+for\s+an\s+interview/i, /interview\s+tips/i],
+                    answer: "Research the company, practice common questions, dress appropriately, and be on time."
+                },
+                {
+                    keywords: [/how\s+to\s+start\s+a\s+business/i, /start\s+a\s+business/i],
+                    answer: "Research your market, create a business plan, register your business, and promote your products or services."
+                },
+                {
+                    keywords: [/how\s+to\s+save\s+money/i, /save\s+money/i],
+                    answer: "Track your expenses, set a budget, avoid impulse purchases, and look for discounts or deals."
+                },
+                {
+                    keywords: [/how\s+to\s+pay\s+bills\s+online/i, /pay\s+bills\s+online/i],
+                    answer: "Log in to your bank or service provider's website, find the bill payment section, and follow the instructions."
+                },
+                {
+                    keywords: [/how\s+to\s+recycle/i, /recycle\s+properly/i],
+                    answer: "Check your local recycling guidelines, separate recyclables, and clean items before placing them in the recycling bin."
+                },
+                {
+                    keywords: [/how\s+to\s+reduce\s+plastic\s+use/i, /reduce\s+plastic/i],
+                    answer: "Use reusable bags, bottles, and containers. Avoid single-use plastics and recycle whenever possible."
+                },
+                {
+                    keywords: [/how\s+to\s+plant\s+a\s+tree/i, /plant\s+a\s+tree/i],
+                    answer: "Choose a suitable location, dig a hole twice as wide as the root ball, place the tree, fill with soil, and water thoroughly."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+coffee/i, /make\s+coffee/i],
+                    answer: "Use ground coffee and hot water in a coffee maker, French press, or pour-over. Adjust strength to taste."
+                },
+                {
+                    keywords: [/how\s+to\s+boil\s+an\s+egg/i, /boil\s+an\s+egg/i],
+                    answer: "Place eggs in a pot, cover with water, bring to a boil, then simmer for 9-12 minutes. Cool in cold water before peeling."
+                },
+                {
+                    keywords: [/how\s+to\s+make\s+pancakes/i, /make\s+pancakes/i],
+                    answer: "Mix flour, eggs, milk, and baking powder. Pour batter onto a hot pan, cook until bubbles form, flip, and cook until golden."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+mcdonald'?s/i, /where\s+is\s+mcdonald'?s/i, /nearest\s+mcdonald'?s/i],
+                    answer: "Use <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a> or <a href='https://www.mcdonalds.com/us/en-us/restaurant-locator.html' target='_blank' rel='noopener'>McDonald's Restaurant Locator</a> to find the nearest McDonald's."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+atm/i, /nearest\s+atm/i],
+                    answer: "Search 'ATM near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a> or use your bank's app."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+pharmacy/i, /nearest\s+pharmacy/i],
+                    answer: "Search 'pharmacy near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+gas\s+station/i, /nearest\s+gas\s+station/i],
+                    answer: "Search 'gas station near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+hospital/i, /nearest\s+hospital/i],
+                    answer: "Search 'hospital near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+library/i, /nearest\s+library/i],
+                    answer: "Search 'library near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+post\s+office/i, /nearest\s+post\s+office/i],
+                    answer: "Search 'post office near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+grocery\s+store/i, /nearest\s+grocery\s+store/i],
+                    answer: "Search 'grocery store near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+school/i, /nearest\s+school/i],
+                    answer: "Search 'school near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+park/i, /nearest\s+park/i],
+                    answer: "Search 'park near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+bank/i, /nearest\s+bank/i],
+                    answer: "Search 'bank near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+restaurant/i, /nearest\s+restaurant/i],
+                    answer: "Search 'restaurant near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+hotel/i, /nearest\s+hotel/i],
+                    answer: "Search 'hotel near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+movie\s+theater/i, /nearest\s+movie\s+theater/i],
+                    answer: "Search 'movie theater near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+gym/i, /nearest\s+gym/i],
+                    answer: "Search 'gym near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+mall/i, /nearest\s+mall/i],
+                    answer: "Search 'mall near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+car\s+repair/i, /nearest\s+car\s+repair/i],
+                    answer: "Search 'car repair near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+pet\s+store/i, /nearest\s+pet\s+store/i],
+                    answer: "Search 'pet store near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+hardware\s+store/i, /nearest\s+hardware\s+store/i],
+                    answer: "Search 'hardware store near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+coffee\s+shop/i, /nearest\s+coffee\s+shop/i],
+                    answer: "Search 'coffee shop near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+barber/i, /nearest\s+barber/i],
+                    answer: "Search 'barber near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+hair\s+salon/i, /nearest\s+hair\s+salon/i],
+                    answer: "Search 'hair salon near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+laundry/i, /nearest\s+laundry/i],
+                    answer: "Search 'laundry near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+electronics\s+store/i, /nearest\s+electronics\s+store/i],
+                    answer: "Search 'electronics store near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+bookstore/i, /nearest\s+bookstore/i],
+                    answer: "Search 'bookstore near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+toy\s+store/i, /nearest\s+toy\s+store/i],
+                    answer: "Search 'toy store near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+clothing\s+store/i, /nearest\s+clothing\s+store/i],
+                    answer: "Search 'clothing store near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+shoe\s+store/i, /nearest\s+shoe\s+store/i],
+                    answer: "Search 'shoe store near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+furniture\s+store/i, /nearest\s+furniture\s+store/i],
+                    answer: "Search 'furniture store near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+florist/i, /nearest\s+florist/i],
+                    answer: "Search 'florist near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+vet/i, /nearest\s+vet/i],
+                    answer: "Search 'vet near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+dentist/i, /nearest\s+dentist/i],
+                    answer: "Search 'dentist near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+optometrist/i, /nearest\s+optometrist/i],
+                    answer: "Search 'optometrist near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/how\s+to\s+find\s+nearest\s+clinic/i, /nearest\s+clinic/i],
+                    answer: "Search 'clinic near me' on <a href='https://maps.google.com/' target='_blank' rel='noopener'>Google Maps</a>."
+                },
+                {
+                    keywords: [/is\s+memz\s+safe/i],
+                    answer: "No, MEMZ is not safe. MEMZ is a well-known malware (trojan/virus) that was originally created as a joke or demonstration for YouTube, but it is extremely destructive. Once executed, MEMZ can corrupt your files, display disturbing messages, and ultimately render your computer unusable by overwriting the Master Boot Record (MBR), making it impossible to boot without a full reinstall of your operating system. You should never run MEMZ or any similar malware on your computer, even in a virtual machine, unless you are an experienced security researcher and understand the risks. If you suspect you have run MEMZ, immediately disconnect from the internet and seek professional help to recover your data."
+                },
+                {
+                    keywords: [/what\s+is\s+memz/i],
+                    answer: "MEMZ is a custom-made trojan/malware program that was originally created for demonstration purposes by a developer named Leurak. It became popular through YouTube videos showing its destructive and bizarre payloads, including opening random programs, displaying memes, and ultimately corrupting the system's boot sector. MEMZ is not a legitimate or useful program; it is designed to be highly destructive and should never be run on any real computer. Running MEMZ will almost certainly result in data loss and require a full system reinstall."
+                },
+                {
+                    keywords: [/can\s+i\s+remove\s+memz/i, /how\s+to\s+remove\s+memz/i],
+                    answer: "Removing MEMZ is very difficult because it is designed to be highly destructive. Once MEMZ has been executed, it will corrupt system files and the Master Boot Record (MBR), making your computer unbootable. The only reliable way to recover is to completely wipe your hard drive and reinstall your operating system from scratch. If you have important files, disconnect your drive and consult a professional data recovery service. Prevention is the best defense: never run suspicious programs or files from untrusted sources."
+                },
+                {
+                    keywords: [/is\s+bluekeep\s+safe/i, /what\s+is\s+bluekeep/i],
+                    answer: "BlueKeep is not a program, but a critical security vulnerability (CVE-2019-0708) found in older versions of Microsoft Windows' Remote Desktop Services. BlueKeep allows attackers to remotely execute code on vulnerable systems, potentially leading to malware infections or ransomware attacks. Microsoft released security patches for supported and some unsupported versions of Windows. To stay safe, always keep your system updated and avoid exposing Remote Desktop to the internet without proper security."
+                },
+                {
+                    keywords: [/is\s+wannacry\s+safe/i, /what\s+is\s+wannacry/i],
+                    answer: "WannaCry is not safe. It is a ransomware attack that spread globally in 2017, encrypting files on infected computers and demanding payment in Bitcoin for decryption. WannaCry exploited a vulnerability in Windows systems (EternalBlue). If you encounter WannaCry or similar ransomware, do not pay the ransom. Instead, disconnect from the network, seek professional help, and restore from backups if possible. Always keep your operating system and software up to date to protect against such threats."
+                },
+                {
+                    keywords: [/is\s+bonzi\s+buddy\s+safe/i, /what\s+is\s+bonzi\s+buddy/i],
+                    answer: "Bonzi Buddy is not considered safe. It was a desktop assistant program from the early 2000s that became infamous for displaying ads, tracking user activity, and being classified as spyware/adware by many antivirus programs. Bonzi Buddy is no longer supported and should not be downloaded or run on modern computers."
+                },
+                {
+                    keywords: [/is\s+iloveyou\s+virus\s+safe/i, /what\s+is\s+iloveyou\s+virus/i],
+                    answer: "The ILOVEYOU virus is not safe. It was a computer worm that spread via email in 2000, causing billions of dollars in damage by overwriting files and spreading to contacts. It is a historic example of how dangerous email attachments can be. Never open suspicious email attachments, even if they appear to come from someone you know."
+                },
+                {
+                    keywords: [/is\s+adware\s+safe/i, /what\s+is\s+adware/i],
+                    answer: "Adware is not considered safe. It is software that automatically displays or downloads advertising material (often unwanted) when a user is online. While some adware is relatively harmless, it can slow down your computer, track your browsing habits, and sometimes serve as a gateway for more malicious software. It's best to avoid installing adware and use reputable antivirus software to remove it if detected."
+                },
+                {
+                    keywords: [/is\s+trojan\s+safe/i, /what\s+is\s+a\s+trojan/i],
+                    answer: "A trojan (or trojan horse) is a type of malware that disguises itself as a legitimate program but performs malicious actions once executed. Trojans can steal data, install other malware, or give attackers remote access to your computer. Trojans are never safe. Always download software from trusted sources and use up-to-date antivirus protection."
+                },
+                {
+                    keywords: [/is\s+malware\s+safe/i, /what\s+is\s+malware/i],
+                    answer: "Malware is not safe. It is malicious software designed to harm, exploit, or otherwise compromise your device or data. Always use antivirus protection and avoid downloading files from untrusted sources."
+                },
+                {
+                    keywords: [/is\s+ransomware\s+safe/i, /what\s+is\s+ransomware/i],
+                    answer: "Ransomware is not safe. It is a type of malware that encrypts your files and demands payment for their release. Never pay the ransom; instead, seek professional help and restore from backups."
+                },
+                {
+                    keywords: [/is\s+spyware\s+safe/i, /what\s+is\s+spyware/i],
+                    answer: "Spyware is not safe. It secretly monitors your activity and can steal personal information. Use reputable security software to detect and remove spyware."
+                },
+                {
+                    keywords: [/is\s+rootkit\s+safe/i, /what\s+is\s+rootkit/i],
+                    answer: "Rootkits are not safe. They are malicious tools that hide other malware and give attackers control over your system. Use up-to-date antivirus software to protect your device."
+                },
+                {
+                    keywords: [/is\s+phishing\s+safe/i, /what\s+is\s+phishing/i],
+                    answer: "Phishing is not safe. It is a scam where attackers trick you into revealing sensitive information, often via fake emails or websites. Always verify links and never share passwords with untrusted sources."
+                },
+                {
+                    keywords: [/is\s+keylogger\s+safe/i, /what\s+is\s+keylogger/i],
+                    answer: "Keyloggers are not safe. They record your keystrokes to steal passwords and personal data. Protect yourself with security software and avoid suspicious downloads."
+                },
+                {
+                    keywords: [/is\s+adblocker\s+safe/i, /what\s+is\s+adblocker/i],
+                    answer: "Adblockers are generally safe and help block unwanted ads. Use reputable adblocker extensions from trusted sources."
+                },
+                {
+                    keywords: [/is\s+vpn\s+safe/i, /what\s+is\s+vpn/i],
+                    answer: "VPNs (Virtual Private Networks) are generally safe and help protect your privacy online. Choose a reputable VPN provider and avoid free VPNs that may log your data."
+                },
+                {
+                    keywords: [/is\s+tor\s+safe/i, /what\s+is\s+tor/i],
+                    answer: "Tor is a privacy-focused browser that routes your traffic through multiple servers. It is safe for anonymous browsing, but be cautious when downloading files or entering personal information."
+                },
+                {
+                    keywords: [/is\s+firewall\s+safe/i, /what\s+is\s+firewall/i],
+                    answer: "Firewalls are safe and help protect your device from unauthorized access. Keep your firewall enabled for better security."
+                },
+                {
+                    keywords: [/is\s+two[- ]?factor\s+authentication\s+safe/i, /what\s+is\s+two[- ]?factor\s+authentication/i],
+                    answer: "Two-factor authentication (2FA) is safe and adds an extra layer of security to your accounts. Always enable 2FA when available."
+                },
+                {
+                    keywords: [/is\s+password\s+manager\s+safe/i, /what\s+is\s+password\s+manager/i],
+                    answer: "Password managers are generally safe and help you create and store strong passwords. Use a reputable password manager and enable two-factor authentication."
+                },
+                {
+                    keywords: [/is\s+cloud\s+storage\s+safe/i, /what\s+is\s+cloud\s+storage/i],
+                    answer: "Cloud storage is safe when using reputable providers and strong passwords. Enable two-factor authentication and avoid storing sensitive data without encryption."
+                },
+                {
+                    keywords: [/is\s+public\s+wifi\s+safe/i, /what\s+is\s+public\s+wifi/i],
+                    answer: "Public WiFi is not always safe. Avoid accessing sensitive accounts or entering passwords on public networks unless you use a VPN."
+                },
+                {
+                    keywords: [/is\s+bluetooth\s+safe/i, /what\s+is\s+bluetooth/i],
+                    answer: "Bluetooth is generally safe, but turn it off when not in use to prevent unauthorized connections or attacks."
+                },
+                {
+                    keywords: [/is\s+nfc\s+safe/i, /what\s+is\s+nfc/i],
+                    answer: "NFC (Near Field Communication) is safe for most uses, such as contactless payments. Only use NFC with trusted devices and apps."
+                },
+                {
+                    keywords: [/is\s+qr\s+code\s+safe/i, /what\s+is\s+qr\s+code/i],
+                    answer: "QR codes are safe if from trusted sources. Malicious QR codes can lead to phishing sites or malware. Always verify the source before scanning."
+                },
+                {
+                    keywords: [/is\s+usb\s+drive\s+safe/i, /what\s+is\s+usb\s+drive/i],
+                    answer: "USB drives are safe if you trust the source. Unknown USB drives may contain malware. Scan them with antivirus software before use."
+                },
+                {
+                    keywords: [/is\s+smart\s+home\s+safe/i, /what\s+is\s+smart\s+home/i],
+                    answer: "Smart home devices are generally safe, but always use strong passwords, keep firmware updated, and secure your WiFi network."
+                },
+                {
+                    keywords: [/is\s+smart\s+tv\s+safe/i, /what\s+is\s+smart\s+tv/i],
+                    answer: "Smart TVs are safe when updated and secured. Review privacy settings and avoid installing untrusted apps."
+                },
+                {
+                    keywords: [/is\s+voice\s+assistant\s+safe/i, /what\s+is\s+voice\s+assistant/i],
+                    answer: "Voice assistants are generally safe, but review privacy settings and be cautious about sharing sensitive information."
+                },
+                {
+                    keywords: [/is\s+cloud\s+backup\s+safe/i, /what\s+is\s+cloud\s+backup/i],
+                    answer: "Cloud backups are safe with reputable providers. Use strong passwords and enable encryption for sensitive data."
+                },
+                {
+                    keywords: [/is\s+online\s+banking\s+safe/i, /what\s+is\s+online\s+banking/i],
+                    answer: "Online banking is safe when using secure connections, strong passwords, and two-factor authentication. Avoid banking on public WiFi."
+                },
+                {
+                    keywords: [/is\s+contactless\s+payment\s+safe/i, /what\s+is\s+contactless\s+payment/i],
+                    answer: "Contactless payments are safe and use encryption. Only use trusted payment apps and monitor your account for unauthorized transactions."
+                },
+                {
+                    keywords: [/is\s+mobile\s+payment\s+safe/i, /what\s+is\s+mobile\s+payment/i],
+                    answer: "Mobile payments are safe with reputable apps. Use strong passwords, enable device security, and monitor your transactions."
+                },
+                {
+                    keywords: [/is\s+online\s+shopping\s+safe/i, /what\s+is\s+online\s+shopping/i],
+                    answer: "Online shopping is safe on trusted websites. Look for HTTPS, use secure payment methods, and avoid sharing unnecessary personal information."
+                },
+                {
+                    keywords: [/is\s+cryptocurrency\s+safe/i, /what\s+is\s+cryptocurrency/i],
+                    answer: "Cryptocurrency is safe when using reputable exchanges and wallets. Be aware of scams and always secure your private keys."
+                },
+                {
+                    keywords: [/is\s+blockchain\s+safe/i, /what\s+is\s+blockchain/i],
+                    answer: "Blockchain is a secure technology for recording transactions. It is considered safe, but individual applications may have risks."
+                },
+                {
+                    keywords: [/is\s+nft\s+safe/i, /what\s+is\s+nft/i],
+                    answer: "NFTs (Non-Fungible Tokens) are digital assets on a blockchain. They are safe to own, but be cautious of scams and only buy from reputable platforms."
+                },
+                {
+                    keywords: [/is\s+ai\s+safe/i, /what\s+is\s+ai/i],
+                    answer: "AI (Artificial Intelligence) is safe when used responsibly. Be aware of privacy and ethical considerations when using AI-powered services."
+                },
+                {
+                    keywords: [/is\s+machine\s+learning\s+safe/i, /what\s+is\s+machine\s+learning/i],
+                    answer: "Machine learning is a type of AI that learns from data. It is safe as a technology, but always review privacy policies of services using it."
+                },
+                {
+                    keywords: [/is\s+cloud\s+computing\s+safe/i, /what\s+is\s+cloud\s+computing/i],
+                    answer: "Cloud computing is safe with reputable providers. Use strong passwords, enable encryption, and review access permissions."
+                },
+                {
+                    keywords: [/is\s+open\s+source\s+safe/i, /what\s+is\s+open\s+source/i],
+                    answer: "Open source software is generally safe and transparent. Only download from official sources and review code or community feedback when possible."
+                },
+                {
+                    keywords: [/is\s+linux\s+safe/i, /what\s+is\s+linux/i],
+                    answer: "Linux is a secure and open source operating system. It is considered safe, especially when kept updated and used with reputable software."
+                },
+                {
+                    keywords: [/is\s+windows\s+safe/i, /what\s+is\s+windows/i],
+                    answer: "Windows is a widely used operating system. It is safe when kept updated and protected with antivirus software."
+                },
+                {
+                    keywords: [/is\s+macos\s+safe/i, /what\s+is\s+macos/i],
+                    answer: "macOS is Apple's operating system for Macs. It is considered safe, but always keep your system updated and use strong passwords."
+                },
+                {
+                    keywords: [/is\s+android\s+safe/i, /what\s+is\s+android/i],
+                    answer: "Android is a mobile operating system. It is safe when updated and used with apps from trusted sources like Google Play."
+                },
+                {
+                    keywords: [/is\s+ios\s+safe/i, /what\s+is\s+ios/i],
+                    answer: "iOS is Apple's mobile operating system. It is considered safe, especially when updated and used with apps from the App Store."
+                },
+                {
+                    keywords: [/is\s+chromebook\s+safe/i, /what\s+is\s+chromebook/i],
+                    answer: "Chromebooks are safe and use Chrome OS, which is designed with security in mind. Keep your device updated for best protection."
+                },
+                {
+                    keywords: [/is\s+edge\s+safe/i, /what\s+is\s+edge/i],
+                    answer: "Microsoft Edge is a modern web browser. It is safe to use, especially when kept updated."
+                },
+                {
+                    keywords: [/is\s+chrome\s+safe/i, /what\s+is\s+chrome/i],
+                    answer: "Google Chrome is a popular web browser. It is safe when updated and used with caution regarding extensions."
+                },
+                {
+                    keywords: [/is\s+firefox\s+safe/i, /what\s+is\s+firefox/i],
+                    answer: "Mozilla Firefox is a secure, privacy-focused browser. It is safe to use and regularly updated."
+                },
+                {
+                    keywords: [/is\s+safari\s+safe/i, /what\s+is\s+safari/i],
+                    answer: "Safari is Apple's web browser. It is safe and privacy-focused, especially on Apple devices."
+                },
+                {
+                    keywords: [/is\s+opera\s+safe/i, /what\s+is\s+opera/i],
+                    answer: "Opera is a web browser with built-in privacy features. It is generally safe, but always download from the official website."
+                },
+                {
+                    keywords: [/is\s+brave\s+safe/i, /what\s+is\s+brave/i],
+                    answer: "Brave is a privacy-focused web browser. It is safe and blocks ads and trackers by default."
+                },
+                {
+                    keywords: [/is\s+vivaldi\s+safe/i, /what\s+is\s+vivaldi/i],
+                    answer: "Vivaldi is a customizable web browser. It is safe and regularly updated."
+                },
+                  {
+                    keywords: [/is\s+wave\s+browser\s+safe/i],
+                    answer: "No, Wave Browser is not safe. It's a potentially unwanted browser that can hijack your browser settings like add policies to browsers, change your default search engine, and display unwanted ads."
+                },
+                  {
+                    keywords: [/what\s+is\s+wave\s+browser/i],
+                  answer: "Wave Browser is a potentially unwanted browser that can hijack your browser settings, change your default search engine, and display unwanted ads."
+                },
+                
+                {
+                    keywords: [/is\s+duckduckgo\s+safe/i, /what\s+is\s+duckduckgo/i],
+                    answer: "DuckDuckGo is a privacy-focused search engine. It is safe and does not track your searches."
+                },
+                {
+                    keywords: [/is\s+startpage\s+safe/i, /what\s+is\s+startpage/i],
+                    answer: "Startpage is a privacy-focused search engine. It is safe and does not track your searches."
+                },
+                {
+                    keywords: [/is\s+bing\s+safe/i, /what\s+is\s+bing/i],
+                    answer: "Bing is Microsoft's search engine. It is safe to use, but may collect usage data for analytics and advertising."
+                },
+                {
+                    keywords: [/is\s+yahoo\s+safe/i, /what\s+is\s+yahoo/i],
+                    answer: "Yahoo is a web portal and search engine. It is safe to use, but review privacy settings for best protection."
+                },
+                {
+                    keywords: [/is\s+brave\s+search\s+safe/i, /what\s+is\s+brave\s+search/i],
+                    answer: "Brave Search is a privacy-focused search engine. It is safe and does not track your searches."
+                }
+            ];
+
+            function getAIOverviewAnswer(query) {
+                for (const qa of aiAnswers) {
+                    for (const re of qa.keywords) {
+                        if (re.test(query)) return qa.answer;
+                    }
+                }
+                // Fallback: If query is a "what is X" or "who is X" or "where is X" type
+                if (/^(what|who|where)\s+(is|are|was|were)\s+.+/i.test(query)) {
+                    return "Sorry, I couldn't find an instant answer for your question. Try searching or visiting Wikipedia for more information.";
+                }
+                return null;
+            }
+
+            // --- AI Overview Render ---
+            function renderAIOverview(query) {
+                if (!isAIOverviewEnabled()) {
+                    aiOverviewBox.style.display = 'none';
+                    aiOverviewBox.innerHTML = '';
+                    return;
+                }
+                const answer = getAIOverviewAnswer(query.trim());
+                if (!answer) {
+                    aiOverviewBox.style.display = 'none';
+                    aiOverviewBox.innerHTML = '';
+                    return;
+                }
+                aiOverviewBox.style.display = '';
+                aiOverviewBox.innerHTML = `
+                    <div style="padding:28px 32px 18px 32px;display:flex;flex-direction:column;gap:12px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a259f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><circle cx="12" cy="12" r="10"/><path d="M8 15h8M8 12h8M8 9h8"/></svg>
+                            <span style="font-size:1.25em;font-weight:700;letter-spacing:0.2px;">AI Overview <span style="font-size:0.85em;color:#a259f7;font-weight:500;margin-left:6px;">Beta</span></span>
+                        </div>
+                        <div style="font-size:1.13em;line-height:1.6;color:inherit;word-break:break-word;">${answer}</div>
+                    </div>
+                    <div style="border-top:1.5px solid #a259f733;margin:0 0 0 0;padding:12px 32px 0 32px;display:flex;flex-wrap:wrap;align-items:center;gap:18px;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:14px;">
+                            <button class="btn liquid-glass" id="aiOverviewFeedbackBtn" style="padding:6px 16px;font-size:0.98em;background:#6c2eb7;color:#fff;">Feedback</button>
+                            <button class="btn liquid-glass" id="aiOverviewShareBtn" style="padding:6px 16px;font-size:0.98em;background:#a259f7;color:#fff;">Share</button>
+                        </div>
+                        <span style="font-size:0.97em;color:#aaa;">AI-generated. May be inaccurate.</span>
+                    </div>
+                `;
+                // Feedback button
+                aiOverviewBox.querySelector('#aiOverviewFeedbackBtn').onclick = function () {
+                    showAIOverviewFeedbackModal(query, answer);
+                };
+                // Share button
+                aiOverviewBox.querySelector('#aiOverviewShareBtn').onclick = function () {
+                    shareAIOverview(query, answer);
+                };
+            }
+
+            // --- Share Modal ---
+            function shareAIOverview(query, answer) {
+                const shareText = `AI Overview for "${query}":\n${answer.replace(/<[^>]+>/g, '')}`;
+                const shareUrl = window.location.href;
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'AI Overview',
+                        text: shareText,
+                        url: shareUrl
+                    }).catch(() => {
+                        showAIOverviewShareModal(shareText, shareUrl);
+                    });
+                } else {
+                    showAIOverviewShareModal(shareText, shareUrl);
+                }
+            }
+            function showAIOverviewShareModal(text, url) {
+                document.getElementById('aiOverviewShareModal')?.remove();
+                const modal = document.createElement('div');
+                modal.id = 'aiOverviewShareModal';
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100vw';
+                modal.style.height = '100vh';
+                modal.style.background = 'rgba(0,0,0,0.35)';
+                modal.style.display = 'flex';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                modal.style.zIndex = '10030';
+                modal.innerHTML = `
+                    <div class="liquid-glass" style="padding:0;border-radius:18px;box-shadow:0 4px 32px #0002;position:relative;max-width:95vw;min-width:320px;">
+                        <button id="aiOverviewShareModalClose" style="position:absolute;top:10px;right:10px;z-index:2;background:#a259f7;color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:1.3em;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                            &times;
+                        </button>
+                        <div style="padding:32px 28px 24px 28px;max-width:480px;">
+                            <h3 style="margin-top:0;">Share AI Overview</h3>
+                            <div style="margin-bottom:14px;font-size:1.05em;word-break:break-word;">${text.replace(/\n/g, '<br>')}</div>
+                            <div style="margin-bottom:14px;">
+                                <input type="text" value="${url}" readonly style="width:100%;padding:8px;border-radius:8px;margin-top:4px;font-size:0.97em;">
+                            </div>
+                            <div style="display:flex;flex-wrap:nowrap;gap:10px;margin-bottom:10px; overflow-x:auto;">
+                                <button class="btn liquid-glass" style="background:#a259f7;color:#fff;" id="aiCopyBtn">Copy</button>
+                                <button class="btn liquid-glass" style="background:#e34133;color:#fff;" id="aiGmailBtn">Gmail</button>
+                                <button class="btn liquid-glass" style="background:#4285f4;color:#fff;" id="aiDriveBtn">Google Drive</button>
+                                <button class="btn liquid-glass" style="background:#34a853;color:#fff;" id="aiChatBtn">Google Chat</button>
+                                <button class="btn liquid-glass" style="background:#ffb300;color:#fff;" id="aiGeminiBtn">Google Gemini</button>
+                                <button class="btn liquid-glass" style="background:#1877f2;color:#fff;" id="aiFacebookBtn">Facebook</button>
+                                <button class="btn liquid-glass" style="background:#e1306c;color:#fff;" id="aiInstagramBtn">Instagram</button>
+                                <button class="btn liquid-glass" style="background:#25d366;color:#fff;" id="aiWhatsAppBtn">WhatsApp</button>
+                                <button class="btn liquid-glass" style="background:#000;color:#fff;" id="aiXBtn">X</button>
+                                <button class="btn liquid-glass" style="background:#ff4500;color:#fff;" id="aiRedditBtn">Reddit</button>
+                                <button class="btn liquid-glass" style="background:#4c75a3;color:#fff;" id="aiVKBtn">VK</button>
+                                <button class="btn liquid-glass" style="background:#ed812b;color:#fff;" id="aiOKBtn">OK</button>
+                                <button class="btn liquid-glass" style="background:#e60023;color:#fff;" id="aiPinterestBtn">Pinterest</button>
+                                <button class="btn liquid-glass" style="background:#0077b5;color:#fff;" id="aiLinkedInBtn">LinkedIn</button>
+                                <button class="btn liquid-glass" style="background:#10a37f;color:#fff;" id="aiChatGPTBtn">ChatGPT</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                modal.querySelector('#aiOverviewShareModalClose').onclick = () => modal.remove();
+                modal.addEventListener('mousedown', function (e) {
+                    if (e.target === modal) modal.remove();
+                });
+                // Copy
+                modal.querySelector('#aiCopyBtn').onclick = function () {
+                    navigator.clipboard.writeText(text + '\n' + url);
+                    showToast('Copied!');
+                };
+                // Gmail
+                modal.querySelector('#aiGmailBtn').onclick = function () {
+                    window.location.href = `https://mail.google.com/mail/?view=cm&fs=1&su=AI Overview&body=${encodeURIComponent(text + '\n' + url)}`;
+                };
+                // Google Drive (create a doc)
+                modal.querySelector('#aiDriveBtn').onclick = function () {
+                    showToast('Google Docs doesn\'t support pre-filled content via URL')
+                    window.location.href = `https://docs.google.com/document/create?usp=drive_web&title=AI%20Overview&body=${encodeURIComponent(text + '\n' + url)}`;
+                };
+               
+                // Google Gemini
+                modal.querySelector('#aiGeminiBtn').onclick = function () {
+                           showToast('Google Gemini doesn\'t support pre-filled content via URL')
+                    window.location.href = `https://gemini.google.com/?q=${encodeURIComponent(text)}`;
+                };
+                // Facebook
+                modal.querySelector('#aiFacebookBtn').onclick = function () {
+                    window.location.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+                };
+                // WhatsApp
+                modal.querySelector('#aiWhatsAppBtn').onclick = function () {
+                    window.location.href = `https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`;
+                };
+                // X (Twitter)
+                modal.querySelector('#aiXBtn').onclick = function () {
+                    window.location.href = `https://x.com/intent/tweet?text=${encodeURIComponent(text + '\n' + url)}`;
+                };
+                // Reddit
+                modal.querySelector('#aiRedditBtn').onclick = function () {
+                    window.location.href = `https://www.reddit.com/submit?title=AI%20Overview&text=${encodeURIComponent(text + '\n' + url)}`;
+                };
+                // VK
+                modal.querySelector('#aiVKBtn').onclick = function () {
+                    window.location.href = `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=AI%20Overview&comment=${encodeURIComponent(text)}`;
+                };
+                // OK.ru
+                modal.querySelector('#aiOKBtn').onclick = function () {
+                    window.location.href = `https://connect.ok.ru/offer?url=${encodeURIComponent(url)}&title=AI%20Overview&description=${encodeURIComponent(text)}`;
+                };
+                // Pinterest
+                modal.querySelector('#aiPinterestBtn').onclick = function () {
+                    window.location.href = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&description=${encodeURIComponent(text)}`;
+                };
+                // LinkedIn
+                modal.querySelector('#aiLinkedInBtn').onclick = function () {
+                    window.location.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                };
+                // ChatGPT (open chat.openai.com)
+                modal.querySelector('#aiChatGPTBtn').onclick = function () {
+                    window.location.href = `https://chatgpt.com/?q=${encodeURIComponent(text)}`;
+                };
+            }
+
+            // --- Feedback Modal ---
+            function showAIOverviewFeedbackModal(query, answer) {
+                document.getElementById('aiOverviewFeedbackModal')?.remove();
+                const modal = document.createElement('div');
+                modal.id = 'aiOverviewFeedbackModal';
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100vw';
+                modal.style.height = '100vh';
+                modal.style.background = 'rgba(0,0,0,0.35)';
+                modal.style.display = 'flex';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                modal.style.zIndex = '10031';
+                modal.innerHTML = `
+                    <div class="liquid-glass" style="padding:0;border-radius:18px;box-shadow:0 4px 32px #0002;position:relative;max-width:95vw;min-width:320px;">
+                        <button id="aiOverviewFeedbackModalClose" style="position:absolute;top:10px;right:10px;z-index:2;background:#a259f7;color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:1.3em;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                            &times;
+                        </button>
+                        <form id="aiOverviewFeedbackForm" style="padding:32px 28px 24px 28px;max-width:420px;">
+                            <h3 style="margin-top:0;">AI Overview Feedback</h3>
+                            <div style="margin-bottom:14px;">
+                                <label for="aiFeedbackText" style="font-weight:600;">Your feedback:</label><br>
+                                <textarea id="aiFeedbackText" required style="width:100%;min-height:60px;padding:8px;border-radius:8px;margin-top:4px;resize:vertical;"></textarea>
+                            </div>
+                            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                                <button type="button" id="aiOverviewFeedbackCancel" class="btn liquid-glass" style="background:#aaa;color:#fff;">Cancel</button>
+                                <button type="submit" class="btn liquid-glass" style="background:#a259f7;color:#fff;">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                modal.querySelector('#aiOverviewFeedbackModalClose').onclick = () => modal.remove();
+                modal.querySelector('#aiOverviewFeedbackCancel').onclick = () => modal.remove();
+                modal.addEventListener('mousedown', function (e) {
+                    if (e.target === modal) modal.remove();
+                });
+                modal.querySelector('#aiOverviewFeedbackForm').onsubmit = function (ev) {
+                    ev.preventDefault();
+                    const feedback = modal.querySelector('#aiFeedbackText').value.trim();
+                    if (!feedback) return;
+                    const subject = encodeURIComponent('AI Overview Feedback');
+                    const body = encodeURIComponent(
+                        `Query: ${query}\n\nAI Overview Answer: ${answer.replace(/<[^>]+>/g, '')}\n\nFeedback:\n${feedback}`
+                    );
+                    window.open(
+                        `https://mail.google.com/mail/?view=cm&fs=1&to=minecraftgamer97529@gmail.com&su=${subject}&body=${body}`,
+                        '_blank'
+                    );
+                    modal.remove();
+                    showToast('Feedback window opened in Gmail');
+                };
+            }
+
+            // --- Patch performSearch to call AI Overview ---
+            const origPerformSearch = window.performSearch;
+            window.performSearch = async function () {
+                const query = document.getElementById('searchInput').value.trim();
+                renderAIOverview(query);
+                await origPerformSearch.apply(this, arguments);
+            };
+            // On page load, show AI Overview if query present
+            window.addEventListener('DOMContentLoaded', function () {
+                const q = document.getElementById('searchInput').value.trim();
+                renderAIOverview(q);
+            });
+            // On input change, show/hide AI Overview
+            document.getElementById('searchInput').addEventListener('input', function () {
+                renderAIOverview(this.value.trim());
+            });
+        })();
         (function () {
             // --- Image Research Labs Toggle ---
             function updateImageResearchIcon() {
@@ -2989,7 +4444,7 @@
 
             // Wikipedia images
             try {
-                const wikiRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=1000&prop=pageimages|pageterms&piprop=original|thumbnail&format=json&origin=*`);
+                const wikiRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=50&prop=pageimages|pageterms&piprop=original|thumbnail&format=json&origin=*`);
                 const wikiData = await wikiRes.json();
                 if (wikiData.query && wikiData.query.pages) {
                 imageResults = imageResults.concat(
@@ -3006,47 +4461,62 @@
                 }
             } catch (err) {}
 
-            // GitHub repo images (repo owner avatars) with safe search (exclude NSFW/explicit repos)
-            try {
-                const githubRes = await fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(query)}+NOT:explicit+NOT:nsfw+NOT:adult+NOT:sex+NOT:xxx+NOT:porno+NOT:18%2B+NOT:erotic+NOT:nsfl&per_page=1000`);
-                const githubData = await githubRes.json();
-                if (githubData.items && Array.isArray(githubData.items)) {
-                imageResults = imageResults.concat(
-                    githubData.items
-                    // Filter out repos with explicit/NSFW keywords in name or description
-                    .filter(item => {
-                        const text = ((item.full_name || '') + ' ' + (item.description || '')).toLowerCase();
-                        return !/nsfw|explicit|sex|xxx|porno|adult|18\+|erotic|nsfl/.test(text);
-                    })
-                    .map(item => ({
-                        title: item.full_name,
-                        description: item.description || 'GitHub Repository',
-                        link: item.html_url,
-                        image: item.owner.avatar_url,
-                        favicon: "https://github.githubassets.com/favicons/favicon.svg"
-                    }))
-                );
+        // Stack Overflow images
+        try {
+            const stackRes = await fetch(`https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=${encodeURIComponent(query)}&site=stackoverflow&pagesize=20`);
+            const stackData = await stackRes.json();
+            if (stackData.items && Array.isArray(stackData.items)) {
+                for (const item of stackData.items) {
+                    // Try to get owner profile image
+                    if (item.owner && item.owner.profile_image) {
+                        imageResults.push({
+                            title: item.title,
+                            description: 'Stack Overflow',
+                            link: item.link,
+                            image: item.owner.profile_image,
+                            favicon: "https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico"
+                        });
+                    }
+                    // Try to get images from body (if available)
+                    if (item.body) {
+                        const imgMatches = item.body.match(/<img[^>]+src="([^">]+)"/g);
+                        if (imgMatches) {
+                            imgMatches.forEach(imgTag => {
+                                const srcMatch = imgTag.match(/src="([^">]+)"/);
+                                if (srcMatch && srcMatch[1]) {
+                                    imageResults.push({
+                                        title: item.title,
+                                        description: 'Stack Overflow',
+                                        link: item.link,
+                                        image: srcMatch[1],
+                                        favicon: "https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico"
+                                    });
+                                }
+                            });
+                        }
+                    }
                 }
-            } catch (err) {}
+            }
+        } catch (err) {}
 
-            // Stack Overflow user avatars for top answers
-            try {
-                const stackRes = await fetch(`https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=${encodeURIComponent(query)}&site=stackoverflow&pagesize=120`);
-                const stackData = await stackRes.json();
-                if (stackData.items && Array.isArray(stackData.items)) {
-                imageResults = imageResults.concat(
-                    stackData.items
-                    .filter(item => item.owner && item.owner.profile_image)
-                    .map(item => ({
-                        title: item.title,
-                        description: 'Stack Overflow',
-                        link: item.link,
-                        image: item.owner.profile_image,
-                        favicon: "https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico"
-                    }))
-                );
-                }
-            } catch (err) {}
+        // GitHub images (repo owner avatars)
+        try {
+            const githubRes = await fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&per_page=20`);
+            const githubData = await githubRes.json();
+            if (githubData.items && Array.isArray(githubData.items)) {
+                githubData.items.forEach(item => {
+                    if (item.owner && item.owner.avatar_url) {
+                        imageResults.push({
+                            title: item.full_name,
+                            description: 'GitHub',
+                            link: item.html_url,
+                            image: item.owner.avatar_url,
+                            favicon: "https://github.githubassets.com/favicons/favicon.svg"
+                        });
+                    }
+                });
+            }
+        } catch (err) {}
 
             // Render images with pagination (limit 100, show more button)
             clearResults();
@@ -3063,7 +4533,7 @@
                 resultsContainer.style.margin = '0';
 
                 let currentIndex = 0;
-                const PAGE_SIZE = 100;
+                const PAGE_SIZE = 50;
 
                 function renderImagesPage() {
                 // Remove previous grid if any
@@ -3149,7 +4619,169 @@
             isLoading = false;
             }
         });
-
+        document.getElementById('mapsResult').addEventListener('click', async () => {
+            const query = searchInput.value.trim();
+            updateQueryParam(query);
+            clearResults();
+            // Set up OpenStreetMap with Leaflet.js (privacy-friendly)
+            resultsContainer.innerHTML = `
+                <div id="munetiosMap" style="width:100%;height:420px;border-radius:16px;box-shadow:0 2px 16px #0002;margin-bottom:18px;"></div>
+                <form id="mapSearchForm" style="display:flex;gap:8px;margin-bottom:18px;">
+                    <input id="mapSearchInput" type="text" placeholder="Search for a place or address" value="${query}" style="flex:1;padding:8px 14px;border-radius:8px;font-size:1em;">
+                    <button class="btn liquid-glass" style="padding:8px 18px;" type="submit">Search</button>
+                </form>
+                <button id="useLocationBtn" class="btn liquid-glass" style="margin:0 0 18px 0;padding:8px 18px;display:block;" type="button">Use my location</button>
+                <div id="mapResultsList"></div>
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+            `;
+            // Add event listener for the location button after it is in the DOM
+            const useLocationBtn = document.getElementById('useLocationBtn');
+            useLocationBtn.onclick = function () {
+                if (!navigator.geolocation) {
+                    showToast('Geolocation not supported');
+                    return;
+                }
+                useLocationBtn.disabled = true;
+                useLocationBtn.textContent = 'Locating...';
+                navigator.geolocation.getCurrentPosition(
+                    async function (pos) {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+                        // Center map
+                        if (window.L && window.munetiosMapInstance) {
+                            window.munetiosMapInstance.setView([lat, lon], 15);
+                            // Add marker
+                            L.marker([lat, lon]).addTo(window.munetiosMapInstance)
+                                .bindPopup('You are here').openPopup();
+                        }
+                        // Reverse geocode to get address
+                        try {
+                            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1`);
+                            const data = await res.json();
+                            let display = data.display_name || '';
+                            document.getElementById('mapSearchInput').value = display;
+                            // Optionally, trigger search for nearby places
+                            // document.getElementById('mapSearchForm').dispatchEvent(new Event('submit'));
+                        } catch (e) {
+                            showToast('Could not get address');
+                        }
+                        useLocationBtn.disabled = false;
+                        useLocationBtn.textContent = 'Use my location';
+                    },
+                    function (err) {
+                        showToast('Location permission denied');
+                        useLocationBtn.disabled = false;
+                        useLocationBtn.textContent = 'Use my location';
+                    }
+                );
+            };
+            // Load Leaflet.js if not loaded
+            if (!window.L) {
+                const leafletScript = document.createElement('script');
+                leafletScript.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+                leafletScript.onload = () => initMunetiosMap(query);
+                document.body.appendChild(leafletScript);
+            } else {
+                initMunetiosMap(query);
+            }
+            function initMunetiosMap(searchQuery) {
+                // Remove any existing map
+                if (window.munetiosMapInstance) {
+                    window.munetiosMapInstance.remove();
+                }
+                const map = L.map('munetiosMap', {
+                    zoomControl: true,
+                    attributionControl: false,
+                }).setView([20, 0], 2);
+                window.munetiosMapInstance = map;
+                // Use OpenStreetMap tiles (no tracking)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(map);
+                // Search function using Nominatim (OpenStreetMap geocoder)
+                async function searchLocation(q) {
+                    if (!q) return;
+                    document.getElementById('mapResultsList').innerHTML = '<div style="color:#aaa;padding:18px 0;">Searching for locations...</div>';
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=2000&addressdetails=1`);
+                        const data = await res.json();
+                        if (!data.length) {
+                            document.getElementById('mapResultsList').innerHTML = '<div style="color:#aaa;padding:18px 0;">No locations found.</div>';
+                            // If this was triggered by "Use my location", show nearby places (reverse geocode + nearby search)
+                            if (window.munetiosMapInstance && window.munetiosMapInstance._lastLocation) {
+                                const { lat, lon } = window.munetiosMapInstance._lastLocation;
+                                // Search for nearby places (amenities, shops, etc.) using Nominatim
+                                fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=20&addressdetails=1&extratags=1&bounded=1&viewbox=${lon-0.01},${lat+0.01},${lon+0.01},${lat-0.01}`)
+                                    .then(res => res.json())
+                                    .then(nearby => {
+                                        if (nearby.length) {
+                                            document.getElementById('mapResultsList').innerHTML += '<div style="color:#aaa;padding:8px 0 0 0;">Nearby places:</div>' +
+                                                nearby.map(place => `
+                                                    <div style="margin-bottom:10px;padding:10px 0;border-bottom:1px solid #a259f733;">
+                                                        <b>${place.display_name.split(',')[0]}</b><br>
+                                                        <span style="font-size:0.97em;color:#aaa;">${place.display_name}</span><br>
+                                                        <button class="btn liquid-glass" style="padding:4px 14px;margin-top:4px;" data-lat="${place.lat}" data-lon="${place.lon}">Show on map</button>
+                                                    </div>
+                                                `).join('');
+                                            // Add markers for nearby places
+                                            nearby.forEach(place => {
+                                                L.marker([place.lat, place.lon]).addTo(window.munetiosMapInstance)
+                                                    .bindPopup(`<b>${place.display_name.split(',')[0]}</b><br><span style="font-size:0.97em;">${place.display_name}</span>`);
+                                            });
+                                            // Button click to focus on marker
+                                            document.querySelectorAll('#mapResultsList button[data-lat]').forEach(btn => {
+                                                btn.onclick = function() {
+                                                    const lat = parseFloat(this.getAttribute('data-lat'));
+                                                    const lon = parseFloat(this.getAttribute('data-lon'));
+                                                    window.munetiosMapInstance.setView([lat, lon], 16);
+                                                };
+                                            });
+                                        }
+                                    });
+                            }
+                            return;
+                        }
+                        // Show results as a list and add markers
+                        let bounds = [];
+                        document.getElementById('mapResultsList').innerHTML = data.map(place => `
+                            <div style="margin-bottom:10px;padding:10px 0;border-bottom:1px solid #a259f733;">
+                                <b>${place.display_name.split(',')[0]}</b><br>
+                                <span style="font-size:0.97em;color:#aaa;">${place.display_name}</span><br>
+                                <button class="btn liquid-glass" style="padding:4px 14px;margin-top:4px;" data-lat="${place.lat}" data-lon="${place.lon}">Show on map</button>
+                            </div>
+                        `).join('');
+                        data.forEach(place => {
+                            const lat = parseFloat(place.lat);
+                            const lon = parseFloat(place.lon);
+                            const marker = L.marker([lat, lon]).addTo(map)
+                                .bindPopup(`<b>${place.display_name.split(',')[0]}</b><br><span style="font-size:0.97em;">${place.display_name}</span>`);
+                            bounds.push([lat, lon]);
+                        });
+                        if (bounds.length) {
+                            map.fitBounds(bounds, { padding: [40, 40] });
+                        }
+                        // Button click to focus on marker
+                        document.querySelectorAll('#mapResultsList button[data-lat]').forEach(btn => {
+                            btn.onclick = function() {
+                                const lat = parseFloat(this.getAttribute('data-lat'));
+                                const lon = parseFloat(this.getAttribute('data-lon'));
+                                map.setView([lat, lon], 16);
+                            };
+                        });
+                    } catch (e) {
+                        document.getElementById('mapResultsList').innerHTML = '<div style="color:#e66;padding:18px 0;">Failed to load map results.</div>';
+                    }
+                }
+                // Initial search if query present
+                if (searchQuery) searchLocation(searchQuery);
+                // Handle form submit
+                document.getElementById('mapSearchForm').onsubmit = function(ev) {
+                    ev.preventDefault();
+                    const q = document.getElementById('mapSearchInput').value.trim();
+                    searchLocation(q);
+                };
+            }
+        });
         document.getElementById('videosResult').addEventListener('click', async () => {
             const query = searchInput.value.trim();
             updateQueryParam(query);
@@ -9409,6 +11041,118 @@
                 "url": "https://en.wikiquote.org",
                 "favicon": "",
                 "link": "https://en.wikiquote.org"
+            },
+            {
+                "title": "Dave & Buster's",
+                "description": "Eat, drink, play and watch sports at Dave & Buster's, the ultimate entertainment and arcade destination.",
+                "url": "https://www.daveandbusters.com",
+                "favicon": "",
+                "link": "https://www.daveandbusters.com"
+            },
+            {
+                "title": "Launch Entertainment",
+                "description": "Launch Entertainment offers trampoline parks, bowling, arcades, laser tag, and more for family fun and parties.",
+                "url": "https://launchtrampolinepark.com",
+                "favicon": "",
+                "link": "https://launchtrampolinepark.com"
+            },
+            {
+                "title": "McDonald's",
+                "description": "Enjoy your favorite burgers, fries, and more at McDonald's. Find locations, menus, and deals.",
+                "url": "https://www.mcdonalds.com",
+                "favicon": "",
+                "link": "https://www.mcdonalds.com"
+            },
+            {
+                "title": "Chick-fil-A",
+                "description": "Home of the original chicken sandwich. View menu, find locations, and order online at Chick-fil-A.",
+                "url": "https://www.chick-fil-a.com",
+                "favicon": "",
+                "link": "https://www.chick-fil-a.com"
+            },
+            {
+                "title": "Burger King",
+                "description": "Flame-grilled burgers, fries, and more. Find a Burger King near you and order online.",
+                "url": "https://www.burgerking.com",
+                "favicon": "",
+                "link": "https://www.burgerking.com"
+            },
+            {
+                "title": "Wendy's",
+                "description": "Fresh, never frozen beef and delicious menu items. Find Wendy's locations and order online.",
+                "url": "https://www.wendys.com",
+                "favicon": "",
+                "link": "https://www.wendys.com"
+            },
+            {
+                "title": "Taco Bell",
+                "description": "Mexican-inspired fast food including tacos, burritos, and more. Order online or find a Taco Bell near you.",
+                "url": "https://www.tacobell.com",
+                "favicon": "",
+                "link": "https://www.tacobell.com"
+            },
+            {
+                "title": "KFC",
+                "description": "Kentucky Fried Chicken - enjoy fried chicken, sandwiches, and sides. Find a KFC near you.",
+                "url": "https://www.kfc.com",
+                "favicon": "",
+                "link": "https://www.kfc.com"
+            },
+            {
+                "title": "Popeyes",
+                "description": "Famous for spicy fried chicken, biscuits, and sides. Find Popeyes locations and order online.",
+                "url": "https://www.popeyes.com",
+                "favicon": "",
+                "link": "https://www.popeyes.com"
+            },
+            {
+                "title": "Subway",
+                "description": "Build your own sub sandwich, salad, or wrap at Subway. Find locations and order online.",
+                "url": "https://www.subway.com",
+                "favicon": "",
+                "link": "https://www.subway.com"
+            },
+            {
+                "title": "Pizza Hut",
+                "description": "Order pizza, pasta, and wings from Pizza Hut. Find a location or order delivery online.",
+                "url": "https://www.pizzahut.com",
+                "favicon": "",
+                "link": "https://www.pizzahut.com"
+            },
+            {
+                "title": "Domino's Pizza",
+                "description": "Order pizza, pasta, and more from Domino's. Find a store and order delivery or carryout.",
+                "url": "https://www.dominos.com",
+                "favicon": "",
+                "link": "https://www.dominos.com"
+            },
+            {
+                "title": "Little Caesars",
+                "description": "Hot-N-Ready pizza, crazy bread, and more. Find Little Caesars locations and order online.",
+                "url": "https://littlecaesars.com",
+                "favicon": "",
+                "link": "https://littlecaesars.com"
+            },
+            {
+                "title": "Dairy Queen",
+                "description": "Blizzards, burgers, and treats. Find Dairy Queen locations and view the menu.",
+                "url": "https://www.dairyqueen.com",
+                "favicon": "",
+                "link": "https://www.dairyqueen.com"
+            },
+            {
+                "title": "Sonic Drive-In",
+                "description": "Drive-in fast food with burgers, hot dogs, slushes, and more. Find a Sonic near you.",
+                "url": "https://www.sonicdrivein.com",
+                "favicon": "",
+                "link": "https://www.sonicdrivein.com"
+            },
+            {
+                "title": "Arby's",
+                "description": "Roast beef sandwiches, curly fries, and more. Find Arby's locations and order online.",
+                "url": "https://www.arbys.com",
+                "favicon": "",
+                "link": "https://www.arbys.com"
             }
         ]
     </script>
