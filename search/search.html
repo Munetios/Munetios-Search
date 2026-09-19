@@ -1,14 +1,362 @@
-<p>Redirecting...</p>
-<style>
-  * {
-    font-family: "Google Sans Flex", system-ui, sans-serif;
-  }
-</style>
-<script>
-const query = window.location.search;
-const hash = window.location.hash;
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
 
-window.location.replace(
-  "/search" + query + hash
-);
-</script>
+  <title>Redirecting… | Ganetios Search</title>
+
+  <!-- Munetios Beautiful.css -->
+  <link
+    rel="stylesheet"
+    href="https://api.munetios.com/beautiful-css/beautiful.css"
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 24px;
+
+      background:
+        radial-gradient(
+          circle at 50% 35%,
+          rgba(126, 70, 255, 0.12),
+          transparent 42%
+        ),
+        #f7f7fa;
+
+      color: #17171c;
+
+      font-family:
+        "Munetios Sans",
+        "Google Sans Flex",
+        system-ui,
+        sans-serif;
+    }
+
+    .redirect-card {
+      width: min(100%, 460px);
+      padding: 32px;
+
+      text-align: center;
+
+      border-radius: 32px;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+
+      margin: 0 auto 20px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 18px;
+
+      background: rgba(120, 70, 255, 0.12);
+      border: 1px solid rgba(120, 70, 255, 0.18);
+
+      color: #7141f5;
+
+      font-size: 27px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+
+      font-size: 25px;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+    }
+
+    #message {
+      margin: 10px 0 0;
+
+      color: #696974;
+
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .loader {
+      width: 32px;
+      height: 32px;
+
+      margin: 26px auto 0;
+
+      border: 3px solid rgba(113, 65, 245, 0.15);
+      border-top-color: #7141f5;
+      border-radius: 50%;
+
+      animation: spin 0.7s linear infinite;
+    }
+
+    .destination {
+      margin-top: 20px;
+
+      color: #85858f;
+      font-size: 13px;
+    }
+
+    .destination strong {
+      color: #64646e;
+      font-weight: 600;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .loader {
+        animation: none;
+        border-color: rgba(113, 65, 245, 0.25);
+        border-top-color: #7141f5;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background:
+          radial-gradient(
+            circle at 50% 35%,
+            rgba(126, 70, 255, 0.16),
+            transparent 42%
+          ),
+          #0d0e12;
+
+        color: #f5f5f7;
+      }
+
+      #message {
+        color: #aaaab3;
+      }
+
+      .destination {
+        color: #81818b;
+      }
+
+      .destination strong {
+        color: #bcbcc5;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="redirect-card liquid-glass">
+    <div class="logo" aria-hidden="true">
+      G
+    </div>
+
+    <h1>Redirecting…</h1>
+
+    <p id="message">
+      Taking you to Ganetios Search.
+    </p>
+
+    <div
+      class="loader"
+      role="status"
+      aria-label="Redirecting"
+    ></div>
+
+    <div class="destination">
+      Destination:
+      <strong id="destination">Ganetios Search</strong>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const params = new URLSearchParams(window.location.search);
+
+      /*
+       * Get the query.
+       *
+       * Primary:
+       * ?q=
+       *
+       * Legacy fallback:
+       * ?query=
+       */
+      const query = (
+        params.get("q") ??
+        params.get("query") ??
+        ""
+      ).trim();
+
+      const message =
+        document.getElementById("message");
+
+      const destination =
+        document.getElementById("destination");
+
+      /*
+       * Supported external search engines.
+       */
+      const engines = {
+        google: {
+          name: "Google",
+          buildURL(query) {
+            return (
+              "https://www.google.com/search?q=" +
+              encodeURIComponent(query)
+            );
+          }
+        },
+
+        bing: {
+          name: "Bing",
+          buildURL(query) {
+            return (
+              "https://www.bing.com/search?q=" +
+              encodeURIComponent(query)
+            );
+          }
+        },
+
+        duckduckgo: {
+          name: "DuckDuckGo",
+          buildURL(query) {
+            return (
+              "https://duckduckgo.com/?q=" +
+              encodeURIComponent(query)
+            );
+          }
+        },
+
+        ddg: {
+          name: "DuckDuckGo",
+          buildURL(query) {
+            return (
+              "https://duckduckgo.com/?q=" +
+              encodeURIComponent(query)
+            );
+          }
+        },
+
+        startpage: {
+          name: "Startpage",
+          buildURL(query) {
+            return (
+              "https://www.startpage.com/sp/search?query=" +
+              encodeURIComponent(query)
+            );
+          }
+        }
+      };
+
+      function setDestination(name) {
+        destination.textContent = name;
+        message.textContent =
+          `Taking you to ${name}.`;
+      }
+
+      function getExternalSearch(query) {
+        /*
+         * Examples:
+         *
+         * Google: Munetios
+         * Bing: Munetios
+         * DuckDuckGo: Munetios
+         * DDG: Munetios
+         * Startpage: Munetios
+         */
+        const match = query.match(
+          /^\s*(google|bing|duckduckgo|ddg|startpage)\s*:\s*(.+?)\s*$/i
+        );
+
+        if (!match) {
+          return null;
+        }
+
+        const engineName =
+          match[1].toLowerCase();
+
+        const externalQuery =
+          match[2].trim();
+
+        const engine =
+          engines[engineName];
+
+        if (!engine || !externalQuery) {
+          return null;
+        }
+
+        return {
+          name: engine.name,
+          url: engine.buildURL(externalQuery)
+        };
+      }
+
+      /*
+       * Check for an external search prefix first.
+       */
+      const externalSearch =
+        getExternalSearch(query);
+
+      if (externalSearch) {
+        setDestination(
+          externalSearch.name
+        );
+
+        window.location.replace(
+          externalSearch.url
+        );
+
+        return;
+      }
+
+      /*
+       * Otherwise use Ganetios Search.
+       *
+       * Required format:
+       *
+       * /search?q={query}#/all?q={query}
+       */
+      setDestination(
+        "Ganetios Search"
+      );
+
+      const encodedQuery =
+        encodeURIComponent(query);
+
+      const ganetiosURL =
+        "/search?q=" +
+        encodedQuery +
+        "#/all?q=" +
+        encodedQuery;
+
+      window.location.replace(
+        ganetiosURL
+      );
+    })();
+  </script>
+
+</body>
+</html>
