@@ -30944,16 +30944,23 @@ if (isAmerica250Date && logo) {
         function startQuiz(quiz){if(!quiz?.questions.length)return;active=quiz;questionIndex=0;score=0;editor.classList.remove("active");player.classList.add("active");renderQuestion();player.scrollIntoView({behavior:"smooth"});}
         function renderQuestion(){
           const q=active.questions[questionIndex];
-          player.innerHTML=`<p class="quiz-progress">Question ${questionIndex+1} of ${active.questions.length}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="Question illustration">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}" required>${esc(a)}</label>`).join("")}</div><div class="quiz-question-actions"><button class="quiz-primary" type="submit">Submit answer</button></div></form>`;
-          player.querySelector(".quiz-question-form").addEventListener("submit",event=>{
-            event.preventDefault();
-            const selected=Number(new FormData(event.currentTarget).get("quizAnswer"));
+          player.innerHTML=`<p class="quiz-progress">Question ${questionIndex+1} of ${active.questions.length}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="Question illustration">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}">${esc(a)}</label>`).join("")}</div><div class="quiz-question-actions"><button class="quiz-primary" type="button">Submit answer</button></div></form>`;
+          const form=player.querySelector(".quiz-question-form");
+          const submit=form.querySelector('[type="button"]');
+          let answered=false;
+          const submitAnswer=()=>{
+            if(answered)return;
+            const checked=form.querySelector('input[name="quizAnswer"]:checked');
+            if(!checked){window.showToast?.("Choose an answer first");return;}
+            answered=true;
+            const selected=Number(checked.value);
             if(selected===q.correct)score++;
             player.querySelectorAll(".quiz-option").forEach((option,i)=>{option.querySelector("input").disabled=true;option.classList.add(i===q.correct?"correct":i===selected?"wrong":"");});
-            const submit=event.currentTarget.querySelector('[type="submit"]');
             submit.disabled=true;
             setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length)renderQuestion();else{player.innerHTML=`<h2>Quiz complete</h2><p>You scored ${score} out of ${active.questions.length}.</p><button type="button" class="quiz-primary" id="quizDone">Back to quizzes</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");}},700);
-          });
+          };
+          submit.addEventListener("click",submitAnswer);
+          form.addEventListener("submit",event=>{event.preventDefault();submitAnswer();});
         }
         const renderSchoolQuizLibrary = () => {
           if (localStorage.getItem("schoolMode") === "true") renderLibrary();
