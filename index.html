@@ -4417,6 +4417,36 @@
     .settings-item button {
       border-radius: 20px !important;
     }
+
+      /* School quiz studio */
+      .quiz-page { display:none; min-height:calc(100vh - 72px); padding:84px 18px 64px; }
+      .quiz-page.active { display:block; }
+      .quiz-shell { max-width:960px; margin:auto; }
+      .quiz-hero, .quiz-card, .quiz-editor, .quiz-player { background:linear-gradient(to bottom,rgba(255,255,255,.16) 0%,rgba(255,255,255,.06) 22%,rgba(255,255,255,.04) 50%,rgba(255,255,255,.06) 78%,rgba(255,255,255,.14) 100%); border:1px solid rgba(255,255,255,.2); border-radius:24px; backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); box-shadow:0 18px 50px rgba(0,0,0,.2); }
+      .quiz-hero { padding:24px; display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:20px; }
+      .quiz-hero h1 { margin:0 0 6px; font-size:30px; } .quiz-hero p { margin:0; opacity:.72; }
+      .quiz-primary, .quiz-secondary, .quiz-option { border:1px solid rgba(215,180,255,.3); border-radius:18px; padding:11px 16px; color:inherit; font:inherit; cursor:pointer; background:rgba(126,64,220,.28); }
+      .quiz-primary { background:linear-gradient(135deg,#7c4dff,#b249da); font-weight:650; }
+      .quiz-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; }
+      .quiz-card { padding:18px; } .quiz-card h3 { margin:8px 0; } .quiz-card p { min-height:42px; opacity:.72; }
+      .quiz-card-actions { display:flex; gap:8px; flex-wrap:wrap; }
+      .quiz-editor, .quiz-player { display:none; padding:22px; margin-top:20px; }
+      .quiz-editor.active, .quiz-player.active { display:block; }
+      .quiz-fields { display:grid; gap:12px; } .quiz-fields label { display:grid; gap:6px; font-weight:600; }
+      .quiz-fields input, .quiz-fields textarea { width:100%; box-sizing:border-box; border:1px solid rgba(215,180,255,.28); border-radius:14px; padding:12px; background:rgba(0,0,0,.2); color:inherit; font:inherit; }
+      .quiz-file-input { position:absolute; inline-size:1px; block-size:1px; opacity:0; overflow:hidden; pointer-events:none; }
+      .quiz-file-picker { display:flex !important; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:12px !important; width:100%; box-sizing:border-box; border:1px solid rgba(255,255,255,.2); border-radius:16px; padding:12px 14px; background:rgba(255,255,255,.08); cursor:pointer; }
+      .quiz-file-picker icon { color:#d7b4ff; }
+      .quiz-file-name { min-width:0; overflow:hidden; color:rgba(255,255,255,.72); font-weight:450; text-overflow:ellipsis; white-space:nowrap; }
+      .quiz-answer-row { display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:center; }
+      .quiz-question-image { max-width:100%; max-height:260px; border-radius:16px; object-fit:contain; margin:10px 0; }
+      .quiz-option { display:block; width:100%; text-align:left; margin:9px 0; }
+      .quiz-option.correct { border-color:#66e6a5; background:rgba(40,180,110,.25); } .quiz-option.wrong { border-color:#ff7597; background:rgba(220,55,90,.22); }
+      .quiz-progress { opacity:.7; font-size:14px; } .quiz-empty { opacity:.7; padding:24px; text-align:center; }
+      .quiz-primary:focus-visible, .quiz-secondary:focus-visible, .quiz-option:focus-visible,
+      .quiz-fields input:focus-visible, .quiz-fields textarea:focus-visible, .quiz-file-picker:has(.quiz-file-input:focus-visible) { outline:3px solid #d7b4ff; outline-offset:3px; }
+      .quiz-storage-note { margin:0; opacity:.7; font-size:13px; }
+      @media(max-width:600px){.quiz-hero{align-items:flex-start;flex-direction:column}.quiz-primary{width:100%}}
     </style>
     <script src="https://www.munetios.com/munetios-pronounce.js"></script>
   </head>
@@ -4444,6 +4474,7 @@
             <a href="#/news" data-translate="navNews">News</a>
             <a href="#/wiki" data-translate="navWiki">Wiki</a>
             <a href="#/books" data-translate="navBooks">Books</a>
+            <a href="#/quiz" class="school-quiz-nav" style="display:none" data-translate="navQuiz">Quiz</a>
             <a id="mobileMoreDropdownBtn" role="button" tabindex="0" aria-label="Open more navigation"><span data-translate="navMore">More</span> <icon>expand_more</icon></a>
           </div>
         </div>
@@ -4488,6 +4519,7 @@
         <div class="dropdown-item" data-translate="navBooks" id="booksMoreBtn">
           Books
         </div>
+        <div class="dropdown-item school-quiz-nav" id="quizMoreBtn" style="display:none" data-translate="navQuiz">Quiz</div>
       </div>
       <div class="topbar-mobile">
         <div class="topbar-left liquid-glass">
@@ -4582,6 +4614,30 @@
             <div class="shortcut-label" data-translate="add">Add</div>
           </div>
         </div>
+      </div>
+      <!-- School Quiz Page: all custom content stays on this device in IndexedDB -->
+      <div class="quiz-page" id="quizPage">
+        <main class="quiz-shell">
+          <section class="quiz-hero liquid-glass">
+            <div><h1 data-translate="quizTitle">Quiz Studio</h1><p data-translate="quizSubtitle">Learn with preset quizzes or create your own.</p></div>
+            <button class="quiz-primary" id="quizCreateBtn"><icon>add</icon> <span data-translate="createQuiz">Create your own quiz</span></button>
+          </section>
+          <section class="quiz-grid" id="quizLibrary" aria-live="polite"></section>
+          <form class="quiz-editor liquid-glass" id="quizEditor">
+            <h2 data-translate="createQuiz">Create your own quiz</h2>
+            <div class="quiz-fields">
+              <label><span data-translate="quizName">Quiz name</span><input id="quizName" maxlength="80" required /></label>
+              <label><span data-translate="quizQuestion">Question</span><textarea id="quizQuestion" maxlength="500" required></textarea></label>
+              <span data-translate="quizImage">Image (optional)</span>
+              <label class="quiz-file-picker" for="quizImage"><input class="quiz-file-input" id="quizImage" type="file" accept="image/png,image/jpeg,image/webp,image/gif" /><icon>add_photo_alternate</icon><span class="quiz-file-name" id="quizImageName" data-translate="noFileChosen">No file chosen</span></label>
+              <p class="quiz-storage-note" data-translate="quizStorageNote">Saved only on this device. Images must be PNG, JPEG, WebP, or GIF and no larger than 5 GB.</p>
+              <div id="quizAnswers"></div>
+              <button class="quiz-secondary" type="button" id="quizAddAnswer"><icon>add</icon> <span data-translate="addAnswer">Add answer</span></button>
+              <div class="quiz-card-actions"><button class="quiz-primary" type="submit" data-translate="saveQuestion">Save question</button><button class="quiz-secondary" type="button" id="quizFinish" data-translate="finishQuiz">Finish quiz</button></div>
+            </div>
+          </form>
+          <section class="quiz-player liquid-glass" id="quizPlayer" aria-live="polite"></section>
+        </main>
       </div>
       <!-- Videos Page -->
       <div class="videos-page" id="videosPage">
@@ -5702,6 +5758,7 @@
         <div class="dropdown-item" data-lang="de-DE">German (Germany)</div>
         <div class="dropdown-item" data-lang="it-IT">Italian (Italy)</div>
         <div class="dropdown-item" data-lang="pt-BR">Portuguese (Brazil)</div>
+        <div class="dropdown-item" data-lang="pt-PT">Português (Portugal)</div>
         <div class="dropdown-item" data-lang="nl-NL">Dutch (Netherlands)</div>
         <div class="dropdown-item" data-lang="ru-RU">Russian (Russia)</div>
         <div class="dropdown-item" data-lang="zh-CN">Chinese Simplified (China)</div>
@@ -6672,6 +6729,9 @@
             <icon>menu_book</icon>
             <span data-translate="navBooks">Books</span>
           </div>
+          <div class="quiz-mobile-sidebar sidebar-item school-quiz-nav" style="display:none">
+            <icon>quiz</icon><span data-translate="navQuiz">Quiz</span>
+          </div>
           <div class="bookmarks-sidebar-btn sidebar-item" id="bookmarksSidebarBtn">
             <icon>bookmark</icon>
             <span data-translate="bookmarksTitle">Favorites</span>
@@ -6794,6 +6854,7 @@
                 de: "de-DE",
                 it: "it-IT",
                 pt: "pt-BR",
+                "pt-PT": "pt-PT",
                 nl: "nl-NL",
                 pl: "pl-PL",
                 tr: "tr-TR",
@@ -6821,7 +6882,7 @@
                 hu: "hu-HU",
               };
               const uiLang = localStorage.getItem("munetiosLanguage") || "en";
-              recognition.lang = speechLangMap[uiLang] || "en-US";
+              recognition.lang = speechLangMap[uiLang] || speechLangMap[uiLang.split("-")[0]] || "en-US";
               recognition.interimResults = true;
               recognition.continuous = false;
 
@@ -7159,6 +7220,7 @@
               const utterance = new SpeechSynthesisUtterance(text);
               utterance.rate = Number(localStorage.getItem("munetiosVoiceSpeed") || 1);
               utterance.voice = synth.getVoices().find((voice) => voice.name === localStorage.getItem("munetiosVoiceName")) || null;
+              utterance.lang = localStorage.getItem("munetiosLanguage") || "en-US";
               utterance.pitch = 1.0;
               utterance.volume = 1.0;
               synth.speak(utterance);
@@ -7243,7 +7305,7 @@
                 hu: "hu-HU",
               };
               const uiLang = localStorage.getItem("munetiosLanguage") || "en";
-              recognition.lang = speechLangMap[uiLang] || "en-US";
+              recognition.lang = speechLangMap[uiLang] || speechLangMap[uiLang.split("-")[0]] || "en-US";
               recognition.interimResults = true;
               recognition.continuous = true;
 
@@ -7382,11 +7444,22 @@
           }
 
           function processVoiceCommand(text) {
-            const lowerText = text.toLowerCase().trim();
-            const searchMatch = lowerText.match(/search\s+(.+)/);
+            const spokenText = text.trim();
+            const wikiMatch = spokenText.match(/^(?:(?:read|ler)\s+)?(?:wikipedia|wiki|wikipédia)\s+(?:article\s+(?:about|on)\s+|artigo\s+(?:sobre\s+)?|sobre\s+)?(.+)/i);
+            const searchMatch = spokenText.match(/(?:search|pesquisar|procurar)\s+(.+)/i);
             const gt = window.getTranslation;
 
-            if (searchMatch && searchMatch[1]) {
+            if (wikiMatch && wikiMatch[1]) {
+              const query = wikiMatch[1].trim();
+              stopVoiceListening();
+              synth?.cancel();
+              addToHistory("Wikipedia: " + query, "system");
+              voiceStatus.textContent = "Wikipedia: " + query;
+              document.dispatchEvent(new CustomEvent("munetios-wikipedia-voice", { detail: { query, respond: (message, success) => {
+                addToHistory(message, "system"); speak(message); voiceStatus.textContent = success ? query : message;
+                if (success) playSound("success"); else playSound("denied");
+              } } }));
+            } else if (searchMatch && searchMatch[1]) {
               const query = searchMatch[1];
               addToHistory(
                 (gt ? gt("searchingFor") : "Searching for: ") + query,
@@ -8932,6 +9005,17 @@ if (isAmerica250Date && logo) {
               navNews: "News",
               navWiki: "Wiki",
               navMore: "More",
+              navQuiz: "Quiz",
+              quizTitle: "Quiz Studio",
+              quizSubtitle: "Learn with preset quizzes or create your own.",
+              createQuiz: "Create your own quiz",
+              quizName: "Quiz name",
+              quizQuestion: "Question",
+              quizImage: "Image (optional)",
+              addAnswer: "Add answer",
+              saveQuestion: "Save question",
+              finishQuiz: "Finish quiz",
+              quizStorageNote: "Saved only on this device. Images must be PNG, JPEG, WebP, or GIF and no larger than 5 GB.",
               bookmarksTitle: "Favorites",
               raceCarGame: "Race Car Game",
               videoSearchHint:
@@ -22558,6 +22642,21 @@ if (isAmerica250Date && logo) {
             ...modalTranslationKeys,
           ];
 
+          translations["pt-PT"] = Object.assign({}, translations.pt, {
+            name: "Português (Portugal)", searchPlaceholder: "Pesquisar na Web", settingsBtn: "Ajustes",
+            voiceModeBtn: "Modo de voz", searchButton: "Pesquisar", luckyButton: "Sinto-me com sorte",
+            manageData: "Gerir os seus dados", manageDataBtn: "Gerir dados", deleteSearchHistory: "Eliminar todo o histórico",
+            deleteShortcuts: "Eliminar todos os atalhos", exportSettings: "Exportar definições", importSettings: "Importar definições",
+            resetSettings: "Repor definições", deleteEverything: "Eliminar tudo", clickMicToStartShort: "Clique no microfone",
+            voiceModePrompt: 'Diga “Pesquisar [a sua consulta]” ou “Wikipédia [tema]”', navQuiz: "Questionários",
+            quizTitle: "Estúdio de questionários", quizSubtitle: "Aprenda com questionários predefinidos ou crie o seu.",
+            createQuiz: "Criar o seu questionário", quizName: "Nome do questionário", quizQuestion: "Pergunta",
+            quizImage: "Imagem (opcional)", addAnswer: "Adicionar resposta", saveQuestion: "Guardar pergunta", finishQuiz: "Concluir questionário",
+            quizStorageNote: "Guardado apenas neste dispositivo. As imagens devem ser PNG, JPEG, WebP ou GIF e não exceder 5 GB.",
+            manageData: "Gerir os seus dados", shortcutsDescription: "Faça a gestão dos atalhos da página inicial. Selecione o ícone de eliminação em cada cartão para remover um atalho.",
+            noFileChosen: "Nenhum ficheiro selecionado", settingsLabel: "Ajustes", importSettings: "Importar definições"
+          });
+
           function hasCompleteUiLanguageCoverage(langCode) {
             const normalized = canonicalLanguageCode(langCode);
             const fallbackLang = normalized.split("-")[0];
@@ -23707,6 +23806,8 @@ if (isAmerica250Date && logo) {
             de: "Deutsch",
             it: "Italiano",
             pt: "Português",
+            "pt-BR": "Português (Brasil)",
+            "pt-PT": "Português (Portugal)",
             ru: "Русский",
             ja: "日本語",
             zh: "中文",
@@ -24649,6 +24750,7 @@ if (isAmerica250Date && logo) {
           ];
 
           function applySchoolMode(on) {
+            document.querySelectorAll(".school-quiz-nav").forEach((el) => { el.style.display = on ? "" : "none"; });
             labsIds.forEach((id) => {
               const el = document.getElementById(id);
               if (el) el.style.display = on ? "none" : "";
@@ -27512,7 +27614,7 @@ if (isAmerica250Date && logo) {
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text.trim());
             const uiLang = localStorage.getItem("munetiosLanguage") || "en";
-            utterance.lang = speechLangMap[uiLang] || "en-US";
+            utterance.lang = speechLangMap[uiLang] || speechLangMap[uiLang.split("-")[0]] || "en-US";
               utterance.rate = Number(localStorage.getItem("munetiosVoiceSpeed") || 1);
             window.speechSynthesis.speak(utterance);
           }
@@ -28593,8 +28695,9 @@ if (isAmerica250Date && logo) {
             "/news": "newsPage",
             "/wiki": "wikiPage",
             "/books": "booksPage",
+            "/quiz": "quizPage",
           };
-          var ALL_PAGES = ["newsPage", "mapsPage", "videosPage", "wikiPage", "booksPage"];
+          var ALL_PAGES = ["newsPage", "mapsPage", "videosPage", "wikiPage", "booksPage", "quizPage"];
           // homePage is intentionally NOT in ALL_PAGES — it is always visible unless a full-screen page is active
 
           var mapsInitialized = false;
@@ -28607,6 +28710,11 @@ if (isAmerica250Date && logo) {
             var hash = window.location.hash || "#/";
             var path = hash.replace("#", "") || "/";
             var basePath = path.split("?")[0];
+
+            if (basePath === "/quiz" && localStorage.getItem("schoolMode") !== "true") {
+              navigateTo("/");
+              return;
+            }
 
             // Deactivate all overlay pages
             ALL_PAGES.forEach(function (id) {
@@ -28621,7 +28729,8 @@ if (isAmerica250Date && logo) {
               basePath === "/maps" ||
               basePath === "/videos" ||
               basePath === "/wiki" ||
-              basePath === "/books";
+              basePath === "/books" ||
+              basePath === "/quiz";
             if (hp) {
               if (isOtherPage) {
                 hp.classList.add("page-hidden");
@@ -28730,6 +28839,10 @@ if (isAmerica250Date && logo) {
           bindNavLink(
             'a[href="#/books"], #booksMoreBtn, .books-mobile-sidebar',
             "/books",
+          );
+          bindNavLink(
+            'a[href="#/quiz"], #quizMoreBtn, .quiz-mobile-sidebar',
+            "/quiz",
           );
 
           // Bookmarks overlay toggle
@@ -30760,6 +30873,92 @@ if (isAmerica250Date && logo) {
         input?.addEventListener("input", runSearch);
         input?.addEventListener("keydown", (event) => {
           if (event.key === "Enter") runSearch();
+        });
+      })();
+    </script>
+    <script nonce="IKDjefjewhCujHJeuji3jhekowdijzizkcej">
+      // Privacy-first School Quiz Studio and Wikipedia-aware voice commands.
+      (() => {
+        const DB_NAME = "munetios-school-quizzes";
+        const STORE = "quizzes";
+        const presets = [
+          { id:"preset-space", title:"Space Explorer", description:"Planets, moons and our Solar System.", questions:[
+            { text:"Which planet is known as the Red Planet?", answers:["Earth","Mars","Venus","Jupiter"], correct:1 },
+            { text:"What is the name of Earth's natural satellite?", answers:["Titan","Europa","The Moon","Phobos"], correct:2 }]},
+          { id:"preset-maths", title:"Maths Challenge", description:"A quick arithmetic warm-up.", questions:[
+            { text:"What is 12 × 8?", answers:["86","96","108","88"], correct:1 },
+            { text:"What is half of 3/4?", answers:["3/8","2/4","1/8","3/2"], correct:0 }]},
+          { id:"preset-science", title:"Science Basics", description:"Test everyday science knowledge.", questions:[
+            { text:"Which gas do plants absorb?", answers:["Oxygen","Nitrogen","Carbon dioxide","Helium"], correct:2 },
+            { text:"Water freezes at what temperature in Celsius?", answers:["0°","10°","32°","100°"], correct:0 }]}
+        ];
+        const openDB = () => new Promise((resolve,reject) => {
+          const request=indexedDB.open(DB_NAME,1);
+          request.onupgradeneeded=()=>{
+            if (!request.result.objectStoreNames.contains(STORE)) {
+              request.result.createObjectStore(STORE,{keyPath:"id"});
+            }
+          };
+          request.onsuccess=()=>resolve(request.result); request.onerror=()=>reject(request.error);
+        });
+        const getCustom = async () => { const db=await openDB(); return new Promise((resolve,reject)=>{const r=db.transaction(STORE).objectStore(STORE).getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);}); };
+        const putQuiz = async quiz => { const db=await openDB(); return new Promise((resolve,reject)=>{const r=db.transaction(STORE,"readwrite").objectStore(STORE).put(quiz);r.onsuccess=resolve;r.onerror=()=>reject(r.error);}); };
+        const deleteQuiz = async id => { const db=await openDB(); return new Promise((resolve,reject)=>{const r=db.transaction(STORE,"readwrite").objectStore(STORE).delete(id);r.onsuccess=resolve;r.onerror=()=>reject(r.error);}); };
+        const library=document.getElementById("quizLibrary"), editor=document.getElementById("quizEditor"), player=document.getElementById("quizPlayer");
+        let draft=null, active=null, questionIndex=0, score=0;
+        const esc=value => String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+        async function renderLibrary(){
+          if(!library) return; let custom=[]; try{custom=await getCustom();}catch(e){console.warn("Quiz storage unavailable",e);}
+          const all=[...presets,...custom]; library.innerHTML=all.map(q=>`<article class="quiz-card liquid-glass"><icon>${q.id.startsWith("preset-")?"school":"edit_note"}</icon><h3>${esc(q.title)}</h3><p>${esc(q.description||`${q.questions.length} questions`)}</p><div class="quiz-card-actions"><button type="button" class="quiz-primary" data-play="${esc(q.id)}">Start quiz</button>${q.id.startsWith("preset-")?"":`<button type="button" class="quiz-secondary" data-delete="${esc(q.id)}">Delete</button>`}</div></article>`).join("");
+          library.querySelectorAll("[data-play]").forEach(b=>b.onclick=()=>startQuiz(all.find(q=>q.id===b.dataset.play)));
+          library.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async()=>{await deleteQuiz(b.dataset.delete);renderLibrary();});
+        }
+        function answerRows(){return document.querySelectorAll(".quiz-answer-row").length;}
+        function addAnswer(value=""){const wrap=document.getElementById("quizAnswers");const i=answerRows();const row=document.createElement("label");row.className="quiz-answer-row";row.innerHTML=`<input type="radio" name="correctAnswer" value="${i}" ${i===0?"checked":""} aria-label="Correct answer"><input class="quiz-answer" required maxlength="180" placeholder="Answer ${i+1}" value="${esc(value)}">`;wrap.append(row);}
+        const allowedImageTypes=new Set(["image/png","image/jpeg","image/webp","image/gif"]);
+        const maxQuizImageBytes=5*1024*1024*1024;
+        const fileData=file=>new Promise((resolve,reject)=>{
+          if(!file)return resolve("");
+          if(!allowedImageTypes.has(file.type))return reject(new Error("Choose a PNG, JPEG, WebP, or GIF image"));
+          if(file.size>maxQuizImageBytes)return reject(new Error("Images must be no larger than 5 GB"));
+          const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.readAsDataURL(file);
+        });
+        document.getElementById("quizCreateBtn")?.addEventListener("click",()=>{
+          draft={id:`quiz-${Date.now()}`,title:"",description:"",questions:[]};
+          editor.reset();
+          document.getElementById("quizImageName").textContent=window.getTranslation?.("noFileChosen")||"No file chosen";
+          document.getElementById("quizAnswers").replaceChildren();
+          addAnswer();addAnswer();
+          editor.classList.add("active");player.classList.remove("active");document.getElementById("quizName").focus();
+        });
+        const quizImageInput=document.getElementById("quizImage"), quizImageName=document.getElementById("quizImageName");
+        quizImageInput?.addEventListener("change",()=>{quizImageName.textContent=quizImageInput.files[0]?.name||window.getTranslation?.("noFileChosen")||"No file chosen";});
+        document.getElementById("quizAddAnswer")?.addEventListener("click",()=>{if(answerRows()<6)addAnswer();});
+        editor?.addEventListener("submit",async e=>{e.preventDefault();const answers=[...document.querySelectorAll(".quiz-answer")].map(i=>i.value.trim()).filter(Boolean);if(answers.length<2)return;try{const image=await fileData(quizImageInput.files[0]);draft.title=document.getElementById("quizName").value.trim();draft.questions.push({text:document.getElementById("quizQuestion").value.trim(),image,answers,correct:Number(document.querySelector('input[name="correctAnswer"]:checked')?.value||0)});await putQuiz(draft);document.getElementById("quizQuestion").value="";quizImageInput.value="";quizImageName.textContent=window.getTranslation?.("noFileChosen")||"No file chosen";document.querySelectorAll(".quiz-answer").forEach(i=>i.value="");window.showToast?.("Question saved on this device");renderLibrary();}catch(err){window.showToast?.(err.message||"Could not save question");}});
+        document.getElementById("quizFinish")?.addEventListener("click",()=>{editor.classList.remove("active");renderLibrary();});
+        function startQuiz(quiz){if(!quiz?.questions.length)return;active=quiz;questionIndex=0;score=0;editor.classList.remove("active");player.classList.add("active");renderQuestion();player.scrollIntoView({behavior:"smooth"});}
+        function renderQuestion(){const q=active.questions[questionIndex];player.innerHTML=`<p class="quiz-progress">Question ${questionIndex+1} of ${active.questions.length}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="Question illustration">`:""}<div>${q.answers.map((a,i)=>`<button type="button" class="quiz-option" data-answer="${i}">${esc(a)}</button>`).join("")}</div>`;}
+        player?.addEventListener("click",event=>{const btn=event.target.closest("[data-answer]");if(!btn||btn.disabled||!active)return;const q=active.questions[questionIndex],selected=Number(btn.dataset.answer),correct=Number(q.correct);if(selected===correct)score++;player.querySelectorAll("[data-answer]").forEach(b=>{const answer=Number(b.dataset.answer);b.disabled=true;b.classList.add(answer===correct?"correct":answer===selected?"wrong":"");});setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length){renderQuestion();return;}player.innerHTML=`<h2>Quiz complete</h2><p>You scored ${score} out of ${active.questions.length}.</p><button type="button" class="quiz-primary" id="quizDone">Back to quizzes</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");},700);});
+        const renderSchoolQuizLibrary = () => {
+          if (localStorage.getItem("schoolMode") === "true") renderLibrary();
+        };
+        if (window.location.hash.split("?")[0] === "#/quiz") renderSchoolQuizLibrary();
+        window.addEventListener("hashchange", () => {
+          if (window.location.hash.split("?")[0] === "#/quiz") renderSchoolQuizLibrary();
+        });
+
+        // Expose a local, reusable Wikipedia reader to Voice Mode without storing requests or results.
+        window.munetiosVoiceWikipedia = async query => {
+          const locale=(localStorage.getItem("munetiosLanguage")||"en").toLowerCase();
+          const lang=locale.startsWith("pt")?"pt":locale.split("-")[0];
+          const endpoint=`https://${encodeURIComponent(lang)}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+          const response=await fetch(endpoint,{headers:{Accept:"application/json"}});
+          if(!response.ok) throw new Error("Wikipedia article not found");
+          const article=await response.json();
+          return {title:article.title,extract:article.extract,url:article.content_urls?.desktop?.page||`https://${lang}.wikipedia.org/wiki/${encodeURIComponent(query)}`};
+        };
+        document.addEventListener("munetios-wikipedia-voice",async event=>{
+          const {query,respond}=event.detail;try{const article=await window.munetiosVoiceWikipedia(query);respond(article.extract||article.title,true);}catch(err){respond(err.message,false);}
         });
       })();
     </script>
