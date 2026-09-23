@@ -22664,6 +22664,49 @@ if (isAmerica250Date && logo) {
             noFileChosen: "Nenhum ficheiro selecionado", settingsLabel: "Ajustes"
           });
 
+          // Keep the search verb consistent across every Portuguese search surface.
+          // Brazilian Portuguese uses "buscar", while European Portuguese uses
+          // "pesquisar". Expand the regional dictionaries first so translated
+          // search labels added elsewhere on the page receive the same treatment.
+          function normalizePortugueseSearchVerbs(dictionary, replacements) {
+            Object.keys(dictionary).forEach(function (key) {
+              if (typeof dictionary[key] !== "string") return;
+              dictionary[key] = replacements.reduce(function (value, replacement) {
+                return value.replace(replacement[0], replacement[1]);
+              }, dictionary[key]);
+            });
+          }
+
+          translations["pt-BR"] = Object.assign(
+            {},
+            translations.pt,
+            translations["pt-BR"],
+          );
+          normalizePortugueseSearchVerbs(translations["pt-BR"], [
+            [/Pesquisando/g, "Buscando"],
+            [/pesquisando/g, "buscando"],
+            [/Pesquisar/g, "Buscar"],
+            [/pesquisar/g, "buscar"],
+            [/Pesquise/g, "Busque"],
+            [/pesquise/g, "busque"],
+          ]);
+          normalizePortugueseSearchVerbs(translations.pt, [
+            [/Buscando/g, "Pesquisando"],
+            [/buscando/g, "pesquisando"],
+            [/Buscar/g, "Pesquisar"],
+            [/buscar/g, "pesquisar"],
+            [/Busque/g, "Pesquise"],
+            [/busque/g, "pesquise"],
+          ]);
+          normalizePortugueseSearchVerbs(translations["pt-PT"], [
+            [/Buscando/g, "Pesquisando"],
+            [/buscando/g, "pesquisando"],
+            [/Buscar/g, "Pesquisar"],
+            [/buscar/g, "pesquisar"],
+            [/Busque/g, "Pesquise"],
+            [/busque/g, "pesquise"],
+          ]);
+
           function hasCompleteUiLanguageCoverage(langCode) {
             const normalized = canonicalLanguageCode(langCode);
             const fallbackLang = normalized.split("-")[0];
