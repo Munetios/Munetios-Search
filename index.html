@@ -4443,6 +4443,9 @@
       .quiz-option input { width:auto; margin:0 10px 0 0; accent-color:#a970ff; }
       .quiz-question-actions { display:flex; justify-content:flex-end; margin-top:14px; }
       .quiz-option.correct { border-color:#66e6a5; background:rgba(40,180,110,.25); } .quiz-option.wrong { border-color:#ff7597; background:rgba(220,55,90,.22); }
+      .quiz-feedback { margin:14px 0 0; padding:12px 16px; border:1px solid rgba(255,255,255,.2); border-radius:16px; font-weight:650; }
+      .quiz-feedback.correct { color:#b8ffd7; background:rgba(40,180,110,.2); border-color:#66e6a5; }
+      .quiz-feedback.wrong { color:#ffd0dc; background:rgba(220,55,90,.2); border-color:#ff7597; }
       .quiz-progress { opacity:.7; font-size:14px; } .quiz-empty { opacity:.7; padding:24px; text-align:center; }
       .quiz-primary:focus-visible, .quiz-secondary:focus-visible, .quiz-option:focus-visible,
       .quiz-fields input:focus-visible, .quiz-fields textarea:focus-visible { outline:3px solid #d7b4ff; outline-offset:3px; }
@@ -30982,14 +30985,31 @@ if (isAmerica250Date && logo) {
           editor.classList.add("active");player.classList.remove("active");document.getElementById("quizName").focus();
         });
         document.getElementById("quizAddAnswer")?.addEventListener("click",()=>{if(answerRows()<6)addAnswer();});
-        editor?.addEventListener("submit",async e=>{e.preventDefault();const answers=[...document.querySelectorAll(".quiz-answer")].map(i=>i.value.trim()).filter(Boolean);if(answers.length<2)return;try{const image=await fileData(quizImage.files[0]);draft.title=document.getElementById("quizName").value.trim();draft.questions.push({text:document.getElementById("quizQuestion").value.trim(),image,answers,correct:Number(document.querySelector('input[name="correctAnswer"]:checked')?.value||0)});await putQuiz(draft);document.getElementById("quizQuestion").value="";quizImage.value="";quizImageName.textContent=noQuizImageText();document.querySelectorAll(".quiz-answer").forEach(i=>i.value="");window.showToast?.("Question saved on this device");renderLibrary();}catch(err){window.showToast?.(err.message||"Could not save question");}});
+        editor?.addEventListener("submit",async e=>{
+          e.preventDefault();
+          const answerInputs=[...document.querySelectorAll(".quiz-answer")];
+          const filledAnswers=answerInputs.map((input,index)=>({text:input.value.trim(),index})).filter(answer=>answer.text);
+          const selectedAnswer=Number(document.querySelector('input[name="correctAnswer"]:checked')?.value||0);
+          const correct=filledAnswers.findIndex(answer=>answer.index===selectedAnswer);
+          if(filledAnswers.length<2){window.showToast?.("Add at least two answers");return;}
+          if(correct<0){window.showToast?.("Choose a filled-in correct answer");return;}
+          try{
+            const image=await fileData(quizImage.files[0]);
+            draft.title=document.getElementById("quizName").value.trim();
+            draft.questions.push({text:document.getElementById("quizQuestion").value.trim(),image,answers:filledAnswers.map(answer=>answer.text),correct});
+            await putQuiz(draft);
+            document.getElementById("quizQuestion").value="";quizImage.value="";quizImageName.textContent=noQuizImageText();answerInputs.forEach(input=>input.value="");
+            window.showToast?.("Question saved on this device");renderLibrary();
+          }catch(err){window.showToast?.(err.message||"Could not save question");}
+        });
         document.getElementById("quizFinish")?.addEventListener("click",()=>{editor.classList.remove("active");renderLibrary();});
         function startQuiz(quiz){if(!quiz?.questions.length)return;active=quiz;questionIndex=0;score=0;editor.classList.remove("active");player.classList.add("active");renderQuestion();player.scrollIntoView({behavior:"smooth"});}
         function renderQuestion(){
           const q=active.questions[questionIndex];
-          player.innerHTML=`<p class="quiz-progress">Question ${questionIndex+1} of ${active.questions.length}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="Question illustration">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}">${esc(a)}</label>`).join("")}</div><div class="quiz-question-actions"><button class="quiz-primary" type="button">Submit answer</button></div></form>`;
+          player.innerHTML=`<p class="quiz-progress">Question ${questionIndex+1} of ${active.questions.length}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="Question illustration">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}">${esc(a)}</label>`).join("")}</div><p class="quiz-feedback" role="status" aria-live="polite" hidden></p><div class="quiz-question-actions"><button class="quiz-primary" type="submit">Submit answer</button></div></form>`;
           const form=player.querySelector(".quiz-question-form");
-          const submit=form.querySelector('[type="button"]');
+          const submit=form.querySelector('[type="submit"]');
+          const feedback=form.querySelector(".quiz-feedback");
           let answered=false;
           const submitAnswer=()=>{
             if(answered)return;
@@ -30997,12 +31017,20 @@ if (isAmerica250Date && logo) {
             if(!checked){window.showToast?.("Choose an answer first");return;}
             answered=true;
             const selected=Number(checked.value);
-            if(selected===q.correct)score++;
-            player.querySelectorAll(".quiz-option").forEach((option,i)=>{option.querySelector("input").disabled=true;option.classList.add(i===q.correct?"correct":i===selected?"wrong":"");});
+            const correctAnswer=Number(q.correct);
+            const isCorrect=selected===correctAnswer;
+            if(isCorrect)score++;
+            player.querySelectorAll(".quiz-option").forEach((option,i)=>{
+              option.querySelector("input").disabled=true;
+              if(i===correctAnswer)option.classList.add("correct");
+              else if(i===selected)option.classList.add("wrong");
+            });
+            feedback.hidden=false;
+            feedback.classList.add(isCorrect?"correct":"wrong");
+            feedback.textContent=isCorrect?"Correct! Moving to the next question…":`Not quite. The correct answer is ${q.answers[correctAnswer]}. Moving on…`;
             submit.disabled=true;
-            setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length)renderQuestion();else{player.innerHTML=`<h2>Quiz complete</h2><p>You scored ${score} out of ${active.questions.length}.</p><button type="button" class="quiz-primary" id="quizDone">Back to quizzes</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");}},700);
+            setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length)renderQuestion();else{player.innerHTML=`<h2>Quiz complete</h2><p>You scored ${score} out of ${active.questions.length}.</p><button type="button" class="quiz-primary" id="quizDone">Back to quizzes</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");}},1200);
           };
-          submit.addEventListener("click",submitAnswer);
           form.addEventListener("submit",event=>{event.preventDefault();submitAnswer();});
         }
         const renderSchoolQuizLibrary = () => {
