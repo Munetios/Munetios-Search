@@ -4422,10 +4422,10 @@
       .quiz-page { display:none; min-height:calc(100vh - 72px); padding:84px 18px 64px; }
       .quiz-page.active { display:block; }
       .quiz-shell { max-width:960px; margin:auto; }
-      .quiz-hero, .quiz-card, .quiz-editor, .quiz-player { background:rgba(28,12,48,.62); border:1px solid rgba(210,170,255,.25); border-radius:24px; backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); box-shadow:0 18px 50px rgba(0,0,0,.2); }
+      .quiz-hero, .quiz-card, .quiz-editor, .quiz-player { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-radius:30px; backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); box-shadow:var(--june7-purple-glow),inset 0 1px 0 rgba(255,255,255,.14); }
       .quiz-hero { padding:24px; display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:20px; }
       .quiz-hero h1 { margin:0 0 6px; font-size:30px; } .quiz-hero p { margin:0; opacity:.72; }
-      .quiz-primary, .quiz-secondary, .quiz-option { border:1px solid rgba(215,180,255,.3); border-radius:18px; padding:11px 16px; color:inherit; font:inherit; cursor:pointer; background:rgba(126,64,220,.28); }
+      .quiz-primary, .quiz-secondary, .quiz-option, .quiz-upload { border:1px solid rgba(215,180,255,.3); border-radius:999px; padding:11px 16px; color:inherit; font:inherit; cursor:pointer; background:rgba(126,64,220,.28); }
       .quiz-primary { background:linear-gradient(135deg,#7c4dff,#b249da); font-weight:650; }
       .quiz-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; }
       .quiz-card { padding:18px; } .quiz-card h3 { margin:8px 0; } .quiz-card p { min-height:42px; opacity:.72; }
@@ -4434,9 +4434,14 @@
       .quiz-editor.active, .quiz-player.active { display:block; }
       .quiz-fields { display:grid; gap:12px; } .quiz-fields label { display:grid; gap:6px; font-weight:600; }
       .quiz-fields input, .quiz-fields textarea { width:100%; box-sizing:border-box; border:1px solid rgba(215,180,255,.28); border-radius:14px; padding:12px; background:rgba(0,0,0,.2); color:inherit; font:inherit; }
+      .quiz-image-input { position:absolute; width:1px !important; height:1px; padding:0 !important; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0 !important; }
+      .quiz-upload { display:flex !important; align-items:center; justify-content:center; gap:8px; width:fit-content; font-weight:650; }
+      .quiz-file-name { opacity:.75; font-size:14px; font-weight:400; overflow-wrap:anywhere; }
       .quiz-answer-row { display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:center; }
       .quiz-question-image { max-width:100%; max-height:260px; border-radius:16px; object-fit:contain; margin:10px 0; }
       .quiz-option { display:block; width:100%; text-align:left; margin:9px 0; }
+      .quiz-option input { width:auto; margin:0 10px 0 0; accent-color:#a970ff; }
+      .quiz-question-actions { display:flex; justify-content:flex-end; margin-top:14px; }
       .quiz-option.correct { border-color:#66e6a5; background:rgba(40,180,110,.25); } .quiz-option.wrong { border-color:#ff7597; background:rgba(220,55,90,.22); }
       .quiz-progress { opacity:.7; font-size:14px; } .quiz-empty { opacity:.7; padding:24px; text-align:center; }
       .quiz-primary:focus-visible, .quiz-secondary:focus-visible, .quiz-option:focus-visible,
@@ -4614,24 +4619,29 @@
       <!-- School Quiz Page: all custom content stays on this device in IndexedDB -->
       <div class="quiz-page" id="quizPage">
         <main class="quiz-shell">
-          <section class="quiz-hero">
+          <section class="quiz-hero liquid-glass">
             <div><h1 data-translate="quizTitle">Quiz Studio</h1><p data-translate="quizSubtitle">Learn with preset quizzes or create your own.</p></div>
             <button class="quiz-primary" id="quizCreateBtn"><icon>add</icon> <span data-translate="createQuiz">Create your own quiz</span></button>
           </section>
           <section class="quiz-grid" id="quizLibrary" aria-live="polite"></section>
-          <form class="quiz-editor" id="quizEditor">
+          <form class="quiz-editor liquid-glass" id="quizEditor">
             <h2 data-translate="createQuiz">Create your own quiz</h2>
             <div class="quiz-fields">
               <label><span data-translate="quizName">Quiz name</span><input id="quizName" maxlength="80" required /></label>
               <label><span data-translate="quizQuestion">Question</span><textarea id="quizQuestion" maxlength="500" required></textarea></label>
-              <label><span data-translate="quizImage">Image (optional)</span><input id="quizImage" type="file" accept="image/png,image/jpeg,image/webp,image/gif" /></label>
+              <div>
+                <span data-translate="quizImage">Image (optional)</span>
+                <label class="quiz-upload" for="quizImage"><icon>add_photo_alternate</icon> <span data-translate="chooseQuizImage">Choose image</span></label>
+                <input class="quiz-image-input" id="quizImage" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
+                <div class="quiz-file-name" id="quizImageName" aria-live="polite" data-translate="noQuizImage">No image selected</div>
+              </div>
               <p class="quiz-storage-note" data-translate="quizStorageNote">Saved only on this device. Images must be PNG, JPEG, WebP, or GIF and no larger than 5 GB.</p>
               <div id="quizAnswers"></div>
               <button class="quiz-secondary" type="button" id="quizAddAnswer"><icon>add</icon> <span data-translate="addAnswer">Add answer</span></button>
               <div class="quiz-card-actions"><button class="quiz-primary" type="submit" data-translate="saveQuestion">Save question</button><button class="quiz-secondary" type="button" id="quizFinish" data-translate="finishQuiz">Finish quiz</button></div>
             </div>
           </form>
-          <section class="quiz-player" id="quizPlayer" aria-live="polite"></section>
+          <section class="quiz-player liquid-glass" id="quizPlayer" aria-live="polite"></section>
         </main>
       </div>
       <!-- Videos Page -->
@@ -9007,6 +9017,8 @@ if (isAmerica250Date && logo) {
               quizName: "Quiz name",
               quizQuestion: "Question",
               quizImage: "Image (optional)",
+              chooseQuizImage: "Choose image",
+              noQuizImage: "No image selected",
               addAnswer: "Add answer",
               saveQuestion: "Save question",
               finishQuiz: "Finish quiz",
@@ -22638,7 +22650,7 @@ if (isAmerica250Date && logo) {
           ];
 
           translations["pt-PT"] = Object.assign({}, translations.pt, {
-            name: "Português (Portugal)", searchPlaceholder: "Pesquisar na Web", settingsBtn: "Definições",
+            name: "Português (Portugal)", searchPlaceholder: "Pesquisar na Web", settingsBtn: "Ajustes",
             voiceModeBtn: "Modo de voz", searchButton: "Pesquisar", luckyButton: "Sinto-me com sorte",
             manageData: "Gerir os seus dados", manageDataBtn: "Gerir dados", deleteSearchHistory: "Eliminar todo o histórico",
             deleteShortcuts: "Eliminar todos os atalhos", exportSettings: "Exportar definições", importSettings: "Importar definições",
@@ -22646,10 +22658,10 @@ if (isAmerica250Date && logo) {
             voiceModePrompt: 'Diga “Pesquisar [a sua consulta]” ou “Wikipédia [tema]”', navQuiz: "Questionários",
             quizTitle: "Estúdio de questionários", quizSubtitle: "Aprenda com questionários predefinidos ou crie o seu.",
             createQuiz: "Criar o seu questionário", quizName: "Nome do questionário", quizQuestion: "Pergunta",
-            quizImage: "Imagem (opcional)", addAnswer: "Adicionar resposta", saveQuestion: "Guardar pergunta", finishQuiz: "Concluir questionário",
+            quizImage: "Imagem (opcional)", chooseQuizImage: "Escolher imagem", noQuizImage: "Nenhuma imagem selecionada", addAnswer: "Adicionar resposta", saveQuestion: "Guardar pergunta", finishQuiz: "Concluir questionário",
             quizStorageNote: "Guardado apenas neste dispositivo. As imagens devem ser PNG, JPEG, WebP ou GIF e não exceder 5 GB.",
             manageData: "Gerir os seus dados", shortcutsDescription: "Faça a gestão dos atalhos da página inicial. Selecione o ícone de eliminação em cada cartão para remover um atalho.",
-            noFileChosen: "Nenhum ficheiro selecionado", settingsLabel: "Definições", importSettings: "Importar definições"
+            noFileChosen: "Nenhum ficheiro selecionado", settingsLabel: "Ajustes"
           });
 
           function hasCompleteUiLanguageCoverage(langCode) {
@@ -30809,7 +30821,7 @@ if (isAmerica250Date && logo) {
           const voiceWrap=document.getElementById("voiceModeWrapper"),toggle=document.getElementById("voiceMusicToggle"),speed=document.getElementById("voiceSpeedRange"),speedValue=document.getElementById("voiceSpeedValue");
           const updateMusic=()=>{const open=voiceWrap?.classList.contains("active");if(open&&musicOn())music.play().catch(()=>{});else{music.pause();music.currentTime=0}if(toggle){toggle.classList.toggle("active",musicOn());toggle.setAttribute("aria-checked",String(musicOn()))}};
           if(speed){speed.value=localStorage.getItem("munetiosVoiceSpeed")||"1";speedValue.value=Number(speed.value).toFixed(1)+"×";speed.addEventListener("input",()=>{localStorage.setItem("munetiosVoiceSpeed",speed.value);speedValue.value=Number(speed.value).toFixed(1)+"×";window.munetiosSounds?.play("voice-mode-changed")})} const toggleMusic=()=>{localStorage.setItem("munetiosVoiceMusic",String(!musicOn()));updateMusic();window.munetiosSounds?.play("voice-mode-changed")};if(toggle){toggle.addEventListener("click",toggleMusic);toggle.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();toggleMusic()}})}if(voiceWrap)new MutationObserver(updateMusic).observe(voiceWrap,{attributes:true,attributeFilter:["class"]});document.getElementById("voiceModeBtn")?.addEventListener("click",()=>{setTimeout(updateMusic,0);window.munetiosSounds?.play("voice-mode-start")});document.getElementById("closeVoiceMode")?.addEventListener("click",()=>window.munetiosSounds?.play("voice-mode-stop"));
-          const supported=new Set(["en-US","en-GB","es-ES","es-MX","es-US","fr-FR","de-DE","pt-BR","zh-CN","ru-RU","ja-JP","ar-SA","tr-TR","vi-VN","co"]);document.querySelectorAll("#languageSelector .dropdown-item").forEach(item=>{if(!supported.has(item.dataset.lang))item.remove()});
+          const supported=new Set(["en-US","en-GB","es-ES","es-MX","es-US","fr-FR","de-DE","pt-BR","pt-PT","zh-CN","ru-RU","ja-JP","ar-SA","tr-TR","vi-VN","co"]);document.querySelectorAll("#languageSelector .dropdown-item").forEach(item=>{if(!supported.has(item.dataset.lang))item.remove()});
           const corsican=[];
           const featureTranslations={
             "en-US":{voiceModeSettings:"Voice mode",voiceDescription:"Personalize the voice experience.",voice:"Voice",voiceSpeed:"Voice speed",backgroundMusic:"Background music",backgroundMusicDescription:"Play while Voice mode is open."},"en-GB":{voiceModeSettings:"Voice mode",voiceDescription:"Personalise the voice experience.",voice:"Voice",voiceSpeed:"Voice speed",backgroundMusic:"Background music",backgroundMusicDescription:"Play while Voice mode is open."},"es-ES":{voiceModeSettings:"Modo de voz",voiceDescription:"Personaliza la experiencia de voz.",voice:"Voz",voiceSpeed:"Velocidad de voz",backgroundMusic:"Música de fondo",backgroundMusicDescription:"Se reproduce mientras el modo de voz está abierto."},"es-MX":{voiceModeSettings:"Modo de voz",voiceDescription:"Personaliza la experiencia de voz.",voice:"Voz",voiceSpeed:"Velocidad de voz",backgroundMusic:"Música de fondo",backgroundMusicDescription:"Se reproduce mientras el modo de voz está abierto."},"es-US":{voiceModeSettings:"Modo de voz",voiceDescription:"Personaliza la experiencia de voz.",voice:"Voz",voiceSpeed:"Velocidad de voz",backgroundMusic:"Música de fondo",backgroundMusicDescription:"Se reproduce mientras el modo de voz está abierto."},"fr-FR":{voiceModeSettings:"Mode vocal",voiceDescription:"Personnalisez l’expérience vocale.",voice:"Voix",voiceSpeed:"Vitesse de la voix",backgroundMusic:"Musique de fond",backgroundMusicDescription:"Joue lorsque le mode vocal est ouvert."},"de-DE":{voiceModeSettings:"Sprachmodus",voiceDescription:"Personalisiere das Spracherlebnis.",voice:"Stimme",voiceSpeed:"Sprechgeschwindigkeit",backgroundMusic:"Hintergrundmusik",backgroundMusicDescription:"Wird abgespielt, wenn der Sprachmodus geöffnet ist."},"pt-BR":{voiceModeSettings:"Modo de voz",voiceDescription:"Personalize a experiência de voz.",voice:"Voz",voiceSpeed:"Velocidade da voz",backgroundMusic:"Música de fundo",backgroundMusicDescription:"Toca enquanto o modo de voz está aberto."},"zh-CN":{voiceModeSettings:"语音模式",voiceDescription:"个性化语音体验。",voice:"语音",voiceSpeed:"语速",backgroundMusic:"背景音乐",backgroundMusicDescription:"语音模式打开时播放。"},"ru-RU":{voiceModeSettings:"Голосовой режим",voiceDescription:"Настройте голосовой режим.",voice:"Голос",voiceSpeed:"Скорость голоса",backgroundMusic:"Фоновая музыка",backgroundMusicDescription:"Воспроизводится при открытом голосовом режиме."},"ja-JP":{voiceModeSettings:"音声モード",voiceDescription:"音声体験をカスタマイズします。",voice:"音声",voiceSpeed:"音声速度",backgroundMusic:"バックグラウンド音楽",backgroundMusicDescription:"音声モードを開いている間に再生されます。"},"ar-SA":{voiceModeSettings:"وضع الصوت",voiceDescription:"خصص تجربة الصوت.",voice:"الصوت",voiceSpeed:"سرعة الصوت",backgroundMusic:"موسيقى الخلفية",backgroundMusicDescription:"تُشغّل أثناء فتح وضع الصوت."},"tr-TR":{voiceModeSettings:"Ses modu",voiceDescription:"Ses deneyimini kişiselleştirin.",voice:"Ses",voiceSpeed:"Ses hızı",backgroundMusic:"Arka plan müziği",backgroundMusicDescription:"Ses modu açıkken çalar."},"vi-VN":{voiceModeSettings:"Chế độ giọng nói",voiceDescription:"Cá nhân hóa trải nghiệm giọng nói.",voice:"Giọng nói",voiceSpeed:"Tốc độ giọng nói",backgroundMusic:"Nhạc nền",backgroundMusicDescription:"Phát khi chế độ giọng nói mở."},co:{voiceModeSettings:"Modu di voce",voiceDescription:"Persunalizate l’esperienza vocale.",voice:"Voce",voiceSpeed:"Velocità di voce",backgroundMusic:"Musica di fondu",backgroundMusicDescription:"Ghjoca quandu u modu di voce hè apertu."}};
@@ -30897,12 +30909,12 @@ if (isAmerica250Date && logo) {
         const getCustom = async () => { const db=await openDB(); return new Promise((resolve,reject)=>{const r=db.transaction(STORE).objectStore(STORE).getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);}); };
         const putQuiz = async quiz => { const db=await openDB(); return new Promise((resolve,reject)=>{const r=db.transaction(STORE,"readwrite").objectStore(STORE).put(quiz);r.onsuccess=resolve;r.onerror=()=>reject(r.error);}); };
         const deleteQuiz = async id => { const db=await openDB(); return new Promise((resolve,reject)=>{const r=db.transaction(STORE,"readwrite").objectStore(STORE).delete(id);r.onsuccess=resolve;r.onerror=()=>reject(r.error);}); };
-        const library=document.getElementById("quizLibrary"), editor=document.getElementById("quizEditor"), player=document.getElementById("quizPlayer");
+        const library=document.getElementById("quizLibrary"), editor=document.getElementById("quizEditor"), player=document.getElementById("quizPlayer"), quizImage=document.getElementById("quizImage"), quizImageName=document.getElementById("quizImageName");
         let draft=null, active=null, questionIndex=0, score=0;
         const esc=value => String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
         async function renderLibrary(){
           if(!library) return; let custom=[]; try{custom=await getCustom();}catch(e){console.warn("Quiz storage unavailable",e);}
-          const all=[...presets,...custom]; library.innerHTML=all.map(q=>`<article class="quiz-card"><icon>${q.id.startsWith("preset-")?"school":"edit_note"}</icon><h3>${esc(q.title)}</h3><p>${esc(q.description||`${q.questions.length} questions`)}</p><div class="quiz-card-actions"><button class="quiz-primary" data-play="${esc(q.id)}">Start quiz</button>${q.id.startsWith("preset-")?"":`<button class="quiz-secondary" data-delete="${esc(q.id)}">Delete</button>`}</div></article>`).join("");
+          const all=[...presets,...custom]; library.innerHTML=all.map(q=>`<article class="quiz-card liquid-glass"><icon>${q.id.startsWith("preset-")?"school":"edit_note"}</icon><h3>${esc(q.title)}</h3><p>${esc(q.description||`${q.questions.length} questions`)}</p><div class="quiz-card-actions"><button type="button" class="quiz-primary" data-play="${esc(q.id)}">Start quiz</button>${q.id.startsWith("preset-")?"":`<button type="button" class="quiz-secondary" data-delete="${esc(q.id)}">Delete</button>`}</div></article>`).join("");
           library.querySelectorAll("[data-play]").forEach(b=>b.onclick=()=>startQuiz(all.find(q=>q.id===b.dataset.play)));
           library.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async()=>{await deleteQuiz(b.dataset.delete);renderLibrary();});
         }
@@ -30916,18 +30928,33 @@ if (isAmerica250Date && logo) {
           if(file.size>maxQuizImageBytes)return reject(new Error("Images must be no larger than 5 GB"));
           const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.readAsDataURL(file);
         });
+        const noQuizImageText=()=>window.getTranslation?.("noQuizImage")||"No image selected";
+        quizImage?.addEventListener("change",()=>{quizImageName.textContent=quizImage.files[0]?.name||noQuizImageText();});
         document.getElementById("quizCreateBtn")?.addEventListener("click",()=>{
           draft={id:`quiz-${Date.now()}`,title:"",description:"",questions:[]};
           editor.reset();
+          quizImageName.textContent=noQuizImageText();
           document.getElementById("quizAnswers").replaceChildren();
           addAnswer();addAnswer();
           editor.classList.add("active");player.classList.remove("active");document.getElementById("quizName").focus();
         });
         document.getElementById("quizAddAnswer")?.addEventListener("click",()=>{if(answerRows()<6)addAnswer();});
-        editor?.addEventListener("submit",async e=>{e.preventDefault();const answers=[...document.querySelectorAll(".quiz-answer")].map(i=>i.value.trim()).filter(Boolean);if(answers.length<2)return;try{const image=await fileData(document.getElementById("quizImage").files[0]);draft.title=document.getElementById("quizName").value.trim();draft.questions.push({text:document.getElementById("quizQuestion").value.trim(),image,answers,correct:Number(document.querySelector('input[name="correctAnswer"]:checked')?.value||0)});await putQuiz(draft);document.getElementById("quizQuestion").value="";document.getElementById("quizImage").value="";document.querySelectorAll(".quiz-answer").forEach(i=>i.value="");window.showToast?.("Question saved on this device");renderLibrary();}catch(err){window.showToast?.(err.message||"Could not save question");}});
+        editor?.addEventListener("submit",async e=>{e.preventDefault();const answers=[...document.querySelectorAll(".quiz-answer")].map(i=>i.value.trim()).filter(Boolean);if(answers.length<2)return;try{const image=await fileData(quizImage.files[0]);draft.title=document.getElementById("quizName").value.trim();draft.questions.push({text:document.getElementById("quizQuestion").value.trim(),image,answers,correct:Number(document.querySelector('input[name="correctAnswer"]:checked')?.value||0)});await putQuiz(draft);document.getElementById("quizQuestion").value="";quizImage.value="";quizImageName.textContent=noQuizImageText();document.querySelectorAll(".quiz-answer").forEach(i=>i.value="");window.showToast?.("Question saved on this device");renderLibrary();}catch(err){window.showToast?.(err.message||"Could not save question");}});
         document.getElementById("quizFinish")?.addEventListener("click",()=>{editor.classList.remove("active");renderLibrary();});
         function startQuiz(quiz){if(!quiz?.questions.length)return;active=quiz;questionIndex=0;score=0;editor.classList.remove("active");player.classList.add("active");renderQuestion();player.scrollIntoView({behavior:"smooth"});}
-        function renderQuestion(){const q=active.questions[questionIndex];player.innerHTML=`<p class="quiz-progress">Question ${questionIndex+1} of ${active.questions.length}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="Question illustration">`:""}<div>${q.answers.map((a,i)=>`<button class="quiz-option" data-answer="${i}">${esc(a)}</button>`).join("")}</div>`;player.querySelectorAll("[data-answer]").forEach(btn=>btn.onclick=()=>{const selected=Number(btn.dataset.answer);if(selected===q.correct)score++;player.querySelectorAll("[data-answer]").forEach((b,i)=>{b.disabled=true;b.classList.add(i===q.correct?"correct":i===selected?"wrong":"");});setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length)renderQuestion();else player.innerHTML=`<h2>Quiz complete</h2><p>You scored ${score} out of ${active.questions.length}.</p><button class="quiz-primary" id="quizDone">Back to quizzes</button>`,document.getElementById("quizDone").onclick=()=>player.classList.remove("active");},700);});}
+        function renderQuestion(){
+          const q=active.questions[questionIndex];
+          player.innerHTML=`<p class="quiz-progress">Question ${questionIndex+1} of ${active.questions.length}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="Question illustration">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}" required>${esc(a)}</label>`).join("")}</div><div class="quiz-question-actions"><button class="quiz-primary" type="submit">Submit answer</button></div></form>`;
+          player.querySelector(".quiz-question-form").addEventListener("submit",event=>{
+            event.preventDefault();
+            const selected=Number(new FormData(event.currentTarget).get("quizAnswer"));
+            if(selected===q.correct)score++;
+            player.querySelectorAll(".quiz-option").forEach((option,i)=>{option.querySelector("input").disabled=true;option.classList.add(i===q.correct?"correct":i===selected?"wrong":"");});
+            const submit=event.currentTarget.querySelector('[type="submit"]');
+            submit.disabled=true;
+            setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length)renderQuestion();else{player.innerHTML=`<h2>Quiz complete</h2><p>You scored ${score} out of ${active.questions.length}.</p><button type="button" class="quiz-primary" id="quizDone">Back to quizzes</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");}},700);
+          });
+        }
         const renderSchoolQuizLibrary = () => {
           if (localStorage.getItem("schoolMode") === "true") renderLibrary();
         };
