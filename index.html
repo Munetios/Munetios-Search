@@ -22577,6 +22577,30 @@ if (isAmerica250Date && logo) {
             };
           });
 
+          // Quiz Studio is translated locally with the rest of the interface. These
+          // strings intentionally live in the bundled locale data: quiz text is
+          // never sent to an online translation service.
+          const quizTranslationAdditions = {
+            en: ["Quiz", "Quiz Studio", "Learn with preset quizzes or create your own.", "Create your own quiz", "Quiz name", "Question", "Image (optional)", "Choose image", "No image selected", "Add answer", "Save question", "Finish quiz", "Saved only on this device. Images must be PNG, JPEG, WebP, or GIF and no larger than 5 GB.", "{count} questions", "Start quiz", "Delete", "Correct answer", "Answer {number}", "Choose a PNG, JPEG, WebP, or GIF image", "Images must be no larger than 5 GB", "Add at least two answers", "Choose a filled-in correct answer", "Question saved on this device", "Could not save question", "Question {current} of {total}", "Question illustration", "Submit answer", "Choose an answer first", "Correct! Moving to the next question…", "Not quite. The correct answer is {answer}. Moving on…", "Quiz complete", "You scored {score} out of {total}.", "Back to quizzes"],
+            es: ["Cuestionario", "Estudio de cuestionarios", "Aprende con cuestionarios predefinidos o crea el tuyo.", "Crear tu propio cuestionario", "Nombre del cuestionario", "Pregunta", "Imagen (opcional)", "Elegir imagen", "Ninguna imagen seleccionada", "Añadir respuesta", "Guardar pregunta", "Finalizar cuestionario", "Se guarda solo en este dispositivo. Las imágenes deben ser PNG, JPEG, WebP o GIF y no superar los 5 GB.", "{count} preguntas", "Iniciar cuestionario", "Eliminar", "Respuesta correcta", "Respuesta {number}", "Elige una imagen PNG, JPEG, WebP o GIF", "Las imágenes no pueden superar los 5 GB", "Añade al menos dos respuestas", "Elige una respuesta correcta que esté completa", "Pregunta guardada en este dispositivo", "No se pudo guardar la pregunta", "Pregunta {current} de {total}", "Ilustración de la pregunta", "Enviar respuesta", "Elige primero una respuesta", "¡Correcto! Pasando a la siguiente pregunta…", "No exactamente. La respuesta correcta es {answer}. Continuamos…", "Cuestionario completado", "Has acertado {score} de {total}.", "Volver a los cuestionarios"],
+            fr: ["Quiz", "Studio de quiz", "Apprenez avec des quiz prédéfinis ou créez le vôtre.", "Créer votre propre quiz", "Nom du quiz", "Question", "Image (facultative)", "Choisir une image", "Aucune image sélectionnée", "Ajouter une réponse", "Enregistrer la question", "Terminer le quiz", "Enregistré uniquement sur cet appareil. Les images doivent être au format PNG, JPEG, WebP ou GIF et ne pas dépasser 5 Go.", "{count} questions", "Démarrer le quiz", "Supprimer", "Bonne réponse", "Réponse {number}", "Choisissez une image PNG, JPEG, WebP ou GIF", "Les images ne doivent pas dépasser 5 Go", "Ajoutez au moins deux réponses", "Choisissez une bonne réponse renseignée", "Question enregistrée sur cet appareil", "Impossible d’enregistrer la question", "Question {current} sur {total}", "Illustration de la question", "Valider la réponse", "Choisissez d’abord une réponse", "Bonne réponse ! Question suivante…", "Pas tout à fait. La bonne réponse est {answer}. Continuons…", "Quiz terminé", "Votre score est de {score} sur {total}.", "Retour aux quiz"],
+            de: ["Quiz", "Quiz-Studio", "Lerne mit fertigen Quizzen oder erstelle dein eigenes.", "Eigenes Quiz erstellen", "Quizname", "Frage", "Bild (optional)", "Bild auswählen", "Kein Bild ausgewählt", "Antwort hinzufügen", "Frage speichern", "Quiz beenden", "Wird nur auf diesem Gerät gespeichert. Bilder müssen PNG, JPEG, WebP oder GIF sein und dürfen höchstens 5 GB groß sein.", "{count} Fragen", "Quiz starten", "Löschen", "Richtige Antwort", "Antwort {number}", "Wähle ein PNG-, JPEG-, WebP- oder GIF-Bild", "Bilder dürfen höchstens 5 GB groß sein", "Füge mindestens zwei Antworten hinzu", "Wähle eine ausgefüllte richtige Antwort", "Frage auf diesem Gerät gespeichert", "Frage konnte nicht gespeichert werden", "Frage {current} von {total}", "Abbildung zur Frage", "Antwort absenden", "Wähle zuerst eine Antwort", "Richtig! Weiter zur nächsten Frage…", "Nicht ganz. Die richtige Antwort ist {answer}. Weiter geht’s…", "Quiz abgeschlossen", "Du hast {score} von {total} Punkten erreicht.", "Zurück zu den Quizzen"],
+            pt: ["Questionário", "Estúdio de questionários", "Aprenda com questionários predefinidos ou crie o seu.", "Criar o seu questionário", "Nome do questionário", "Pergunta", "Imagem (opcional)", "Escolher imagem", "Nenhuma imagem selecionada", "Adicionar resposta", "Salvar pergunta", "Concluir questionário", "Salvo apenas neste dispositivo. As imagens devem ser PNG, JPEG, WebP ou GIF e ter no máximo 5 GB.", "{count} perguntas", "Iniciar questionário", "Excluir", "Resposta correta", "Resposta {number}", "Escolha uma imagem PNG, JPEG, WebP ou GIF", "As imagens devem ter no máximo 5 GB", "Adicione pelo menos duas respostas", "Escolha uma resposta correta preenchida", "Pergunta salva neste dispositivo", "Não foi possível salvar a pergunta", "Pergunta {current} de {total}", "Ilustração da pergunta", "Enviar resposta", "Escolha uma resposta primeiro", "Correto! Indo para a próxima pergunta…", "Não é bem isso. A resposta correta é {answer}. Continuando…", "Questionário concluído", "Você acertou {score} de {total}.", "Voltar aos questionários"],
+            zh: ["测验", "测验工作室", "使用预设测验学习，或创建自己的测验。", "创建自己的测验", "测验名称", "问题", "图片（可选）", "选择图片", "未选择图片", "添加答案", "保存问题", "完成测验", "仅保存在此设备上。图片必须为 PNG、JPEG、WebP 或 GIF 格式，且不得超过 5 GB。", "{count} 个问题", "开始测验", "删除", "正确答案", "答案 {number}", "请选择 PNG、JPEG、WebP 或 GIF 图片", "图片不得超过 5 GB", "请至少添加两个答案", "请选择一个已填写的正确答案", "问题已保存在此设备上", "无法保存问题", "第 {current} 题，共 {total} 题", "问题插图", "提交答案", "请先选择一个答案", "回答正确！正在进入下一题…", "不完全正确。正确答案是 {answer}。继续…", "测验完成", "你答对了 {total} 题中的 {score} 题。", "返回测验"],
+            ru: ["Викторина", "Студия викторин", "Учитесь с готовыми викторинами или создайте свою.", "Создать свою викторину", "Название викторины", "Вопрос", "Изображение (необязательно)", "Выбрать изображение", "Изображение не выбрано", "Добавить ответ", "Сохранить вопрос", "Завершить викторину", "Сохраняется только на этом устройстве. Изображения должны быть в формате PNG, JPEG, WebP или GIF и не больше 5 ГБ.", "Вопросов: {count}", "Начать викторину", "Удалить", "Правильный ответ", "Ответ {number}", "Выберите изображение PNG, JPEG, WebP или GIF", "Размер изображения не должен превышать 5 ГБ", "Добавьте как минимум два ответа", "Выберите заполненный правильный ответ", "Вопрос сохранён на этом устройстве", "Не удалось сохранить вопрос", "Вопрос {current} из {total}", "Иллюстрация к вопросу", "Отправить ответ", "Сначала выберите ответ", "Верно! Переходим к следующему вопросу…", "Не совсем. Правильный ответ: {answer}. Продолжаем…", "Викторина завершена", "Ваш результат: {score} из {total}.", "Назад к викторинам"],
+            ja: ["クイズ", "クイズスタジオ", "用意されたクイズで学ぶか、自分のクイズを作成できます。", "自分のクイズを作成", "クイズ名", "問題", "画像（任意）", "画像を選択", "画像が選択されていません", "回答を追加", "問題を保存", "クイズを終了", "この端末にのみ保存されます。画像は PNG、JPEG、WebP、GIF のいずれかで、5 GB 以下にしてください。", "{count} 問", "クイズを開始", "削除", "正解", "回答 {number}", "PNG、JPEG、WebP、GIF の画像を選択してください", "画像は 5 GB 以下にしてください", "回答を2つ以上追加してください", "入力済みの正解を選択してください", "問題をこの端末に保存しました", "問題を保存できませんでした", "{total} 問中 {current} 問目", "問題の画像", "回答を送信", "先に回答を選択してください", "正解です！次の問題に進みます…", "惜しいです。正解は {answer} です。次に進みます…", "クイズ完了", "{total} 問中 {score} 問正解しました。", "クイズ一覧に戻る"],
+            ar: ["اختبار", "استوديو الاختبارات", "تعلّم باستخدام اختبارات جاهزة أو أنشئ اختبارك الخاص.", "إنشاء اختبارك الخاص", "اسم الاختبار", "السؤال", "صورة (اختيارية)", "اختيار صورة", "لم يتم اختيار صورة", "إضافة إجابة", "حفظ السؤال", "إنهاء الاختبار", "يُحفظ على هذا الجهاز فقط. يجب أن تكون الصور بصيغة PNG أو JPEG أو WebP أو GIF وألا يزيد حجمها على 5 غيغابايت.", "{count} أسئلة", "بدء الاختبار", "حذف", "الإجابة الصحيحة", "الإجابة {number}", "اختر صورة بصيغة PNG أو JPEG أو WebP أو GIF", "يجب ألا يزيد حجم الصور على 5 غيغابايت", "أضف إجابتين على الأقل", "اختر إجابة صحيحة مكتملة", "تم حفظ السؤال على هذا الجهاز", "تعذر حفظ السؤال", "السؤال {current} من {total}", "صورة توضيحية للسؤال", "إرسال الإجابة", "اختر إجابة أولاً", "صحيح! جارٍ الانتقال إلى السؤال التالي…", "ليست صحيحة تمامًا. الإجابة الصحيحة هي {answer}. نتابع…", "اكتمل الاختبار", "أجبت بشكل صحيح عن {score} من {total}.", "العودة إلى الاختبارات"],
+            tr: ["Test", "Test Stüdyosu", "Hazır testlerle öğrenin veya kendi testinizi oluşturun.", "Kendi testini oluştur", "Test adı", "Soru", "Görsel (isteğe bağlı)", "Görsel seç", "Görsel seçilmedi", "Cevap ekle", "Soruyu kaydet", "Testi bitir", "Yalnızca bu cihaza kaydedilir. Görseller PNG, JPEG, WebP veya GIF olmalı ve 5 GB'ı aşmamalıdır.", "{count} soru", "Testi başlat", "Sil", "Doğru cevap", "Cevap {number}", "PNG, JPEG, WebP veya GIF görseli seçin", "Görseller 5 GB'ı aşmamalıdır", "En az iki cevap ekleyin", "Doldurulmuş bir doğru cevap seçin", "Soru bu cihaza kaydedildi", "Soru kaydedilemedi", "Soru {current} / {total}", "Soru görseli", "Cevabı gönder", "Önce bir cevap seçin", "Doğru! Sonraki soruya geçiliyor…", "Tam değil. Doğru cevap {answer}. Devam ediliyor…", "Test tamamlandı", "{total} sorudan {score} tanesini doğru bildiniz.", "Testlere dön"],
+            vi: ["Bài kiểm tra", "Studio bài kiểm tra", "Học với bài kiểm tra có sẵn hoặc tự tạo bài kiểm tra.", "Tạo bài kiểm tra của bạn", "Tên bài kiểm tra", "Câu hỏi", "Hình ảnh (không bắt buộc)", "Chọn hình ảnh", "Chưa chọn hình ảnh", "Thêm câu trả lời", "Lưu câu hỏi", "Hoàn thành bài kiểm tra", "Chỉ lưu trên thiết bị này. Hình ảnh phải là PNG, JPEG, WebP hoặc GIF và không lớn hơn 5 GB.", "{count} câu hỏi", "Bắt đầu bài kiểm tra", "Xóa", "Câu trả lời đúng", "Câu trả lời {number}", "Chọn hình ảnh PNG, JPEG, WebP hoặc GIF", "Hình ảnh không được lớn hơn 5 GB", "Thêm ít nhất hai câu trả lời", "Chọn một câu trả lời đúng đã điền", "Đã lưu câu hỏi trên thiết bị này", "Không thể lưu câu hỏi", "Câu hỏi {current} / {total}", "Hình minh họa câu hỏi", "Gửi câu trả lời", "Hãy chọn một câu trả lời trước", "Chính xác! Đang chuyển sang câu tiếp theo…", "Chưa đúng. Đáp án đúng là {answer}. Tiếp tục…", "Đã hoàn thành bài kiểm tra", "Bạn trả lời đúng {score} trên {total} câu.", "Quay lại các bài kiểm tra"],
+            co: ["Quiz", "Studio di quiz", "Amparate cù quiz pronti o create u vostru.", "Creà u vostru quiz", "Nome di u quiz", "Dumanda", "Imagine (facultativa)", "Sceglie un'imagine", "Nisuna imagine scelta", "Aghjunghje una risposta", "Salvà a dumanda", "Finisce u quiz", "Salvatu solu nant'à stu dispusitivu. L'imagine devenu esse PNG, JPEG, WebP o GIF è ùn supirà 5 GB.", "{count} dumande", "Principià u quiz", "Sguassà", "Risposta ghjusta", "Risposta {number}", "Sceglite un'imagine PNG, JPEG, WebP o GIF", "L'imagine ùn devenu supirà 5 GB", "Aghjunghjite almenu duie risposte", "Sceglite una risposta ghjusta cumpleta", "Dumanda salvata nant'à stu dispusitivu", "Ùn si pò salvà a dumanda", "Dumanda {current} nant'à {total}", "Illustrazione di a dumanda", "Mandà a risposta", "Sceglite prima una risposta", "Ghjustu! Passemu à a dumanda dopu…", "Micca propiu. A risposta ghjusta hè {answer}. Cuntinuemu…", "Quiz compiu", "Avete ottenutu {score} nant'à {total}.", "Vultà à i quiz"],
+          };
+          const quizTranslationKeys = ["navQuiz", "quizTitle", "quizSubtitle", "createQuiz", "quizName", "quizQuestion", "quizImage", "chooseQuizImage", "noQuizImage", "addAnswer", "saveQuestion", "finishQuiz", "quizStorageNote", "quizQuestionsCount", "startQuiz", "deleteQuiz", "quizCorrectAnswer", "quizAnswerNumber", "quizImageTypeError", "quizImageSizeError", "quizMinimumAnswers", "quizCorrectAnswerRequired", "quizQuestionSaved", "quizSaveError", "quizProgress", "quizQuestionIllustration", "quizSubmitAnswer", "quizChooseAnswer", "quizCorrectFeedback", "quizIncorrectFeedback", "quizComplete", "quizScore", "backToQuizzes"];
+          Object.entries(quizTranslationAdditions).forEach(function ([langCode, values]) {
+            const additions = {};
+            quizTranslationKeys.forEach(function (key, index) { additions[key] = values[index]; });
+            translations[langCode] = { ...(translations[langCode] || {}), ...additions };
+          });
+
           Object.entries(runtimeActivityTranslationFallbacks).forEach(function ([langCode, values]) {
             runtimeTranslationFallbacks[langCode] = {
               ...(runtimeTranslationFallbacks[langCode] || {}),
@@ -30958,20 +30982,24 @@ if (isAmerica250Date && logo) {
         const library=document.getElementById("quizLibrary"), editor=document.getElementById("quizEditor"), player=document.getElementById("quizPlayer"), quizImage=document.getElementById("quizImage"), quizImageName=document.getElementById("quizImageName");
         let draft=null, active=null, questionIndex=0, score=0;
         const esc=value => String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+        const quizText=(key,values={})=>{
+          const template=window.getTranslation?.(key)||getTranslationsFor?.(localStorage.getItem("munetiosLanguage")||"en")[key]||translations.en[key]||key;
+          return String(template).replace(/\{(\w+)\}/g,(_,name)=>values[name]??"");
+        };
         async function renderLibrary(){
           if(!library) return; let custom=[]; try{custom=await getCustom();}catch(e){console.warn("Quiz storage unavailable",e);}
-          const all=[...presets,...custom]; library.innerHTML=all.map(q=>`<article class="quiz-card liquid-glass"><icon>${q.id.startsWith("preset-")?"school":"edit_note"}</icon><h3>${esc(q.title)}</h3><p>${esc(q.description||`${q.questions.length} questions`)}</p><div class="quiz-card-actions"><button type="button" class="quiz-primary" data-play="${esc(q.id)}">Start quiz</button>${q.id.startsWith("preset-")?"":`<button type="button" class="quiz-secondary" data-delete="${esc(q.id)}">Delete</button>`}</div></article>`).join("");
+          const all=[...presets,...custom]; library.innerHTML=all.map(q=>`<article class="quiz-card liquid-glass"><icon>${q.id.startsWith("preset-")?"school":"edit_note"}</icon><h3>${esc(q.title)}</h3><p>${esc(q.description||quizText("quizQuestionsCount",{count:q.questions.length}))}</p><div class="quiz-card-actions"><button type="button" class="quiz-primary" data-play="${esc(q.id)}">${esc(quizText("startQuiz"))}</button>${q.id.startsWith("preset-")?"":`<button type="button" class="quiz-secondary" data-delete="${esc(q.id)}">${esc(quizText("deleteQuiz"))}</button>`}</div></article>`).join("");
           library.querySelectorAll("[data-play]").forEach(b=>b.onclick=()=>startQuiz(all.find(q=>q.id===b.dataset.play)));
           library.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async()=>{await deleteQuiz(b.dataset.delete);renderLibrary();});
         }
         function answerRows(){return document.querySelectorAll(".quiz-answer-row").length;}
-        function addAnswer(value=""){const wrap=document.getElementById("quizAnswers");const i=answerRows();const row=document.createElement("label");row.className="quiz-answer-row";row.innerHTML=`<input type="radio" name="correctAnswer" value="${i}" ${i===0?"checked":""} aria-label="Correct answer"><input class="quiz-answer" required maxlength="180" placeholder="Answer ${i+1}" value="${esc(value)}">`;wrap.append(row);}
+        function addAnswer(value=""){const wrap=document.getElementById("quizAnswers");const i=answerRows();const row=document.createElement("label");row.className="quiz-answer-row";row.innerHTML=`<input type="radio" name="correctAnswer" value="${i}" ${i===0?"checked":""} aria-label="${esc(quizText("quizCorrectAnswer"))}"><input class="quiz-answer" required maxlength="180" placeholder="${esc(quizText("quizAnswerNumber",{number:i+1}))}" value="${esc(value)}">`;wrap.append(row);}
         const allowedImageTypes=new Set(["image/png","image/jpeg","image/webp","image/gif"]);
         const maxQuizImageBytes=5*1024*1024*1024;
         const fileData=file=>new Promise((resolve,reject)=>{
           if(!file)return resolve("");
-          if(!allowedImageTypes.has(file.type))return reject(new Error("Choose a PNG, JPEG, WebP, or GIF image"));
-          if(file.size>maxQuizImageBytes)return reject(new Error("Images must be no larger than 5 GB"));
+          if(!allowedImageTypes.has(file.type))return reject(new Error(quizText("quizImageTypeError")));
+          if(file.size>maxQuizImageBytes)return reject(new Error(quizText("quizImageSizeError")));
           const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.readAsDataURL(file);
         });
         const noQuizImageText=()=>window.getTranslation?.("noQuizImage")||"No image selected";
@@ -30991,22 +31019,22 @@ if (isAmerica250Date && logo) {
           const filledAnswers=answerInputs.map((input,index)=>({text:input.value.trim(),index})).filter(answer=>answer.text);
           const selectedAnswer=Number(document.querySelector('input[name="correctAnswer"]:checked')?.value||0);
           const correct=filledAnswers.findIndex(answer=>answer.index===selectedAnswer);
-          if(filledAnswers.length<2){window.showToast?.("Add at least two answers");return;}
-          if(correct<0){window.showToast?.("Choose a filled-in correct answer");return;}
+          if(filledAnswers.length<2){window.showToast?.(quizText("quizMinimumAnswers"));return;}
+          if(correct<0){window.showToast?.(quizText("quizCorrectAnswerRequired"));return;}
           try{
             const image=await fileData(quizImage.files[0]);
             draft.title=document.getElementById("quizName").value.trim();
             draft.questions.push({text:document.getElementById("quizQuestion").value.trim(),image,answers:filledAnswers.map(answer=>answer.text),correct});
             await putQuiz(draft);
             document.getElementById("quizQuestion").value="";quizImage.value="";quizImageName.textContent=noQuizImageText();answerInputs.forEach(input=>input.value="");
-            window.showToast?.("Question saved on this device");renderLibrary();
-          }catch(err){window.showToast?.(err.message||"Could not save question");}
+            window.showToast?.(quizText("quizQuestionSaved"));renderLibrary();
+          }catch(err){window.showToast?.(err.message||quizText("quizSaveError"));}
         });
         document.getElementById("quizFinish")?.addEventListener("click",()=>{editor.classList.remove("active");renderLibrary();});
         function startQuiz(quiz){if(!quiz?.questions.length)return;active=quiz;questionIndex=0;score=0;editor.classList.remove("active");player.classList.add("active");renderQuestion();player.scrollIntoView({behavior:"smooth"});}
         function renderQuestion(){
           const q=active.questions[questionIndex];
-          player.innerHTML=`<p class="quiz-progress">Question ${questionIndex+1} of ${active.questions.length}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="Question illustration">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}">${esc(a)}</label>`).join("")}</div><p class="quiz-feedback" role="status" aria-live="polite" hidden></p><div class="quiz-question-actions"><button class="quiz-primary" type="submit">Submit answer</button></div></form>`;
+          player.innerHTML=`<p class="quiz-progress">${esc(quizText("quizProgress",{current:questionIndex+1,total:active.questions.length}))}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="${esc(quizText("quizQuestionIllustration"))}">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}">${esc(a)}</label>`).join("")}</div><p class="quiz-feedback" role="status" aria-live="polite" hidden></p><div class="quiz-question-actions"><button class="quiz-primary" type="submit">${esc(quizText("quizSubmitAnswer"))}</button></div></form>`;
           const form=player.querySelector(".quiz-question-form");
           const submit=form.querySelector('[type="submit"]');
           const feedback=form.querySelector(".quiz-feedback");
@@ -31014,7 +31042,7 @@ if (isAmerica250Date && logo) {
           const submitAnswer=()=>{
             if(answered)return;
             const checked=form.querySelector('input[name="quizAnswer"]:checked');
-            if(!checked){window.showToast?.("Choose an answer first");return;}
+            if(!checked){window.showToast?.(quizText("quizChooseAnswer"));return;}
             answered=true;
             const selected=Number(checked.value);
             const correctAnswer=Number(q.correct);
@@ -31027,9 +31055,9 @@ if (isAmerica250Date && logo) {
             });
             feedback.hidden=false;
             feedback.classList.add(isCorrect?"correct":"wrong");
-            feedback.textContent=isCorrect?"Correct! Moving to the next question…":`Not quite. The correct answer is ${q.answers[correctAnswer]}. Moving on…`;
+            feedback.textContent=isCorrect?quizText("quizCorrectFeedback"):quizText("quizIncorrectFeedback",{answer:q.answers[correctAnswer]});
             submit.disabled=true;
-            setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length)renderQuestion();else{player.innerHTML=`<h2>Quiz complete</h2><p>You scored ${score} out of ${active.questions.length}.</p><button type="button" class="quiz-primary" id="quizDone">Back to quizzes</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");}},1200);
+            setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length)renderQuestion();else{player.innerHTML=`<h2>${esc(quizText("quizComplete"))}</h2><p>${esc(quizText("quizScore",{score,total:active.questions.length}))}</p><button type="button" class="quiz-primary" id="quizDone">${esc(quizText("backToQuizzes"))}</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");}},1200);
           };
           form.addEventListener("submit",event=>{event.preventDefault();submitAnswer();});
         }
@@ -31040,6 +31068,9 @@ if (isAmerica250Date && logo) {
         window.addEventListener("hashchange", () => {
           if (window.location.hash.split("?")[0] === "#/quiz") renderSchoolQuizLibrary();
         });
+        document.getElementById("languageSelector")?.addEventListener("click",()=>setTimeout(()=>{
+          if(window.location.hash.split("?")[0]==="#/quiz") renderSchoolQuizLibrary();
+        },0));
 
         // Expose a local, reusable Wikipedia reader to Voice Mode without storing requests or results.
         window.munetiosVoiceWikipedia = async query => {
