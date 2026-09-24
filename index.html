@@ -1538,6 +1538,65 @@
         gap: 8px;
       }
 
+      .changelog-intro {
+        margin: -8px 0 22px;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.5;
+      }
+
+      .changelog-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .changelog-release {
+        padding: 18px;
+        border: 1px solid rgba(203, 170, 255, 0.22);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .changelog-release header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .changelog-release h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .changelog-release time {
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .changelog-release ul {
+        margin: 0;
+        padding-left: 20px;
+        color: rgba(255, 255, 255, 0.82);
+        line-height: 1.55;
+      }
+
+      .changelog-release li + li {
+        margin-top: 5px;
+      }
+
+      .changelog-badge {
+        display: inline-block;
+        margin-left: 7px;
+        padding: 3px 8px;
+        border: 1px solid rgba(203, 170, 255, 0.3);
+        border-radius: 999px;
+        background: rgba(106, 0, 255, 0.24);
+        font-size: 11px;
+        vertical-align: 2px;
+      }
+
       .settings-item {
         display: flex;
         justify-content: space-between;
@@ -5351,6 +5410,10 @@
                 <icon>search_gear</icon>
                 <div class="menu-text" data-translate="advancedSettings">Advanced</div>
               </div>
+              <div class="settings-sidebar-item" id="changelogSettingsBtn" role="button" tabindex="0">
+                <icon>history</icon>
+                <div class="menu-text">Changelog</div>
+              </div>
             </div>
             <div class="settings-content-pages">
               <div class="settings-page" id="generalSettingsPage">
@@ -5708,6 +5771,53 @@
                       >
                     </button>
                   </div>
+                </div>
+              </div>
+              <div class="settings-page" id="changelogSettingsPage">
+                <h2>Changelog</h2>
+                <p class="changelog-intro">A history of the major updates to Munetios Search, based on the changes shipped to this page.</p>
+                <div class="changelog-list">
+                  <article class="changelog-release">
+                    <header><h3>Version 1.4.0 <span class="changelog-badge">Latest</span></h3><time datetime="2026-09-24">September 24, 2026</time></header>
+                    <ul>
+                      <li>Added School Quiz Studio with editable, playable, and locally saved quizzes.</li>
+                      <li>Expanded built-in quizzes and translated the quiz experience.</li>
+                      <li>Added custom themes, toast appearance controls, shortcut presets, and advanced customization.</li>
+                      <li>Improved appearance color controls and fixed quiz feedback and answer submission.</li>
+                    </ul>
+                  </article>
+                  <article class="changelog-release">
+                    <header><h3>Version 1.3.0</h3><time datetime="2026-08-03">August 3, 2026</time></header>
+                    <ul>
+                      <li>Introduced the Ganetios identity and refreshed search branding.</li>
+                      <li>Added Voice mode with voice selection, speed controls, and optional background music.</li>
+                      <li>Expanded image discovery and media support.</li>
+                    </ul>
+                  </article>
+                  <article class="changelog-release">
+                    <header><h3>Version 1.2.0</h3><time datetime="2026-06-29">June 29, 2026</time></header>
+                    <ul>
+                      <li>Reworked dialogs into reusable modal templates for more reliable interactions.</li>
+                      <li>Added liquid-glass color pickers for background and text customization.</li>
+                      <li>Improved settings, shortcuts, privacy controls, localization, and responsive behavior.</li>
+                    </ul>
+                  </article>
+                  <article class="changelog-release">
+                    <header><h3>Version 1.1.0</h3><time datetime="2026-05-20">May 20, 2026</time></header>
+                    <ul>
+                      <li>Added local search suggestions and search-history controls.</li>
+                      <li>Added Activities, including quick access to games and management of running activities.</li>
+                      <li>Expanded language support and homepage personalization.</li>
+                    </ul>
+                  </article>
+                  <article class="changelog-release">
+                    <header><h3>Version 1.0.0</h3><time datetime="2026-05-16">May 16, 2026</time></header>
+                    <ul>
+                      <li>Launched the Munetios Search homepage with private web and image search.</li>
+                      <li>Included themes, shortcuts, SafeSearch, country selection, and core settings.</li>
+                      <li>Established the lightweight, account-free search experience.</li>
+                    </ul>
+                  </article>
                 </div>
               </div>
               <div class="settings-page" id="shortcutsListPage">
@@ -6167,6 +6277,7 @@
               voiceSettingsBtn: "voiceSettingsPage",
               privacySettingsBtn: "privacySettingsPage",
               advancedSettingsBtn: "advancedSettingsPage",
+              changelogSettingsBtn: "changelogSettingsPage",
             };
             modal.querySelectorAll(".settings-sidebar-item").forEach(function (item) {
               item.classList.toggle("active", sidebarMap[originalIdOf(item)] === pageId);
@@ -6448,6 +6559,7 @@
                     voiceSettingsBtn: "voiceSettingsPage",
                     privacySettingsBtn: "privacySettingsPage",
                     advancedSettingsBtn: "advancedSettingsPage",
+                    changelogSettingsBtn: "changelogSettingsPage",
                   };
                   const sidebarKey = originalIdOf(sidebarItem);
                   if (pages[sidebarKey]) {
@@ -8634,6 +8746,7 @@ if (isAmerica250Date && logo) {
             voiceSettingsBtn: "voiceSettingsPage",
             privacySettingsBtn: "privacySettingsPage",
             advancedSettingsBtn: "advancedSettingsPage",
+            changelogSettingsBtn: "changelogSettingsPage",
           };
 
           // Open settings modal
@@ -24976,6 +25089,7 @@ if (isAmerica250Date && logo) {
             "shortcutsSettingsBtn",
             "privacySettingsBtn",
             "advancedSettingsBtn",
+            "changelogSettingsBtn",
             "reduceTransparencyToggle",
             "searchHistoryPersonalizationToggle",
             "schoolModeToggle",
