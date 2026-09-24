@@ -16,6 +16,11 @@
           document.querySelectorAll("a").forEach(function (link) {
             link.setAttribute("target", "_top");
           });
+          try {
+            if (window.top.localStorage.getItem("schoolMode") === "true") {
+              document.querySelector('a[href="https://ai.munetios.com"]')?.closest("munetios-app-button")?.remove();
+            }
+          } catch (_) {}
         });
       }
     </script>
