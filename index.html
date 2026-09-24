@@ -25648,6 +25648,50 @@ if (isAmerica250Date && logo) {
             updateCustomColorPicker(input);
           }
 
+          // Reuse the Appearance color control anywhere else settings need a color.
+          // Its popover is deliberately moved to the end of <body> by
+          // setupCustomColorPicker so it is not clipped by a settings panel.
+          window.createMunetiosColorPicker = function (options) {
+            const settings = options || {};
+            const id = settings.id || "munetiosColorPicker" + Date.now();
+            const initialColor = normalizeHex(
+              localStorage.getItem(settings.storageKey) || settings.fallback || "#ffffff",
+            );
+            const container = document.createElement("div");
+            container.className = "color-input-wrapper";
+            container.innerHTML = `
+              <input type="color" id="${id}" value="${initialColor}" class="native-color-input" aria-hidden="true" tabindex="-1">
+              <div class="munetios-color-picker" data-color-target="${id}" role="group" aria-label="${settings.label || "Color picker"}">
+                <button type="button" class="color-swatch-button" aria-label="${settings.label || "Choose color"}">
+                  <span class="color-swatch-preview"></span>
+                </button>
+                <div class="color-picker-popover">
+                  <p class="color-picker-title">${(window.getTranslation && window.getTranslation("swatch")) || "Swatch"}</p>
+                  <div class="color-preset-row"></div>
+                  <div class="color-picker-field" tabindex="0" role="slider" aria-label="${settings.label || "Adjust color"}" aria-valuemin="0" aria-valuemax="100">
+                    <span class="color-picker-dot"></span>
+                  </div>
+                  <div class="color-shade-grid"><span class="color-shade"></span></div>
+                  <div class="color-picker-hex">${initialColor.toUpperCase()}</div>
+                </div>
+              </div>
+              <span class="color-value">${initialColor.toUpperCase()}</span>`;
+            const input = container.querySelector(".native-color-input");
+            const valueEl = container.querySelector(".color-value");
+            input.addEventListener("input", function () {
+              const color = normalizeHex(input.value);
+              valueEl.textContent = color.toUpperCase();
+              if (settings.storageKey) localStorage.setItem(settings.storageKey, color);
+              if (typeof settings.onChange === "function") settings.onChange(color);
+            });
+            // Callers insert the returned control synchronously; initialize after
+            // that insertion so the shared setup can find its wrapper in the DOM.
+            queueMicrotask(function () {
+              setupCustomColorPicker(input, valueEl);
+            });
+            return container;
+          };
+
           // Set reduce transparency toggle
           if (reduceTransparency) {
             reduceTransparencyToggle?.classList.add("active");
@@ -31192,8 +31236,7 @@ if (isAmerica250Date && logo) {
         Object.entries(customizationTranslations).forEach(([code,words])=>{if(window.munetiosTranslations?.[code])Object.assign(window.munetiosTranslations[code],words)});
         const tr=key=>window.getTranslation?.(key)||customizationTranslations[(localStorage.getItem("munetiosLanguage")||"en").split("-")[0]]?.[key]||customizationTranslations.en[key]||key;
         const modal=(title,body,onConfirm)=>{const wrap=document.createElement("div");wrap.className="advanced-modal";wrap.setAttribute("role","dialog");wrap.setAttribute("aria-modal","true");wrap.innerHTML=`<section class="advanced-modal-card liquid-glass"><h2>${title}</h2><div data-modal-body></div><div class="advanced-modal-actions"><button type="button" data-cancel>Cancel</button><button type="button" data-confirm>Confirm</button></div></section>`;wrap.querySelector("[data-modal-body]").append(body);const close=()=>wrap.remove();wrap.querySelector("[data-cancel]").onclick=close;wrap.querySelector("[data-confirm]").onclick=()=>{if(onConfirm?.()!==false)close()};wrap.onclick=e=>{if(e.target===wrap)close()};document.body.append(wrap);return wrap};
-        const hsvToHex=(h,s,v)=>{const f=n=>{const k=(n+h/60)%6;return Math.round((v-v*s*Math.max(0,Math.min(k,4-k,1)))*255).toString(16).padStart(2,"0")};return `#${f(5)}${f(3)}${f(1)}`};
-        const colorPicker=(key,fallback,onChange)=>{let hue=270,saturation=.75,value=1;const el=document.createElement("div");el.className="advanced-color-picker";el.innerHTML=`<button type="button" class="advanced-color-trigger" aria-label="${tr("chooseColor")}" aria-expanded="false"><span class="advanced-color-preview"></span></button><span class="advanced-color-value"></span><div class="advanced-color-popover"><div class="advanced-color-field"></div><div class="advanced-color-hue"></div></div>`;const trigger=el.querySelector("button"),preview=el.querySelector(".advanced-color-preview"),label=el.querySelector(".advanced-color-value"),field=el.querySelector(".advanced-color-field"),hueBar=el.querySelector(".advanced-color-hue");const set=color=>{localStorage.setItem(key,color);preview.style.background=color;label.textContent=color;onChange?.(color)};set(localStorage.getItem(key)||fallback);trigger.onclick=e=>{e.stopPropagation();el.classList.toggle("open");trigger.setAttribute("aria-expanded",String(el.classList.contains("open")))};const drag=(node,update)=>node.addEventListener("pointerdown",e=>{e.preventDefault();const move=p=>{const r=node.getBoundingClientRect();update(Math.max(0,Math.min(1,(p.clientX-r.left)/r.width)),Math.max(0,Math.min(1,(p.clientY-r.top)/r.height)));set(hsvToHex(hue,saturation,value))};move(e);const up=()=>{document.removeEventListener("pointermove",move);document.removeEventListener("pointerup",up)};document.addEventListener("pointermove",move);document.addEventListener("pointerup",up)});drag(field,(x,y)=>{saturation=x;value=1-y});drag(hueBar,x=>{hue=x*360;field.style.setProperty("--picker-hue",`hsl(${hue} 100% 50%)`)});document.addEventListener("click",e=>{if(!el.contains(e.target)){el.classList.remove("open");trigger.setAttribute("aria-expanded","false")}});return el};
+        const colorPicker=(key,fallback,id)=>window.createMunetiosColorPicker({storageKey:key,fallback,id,label:tr("chooseColor")});
 
         const oldToast=window.showToast;
         const toastPosition=()=>localStorage.getItem("munetiosToastPosition")||"top-right";
@@ -31207,8 +31250,8 @@ if (isAmerica250Date && logo) {
         document.getElementById("modifyI18n")?.addEventListener("click",openI18n);
 
         const appearance=document.querySelector("#appearanceSettingsPage .settings-group");
-        if(appearance){const toast=document.createElement("div");toast.className="settings-item advanced-custom-grid";toast.innerHTML=`<h3 data-translate="toastCustomization">${tr("toastCustomization")}</h3><div class="settings-item"><span class="settings-label" data-translate="toastColor">${tr("toastColor")}</span><div id="toastColorPicker"></div></div><label><span data-translate="toastPosition">${tr("toastPosition")}</span><select id="toastPosition"><option value="top-right" data-translate="topRight">${tr("topRight")}</option><option value="top-left" data-translate="topLeft">${tr("topLeft")}</option><option value="bottom-right" data-translate="bottomRight">${tr("bottomRight")}</option><option value="bottom-left" data-translate="bottomLeft">${tr("bottomLeft")}</option><option value="bottom-center" data-translate="bottomCenter">${tr("bottomCenter")}</option></select></label>`;appearance.append(toast);toast.querySelector("#toastColorPicker").append(colorPicker("munetiosToastColor","#6a00ff"));const pos=toast.querySelector("#toastPosition");pos.value=toastPosition();pos.onchange=()=>localStorage.setItem("munetiosToastPosition",pos.value);
-          const maker=document.createElement("div");maker.className="settings-item advanced-custom-grid";maker.innerHTML=`<h3 data-translate="createCustomTheme">${tr("createCustomTheme")}</h3><label><span data-translate="themeName">${tr("themeName")}</span><input id="customThemeName" maxlength="40" placeholder="${tr("myTheme")}"></label><label><span data-translate="fontFamily">${tr("fontFamily")}</span><input id="customThemeFont" list="customThemeFonts" value="Google Sans Flex"><datalist id="customThemeFonts"><option>Google Sans Flex</option><option>Inter</option><option>Arial</option><option>Segoe UI</option><option>Georgia</option></datalist></label><span data-translate="bgColor">${tr("bgColor")}</span><div id="themeBgPicker"></div><span data-translate="accentColor">${tr("accentColor")}</span><div id="themeAccentPicker"></div><button type="button" class="advanced-settings-button" id="saveCustomTheme" data-translate="saveCustomTheme">${tr("saveCustomTheme")}</button>`;appearance.append(maker);maker.querySelector("#themeBgPicker").append(colorPicker("munetiosThemeDraftBg","#071a33"));maker.querySelector("#themeAccentPicker").append(colorPicker("munetiosThemeDraftAccent","#2583ff"));maker.querySelector("#saveCustomTheme").onclick=()=>{const theme={name:maker.querySelector("#customThemeName").value.trim()||tr("customTheme"),font:maker.querySelector("#customThemeFont").value.trim()||"Google Sans Flex",background:localStorage.getItem("munetiosThemeDraftBg")||"#071a33",accent:localStorage.getItem("munetiosThemeDraftAccent")||"#2583ff"};localStorage.setItem("munetiosCustomTheme",JSON.stringify(theme));applyCustomTheme(theme);renderCustomCard();window.showToast(tr("customThemeSaved"))}}
+        if(appearance){const toast=document.createElement("div");toast.className="settings-item advanced-custom-grid";toast.innerHTML=`<h3 data-translate="toastCustomization">${tr("toastCustomization")}</h3><div class="settings-item"><span class="settings-label" data-translate="toastColor">${tr("toastColor")}</span><div id="toastColorPicker"></div></div><label><span data-translate="toastPosition">${tr("toastPosition")}</span><select id="toastPosition"><option value="top-right" data-translate="topRight">${tr("topRight")}</option><option value="top-left" data-translate="topLeft">${tr("topLeft")}</option><option value="bottom-right" data-translate="bottomRight">${tr("bottomRight")}</option><option value="bottom-left" data-translate="bottomLeft">${tr("bottomLeft")}</option><option value="bottom-center" data-translate="bottomCenter">${tr("bottomCenter")}</option></select></label>`;appearance.append(toast);toast.querySelector("#toastColorPicker").append(colorPicker("munetiosToastColor","#6a00ff","toastColorInput"));const pos=toast.querySelector("#toastPosition");pos.value=toastPosition();pos.onchange=()=>localStorage.setItem("munetiosToastPosition",pos.value);
+          const maker=document.createElement("div");maker.className="settings-item advanced-custom-grid";maker.innerHTML=`<h3 data-translate="createCustomTheme">${tr("createCustomTheme")}</h3><label><span data-translate="themeName">${tr("themeName")}</span><input id="customThemeName" maxlength="40" placeholder="${tr("myTheme")}"></label><label><span data-translate="fontFamily">${tr("fontFamily")}</span><input id="customThemeFont" list="customThemeFonts" value="Google Sans Flex"><datalist id="customThemeFonts"><option>Google Sans Flex</option><option>Inter</option><option>Arial</option><option>Segoe UI</option><option>Georgia</option></datalist></label><span data-translate="bgColor">${tr("bgColor")}</span><div id="themeBgPicker"></div><span data-translate="accentColor">${tr("accentColor")}</span><div id="themeAccentPicker"></div><button type="button" class="advanced-settings-button" id="saveCustomTheme" data-translate="saveCustomTheme">${tr("saveCustomTheme")}</button>`;appearance.append(maker);maker.querySelector("#themeBgPicker").append(colorPicker("munetiosThemeDraftBg","#071a33","themeBgColorInput"));maker.querySelector("#themeAccentPicker").append(colorPicker("munetiosThemeDraftAccent","#2583ff","themeAccentColorInput"));maker.querySelector("#saveCustomTheme").onclick=()=>{const theme={name:maker.querySelector("#customThemeName").value.trim()||tr("customTheme"),font:maker.querySelector("#customThemeFont").value.trim()||"Google Sans Flex",background:localStorage.getItem("munetiosThemeDraftBg")||"#071a33",accent:localStorage.getItem("munetiosThemeDraftAccent")||"#2583ff"};localStorage.setItem("munetiosCustomTheme",JSON.stringify(theme));applyCustomTheme(theme);renderCustomCard();window.showToast(tr("customThemeSaved"))}}
         function applyCustomTheme(theme){document.documentElement.dataset.theme="custom-local";document.body.style.setProperty("background",theme.background,"important");document.body.style.setProperty("font-family",`${theme.font}, Google Sans Flex, sans-serif`,"important");document.documentElement.style.setProperty("--orchid",theme.accent);localStorage.setItem("munetiosTheme","custom-local")}
         function refreshCustomizationTranslations(){document.querySelectorAll("[data-translate]").forEach(el=>{const key=el.dataset.translate;if(customizationTranslations.en[key])el.textContent=tr(key)});const traditional=document.querySelector('.theme-card[data-theme-id="traditional"] .theme-name');if(traditional)traditional.textContent=tr("themeTraditional")}
         document.getElementById("languageSelector")?.addEventListener("click",()=>setTimeout(refreshCustomizationTranslations,0));
