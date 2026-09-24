@@ -25163,6 +25163,31 @@ if (isAmerica250Date && logo) {
             },
           ];
           var REMOVED_THEMES = new Set(["dynamic", "legacy", "older"]);
+          var CUSTOM_THEME_ID = "custom-local";
+
+          function hasSavedCustomTheme() {
+            try {
+              var customTheme = JSON.parse(
+                localStorage.getItem("munetiosCustomTheme"),
+              );
+              return Boolean(
+                customTheme &&
+                  typeof customTheme.background === "string" &&
+                  typeof customTheme.accent === "string",
+              );
+            } catch (error) {
+              return false;
+            }
+          }
+
+          function isKnownTheme(themeId) {
+            return (
+              THEMES.some(function (theme) {
+                return theme.id === themeId;
+              }) ||
+              (themeId === CUSTOM_THEME_ID && hasSavedCustomTheme())
+            );
+          }
 
           // Create theme background style element early (must precede munetios-bg-styles)
           var themeStyleEl = document.getElementById("munetios-theme-styles");
@@ -25173,6 +25198,14 @@ if (isAmerica250Date && logo) {
           }
 
           function applyTheme(themeId, save) {
+            // The custom-theme module applies its saved colors after it initializes.
+            // Preserve its id here instead of normalizing it back to the previous
+            // built-in theme during page startup.
+            if (themeId === CUSTOM_THEME_ID && hasSavedCustomTheme()) {
+              document.documentElement.setAttribute("data-theme", themeId);
+              themeStyleEl.textContent = "";
+              return;
+            }
             var theme =
               THEMES.find(function (t) {
                 return t.id === themeId;
@@ -25289,9 +25322,7 @@ if (isAmerica250Date && logo) {
             if (
               !currentTheme ||
               REMOVED_THEMES.has(currentTheme) ||
-              !THEMES.some(function (theme) {
-                return theme.id === currentTheme;
-              })
+              !isKnownTheme(currentTheme)
             ) {
               currentTheme = "munetios-default";
               localStorage.setItem("munetiosTheme", currentTheme);
@@ -25340,9 +25371,7 @@ if (isAmerica250Date && logo) {
           if (
             !savedTheme ||
             REMOVED_THEMES.has(savedTheme) ||
-            !THEMES.some(function (theme) {
-              return theme.id === savedTheme;
-            })
+            !isKnownTheme(savedTheme)
           ) {
             savedTheme = systemTheme;
             localStorage.setItem("munetiosTheme", savedTheme);
@@ -31368,11 +31397,11 @@ if (isAmerica250Date && logo) {
         const appearance=document.querySelector("#appearanceSettingsPage .settings-group");
         if(appearance){const toast=document.createElement("div");toast.className="settings-item advanced-custom-grid";toast.innerHTML=`<h3 data-translate="toastCustomization">${tr("toastCustomization")}</h3><div class="settings-item"><span class="settings-label" data-translate="toastColor">${tr("toastColor")}</span><div id="toastColorPicker"></div></div><label><span data-translate="toastPosition">${tr("toastPosition")}</span><select id="toastPosition"><option value="top-right" data-translate="topRight">${tr("topRight")}</option><option value="top-left" data-translate="topLeft">${tr("topLeft")}</option><option value="bottom-right" data-translate="bottomRight">${tr("bottomRight")}</option><option value="bottom-left" data-translate="bottomLeft">${tr("bottomLeft")}</option><option value="bottom-center" data-translate="bottomCenter">${tr("bottomCenter")}</option></select></label>`;appearance.append(toast);toast.querySelector("#toastColorPicker").append(colorPicker("munetiosToastColor","#6a00ff","toastColorInput"));const pos=toast.querySelector("#toastPosition");pos.value=toastPosition();pos.onchange=()=>localStorage.setItem("munetiosToastPosition",pos.value);
           const maker=document.createElement("div");maker.className="settings-item advanced-custom-grid";maker.innerHTML=`<h3 data-translate="createCustomTheme">${tr("createCustomTheme")}</h3><label><span data-translate="themeName">${tr("themeName")}</span><input id="customThemeName" maxlength="40" placeholder="${tr("myTheme")}"></label><label><span data-translate="fontFamily">${tr("fontFamily")}</span><input id="customThemeFont" list="customThemeFonts" value="Google Sans Flex"><datalist id="customThemeFonts"><option>Google Sans Flex</option><option>Inter</option><option>Arial</option><option>Segoe UI</option><option>Georgia</option></datalist></label><span data-translate="bgColor">${tr("bgColor")}</span><div id="themeBgPicker"></div><span data-translate="accentColor">${tr("accentColor")}</span><div id="themeAccentPicker"></div><button type="button" class="advanced-settings-button" id="saveCustomTheme" data-translate="saveCustomTheme">${tr("saveCustomTheme")}</button>`;appearance.append(maker);maker.querySelector("#themeBgPicker").append(colorPicker("munetiosThemeDraftBg","#071a33","themeBgColorInput"));maker.querySelector("#themeAccentPicker").append(colorPicker("munetiosThemeDraftAccent","#2583ff","themeAccentColorInput"));maker.querySelector("#saveCustomTheme").onclick=()=>{const theme={name:maker.querySelector("#customThemeName").value.trim()||tr("customTheme"),font:maker.querySelector("#customThemeFont").value.trim()||"Google Sans Flex",background:localStorage.getItem("munetiosThemeDraftBg")||"#071a33",accent:localStorage.getItem("munetiosThemeDraftAccent")||"#2583ff"};localStorage.setItem("munetiosCustomTheme",JSON.stringify(theme));applyCustomTheme(theme);renderCustomCard();window.showToast(tr("customThemeSaved"))}}
-        function applyCustomTheme(theme){document.documentElement.dataset.theme="custom-local";document.body.style.setProperty("background",theme.background,"important");document.body.style.setProperty("font-family",`${theme.font}, Google Sans Flex, sans-serif`,"important");document.documentElement.style.setProperty("--orchid",theme.accent);localStorage.setItem("munetiosTheme","custom-local")}
+        function applyCustomTheme(theme){document.documentElement.dataset.theme="custom-local";document.body.style.setProperty("background",theme.background,"important");document.body.style.setProperty("font-family",`${theme.font}, Google Sans Flex, sans-serif`,"important");document.documentElement.style.setProperty("--orchid",theme.accent);localStorage.setItem("munetiosTheme","custom-local");localStorage.setItem("munetiosThemeUserOverride","true");localStorage.setItem("munetiosFontFamily",theme.font);localStorage.removeItem("munetiosFontUserOverride");document.querySelectorAll(".theme-card").forEach(card=>{const selected=card.classList.contains("custom-theme-card");card.classList.toggle("selected",selected);card.setAttribute("aria-pressed",String(selected))})}
         function refreshCustomizationTranslations(){document.querySelectorAll("[data-translate]").forEach(el=>{const key=el.dataset.translate;if(customizationTranslations.en[key])el.textContent=tr(key)});const traditional=document.querySelector('.theme-card[data-theme-id="traditional"] .theme-name');if(traditional)traditional.textContent=tr("themeTraditional")}
         document.getElementById("languageSelector")?.addEventListener("click",()=>setTimeout(refreshCustomizationTranslations,0));
         refreshCustomizationTranslations();
-        function renderCustomCard(){const grid=document.getElementById("themesGrid"),theme=read("munetiosCustomTheme",null);if(!grid||!theme)return;let card=grid.querySelector(".custom-theme-card");if(!card){card=document.createElement("button");card.type="button";card.className="theme-card custom-theme-card";card.append(document.createElement("div"),document.createElement("div"));grid.append(card)}card.firstElementChild.className="theme-swatch";card.firstElementChild.style.background=`linear-gradient(135deg,${theme.background},${theme.accent})`;card.lastElementChild.className="theme-name";card.lastElementChild.textContent=theme.name;card.onclick=()=>applyCustomTheme(theme)}new MutationObserver(renderCustomCard).observe(document.getElementById("themesGrid"),{childList:true});renderCustomCard();if(localStorage.getItem("munetiosTheme")==="custom-local")applyCustomTheme(read("munetiosCustomTheme",{}));
+        function renderCustomCard(){const grid=document.getElementById("themesGrid"),theme=read("munetiosCustomTheme",null);if(!grid||!theme)return;let card=grid.querySelector(".custom-theme-card");if(!card){card=document.createElement("button");card.type="button";card.className="theme-card custom-theme-card";card.append(document.createElement("div"),document.createElement("div"));grid.append(card)}const selected=localStorage.getItem("munetiosTheme")==="custom-local";card.classList.toggle("selected",selected);card.setAttribute("aria-pressed",String(selected));card.firstElementChild.className="theme-swatch";card.firstElementChild.style.background=`linear-gradient(135deg,${theme.background},${theme.accent})`;card.lastElementChild.className="theme-name";card.lastElementChild.textContent=theme.name;card.onclick=()=>applyCustomTheme(theme)}new MutationObserver(renderCustomCard).observe(document.getElementById("themesGrid"),{childList:true});renderCustomCard();if(localStorage.getItem("munetiosTheme")==="custom-local")applyCustomTheme(read("munetiosCustomTheme",{}));
 
         function testError(){if(school())return false;sessionStorage.setItem("munetiosTestError","true");window.renderShortcuts?.();window.munetiosRefreshShortcutsSettings?.();window.showToast("Test Error enabled for this tab. Open a new tab to restore services.");return true}window.testError=testError;
         document.getElementById("testErrorButton")?.addEventListener("click",()=>{const body=document.createElement("p");body.textContent="Enable simulated failures for search features, shortcuts, maps, news, Wiki, image search, Voice mode, and Voice search in this tab?";modal("Test Error",body,testError)});
