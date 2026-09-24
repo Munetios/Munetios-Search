@@ -47,7 +47,6 @@
       https://api.github.com
       https://*.duckduckgo.com
       https://duckduckgo.com
-      https://www.reddit.com
       https://api.openverse.org
       https://photon.komoot.io
       https://*.openfreemap.org
@@ -3659,35 +3658,6 @@
         kr: "ko",
       };
 
-      // Reddit subreddits per country for local results
-      const countrySubreddits = {
-        us: "unitedstates+AskAnAmerican",
-        gb: "unitedkingdom+AskABrit",
-        ca: "canada",
-        au: "australia",
-        in: "india+IndiaSpeaks",
-        de: "de+germany",
-        fr: "france",
-        jp: "japan",
-        cn: "China",
-        br: "brasil",
-        ru: "russia",
-        za: "southafrica",
-        nl: "Netherlands+dutch",
-        es: "spain+espanol",
-        it: "italy+italia",
-        se: "sweden",
-        no: "norway",
-        fi: "suomi+finland",
-        dk: "denmark",
-        pl: "polska+poland",
-        mx: "mexico",
-        ar: "argentina",
-        tr: "turkey",
-        id: "indonesia",
-        kr: "korea",
-      };
-
       // Stack Overflow site/language per country (for future expansion)
       const countryStackLang = {
         us: "en",
@@ -3789,14 +3759,6 @@
         hu: "hu", il: "he", ae: "ar", sa: "ar", eg: "ar", pk: "ur",
       });
 
-      Object.assign(countrySubreddits, {
-        ie: "ireland", ch: "switzerland", at: "austria", be: "belgium", pt: "portugal",
-        nz: "newzealand", sg: "singapore", my: "malaysia", ph: "philippines",
-        th: "thailand", vn: "vietnam", ua: "ukraine", ro: "romania", cz: "czech",
-        hu: "hungary", il: "israel", ae: "dubai+uae", sa: "saudiarabia",
-        eg: "egypt", pk: "pakistan",
-      });
-
       Object.assign(countryStackLang, {
         ie: "en", ch: "de", at: "de", be: "fr", pt: "pt", nz: "en", sg: "en",
         my: "en", ph: "en", th: "th", vn: "vi", ua: "uk", ro: "ro", cz: "cs",
@@ -3833,7 +3795,6 @@
         localStorage.setItem("country", code);
         window.currentCountry = code;
         window.currentWikiLang = countryWikiLang[code] || "en";
-        window.currentRedditSubreddits = countrySubreddits[code] || "";
         window.currentStackLang = countryStackLang[code] || "en";
         window.currentGithubLang = countryGithubLang[code] || "en";
         // Update button label
@@ -3939,7 +3900,6 @@
 
           // local results rendered immediately (no spinner)
 
-          let redditResults = [];
           let hnResults = [];
           let stackResults = [];
           let wikiResults = [];
@@ -3949,26 +3909,6 @@
           let wikidataResults = [];
           let minecraftWikiResults = [];
           let devtoResults = [];
-
-          // --- REDDIT ---
-          try {
-        const enableReddit = localStorage.getItem("enableRedditResults") === "true";
-        if (enableReddit && query !== "@all") {
-          // Use country-specific subreddits if available
-          const subreddits = window.currentRedditSubreddits || "";
-          const subredditParam = subreddits ? `&restrict_sr=on&sr_name=${encodeURIComponent(subreddits)}` : "";
-          const redditRes = await fetch(
-            `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}${subredditParam}&limit=5`
-          );
-          const redditData = await redditRes.json();
-          redditResults = (redditData.data?.children || []).map(item => ({
-            title: item.data.title,
-            description: item.data.selftext || item.data.subreddit_name_prefixed,
-            link: "https://reddit.com" + item.data.permalink,
-            favicon: "https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png"
-          }));
-        }
-          } catch (err) { console.log("Reddit error:", err); }
 
           // --- HACKER NEWS ---
           if (query !== "@all") {
@@ -4171,7 +4111,6 @@
         ...devtoResults,
         ...hnResults,
         ...mojangBugResults,
-        ...redditResults,
         ...ddgResults,
         ...stackResults,
         ...githubResults,
@@ -4518,7 +4457,6 @@
           "liquidGlassStyle",
           "compactMode",
           "schoolMode",
-          "enableRedditResults",
           "enableVoiceMode",
           "enableAIOverview",
           "enableInstantAnswers",
@@ -4586,7 +4524,6 @@
           "liquidGlassStyle",
           "compactMode",
           "schoolMode",
-          "enableRedditResults",
           "enableVoiceMode",
           "enableAIOverview",
           "enableInstantAnswers",
@@ -5288,10 +5225,6 @@
             moreOptions.classList.add("hidden");
           }
         });
-      // --- Reddit Results Toggle ---
-      // Always enabled by default, not in Labs
-      localStorage.setItem("enableRedditResults", "true");
-
       // --- Voice Mode Toggle ---
       // Always enabled by default, not in Labs
       localStorage.setItem("enableVoiceMode", "true");
@@ -9894,7 +9827,6 @@
           stackData,
           hnData,
           archiveData,
-          redditData,
           githubData,
           openLibraryData,
           mojangText,
@@ -9903,7 +9835,6 @@
           fetchJsonResult(`https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=${encodeURIComponent(query)}&site=stackoverflow&pagesize=10`, signal),
           fetchJsonResult(`https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&hitsPerPage=10`, signal),
           fetchJsonResult(`https://archive.org/advancedsearch.php?q=${encodeURIComponent(`title:(${query}) OR description:(${query})`)}&fl[]=title&fl[]=description&fl[]=identifier&rows=10&page=1&output=json`, signal),
-          fetchJsonResult(`https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&limit=10`, signal),
           fetchJsonResult(`https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&per_page=10`, signal),
           fetchJsonResult(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10`, signal),
           fetchTextResult(`https://bugs.mojang.com/issues/?jql=text~"${encodeURIComponent(query)}"&rss=true`, signal),
@@ -9934,12 +9865,6 @@
             link: `https://archive.org/details/${encodeURIComponent(item.identifier)}`,
             source: "Internet Archive",
           }));
-        const redditResults = (redditData?.data?.children || []).map(({ data }) => ({
-          title: data.title,
-          description: data.selftext ? stripHtmlText(data.selftext).slice(0, 220) : `Reddit result from ${data.subreddit_name_prefixed || "Reddit"}`,
-          link: `https://www.reddit.com${data.permalink}`,
-          source: "Reddit",
-        }));
         const githubResults = (githubData?.items || []).map((repo) => ({
           title: repo.full_name,
           description: repo.description || `${repo.stargazers_count || 0} stars on GitHub`,
@@ -9973,7 +9898,6 @@
           ...stackResults,
           ...hnResults,
           ...archiveResults,
-          ...redditResults,
           ...githubResults,
           ...openLibraryResults,
           ...mojangBugResults,
@@ -10139,22 +10063,6 @@
         ca: [".ca", "cbc.ca", "globeandmail.com", "thestar.com", "nationalpost.com", "montrealgazette.com"],
         au: [".au", ".com.au", "abc.net.au", "smh.com.au", "theage.com.au", "news.com.au", "theaustralian.com.au"],
         za: [".za", ".co.za", "news24.com", "dailymaverick.co.za", "timeslive.co.za", "iol.co.za"],
-      };
-
-      // Country-specific Reddit subreddits for localised results
-      const countrySubreddits = {
-        gb: "unitedkingdom+AskABrit",
-        de: "de+germany",
-        fr: "france",
-        nl: "Netherlands+dutch",
-        in: "india+IndiaSpeaks",
-        jp: "japan",
-        cn: "China",
-        br: "brasil",
-        ru: "russia",
-        ca: "canada",
-        au: "australia",
-        za: "southafrica",
       };
 
       // Ranking function to score results based on relevance to the search query
@@ -10429,16 +10337,6 @@
     (async () => {
       try {
         const signal = _abortController.signal;
-        const enableReddit = localStorage.getItem("enableRedditResults") === "true";
-        const _countrySub = countrySubreddits[window.currentCountry];
-        let _redditUrl, _globalRedditUrl;
-        if (_countrySub) {
-          _redditUrl = `https://www.reddit.com/r/${_countrySub}/search.json?q=${encodeURIComponent(query)}&limit=5&restrict_sr=true`;
-        } else {
-          _redditUrl = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&limit=5`;
-        }
-        _globalRedditUrl = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&limit=5`;
-
         const countryWikiLang = { us: "en", gb: "en", ca: "en", au: "en", za: "en", de: "de", fr: "fr", jp: "ja", cn: "zh", br: "pt", in: "hi", ru: "ru", nl: "nl" };
         const wikiLang = countryWikiLang[window.currentCountry] || "en";
         const wikiBase = `https://${wikiLang}.wikipedia.org`;
@@ -10460,8 +10358,6 @@
 
         // Kick off fetches in parallel but don't block the main function.
         const fetchPromises = {
-          reddit: (enableReddit && query !== "@all") ? fetchWithTimeout(_redditUrl, {}, 6000) : Promise.resolve(null),
-          redditGlobal: (enableReddit && query !== "@all" && _countrySub) ? fetchWithTimeout(_globalRedditUrl, {}, 6000) : Promise.resolve(null),
           hn: (query !== "@all") ? fetchWithTimeout(`https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&hitsPerPage=40`, {}, 6000) : Promise.resolve(null),
           stack: (query !== "@all") ? fetchWithTimeout(`https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=${encodeURIComponent(query)}&site=stackoverflow&pagesize=5`, {}, 6000) : Promise.resolve(null),
           mojang: (query !== "@all") ? (async () => {
@@ -10482,18 +10378,9 @@
         };
 
         const resultsObj = await Promise.all(Object.values(fetchPromises));
-        const [redditData, redditGlobalData, hnData, stackData, mojangText, wdData, wikiData, mcWikiData, devData, githubData, ddgData, newSearchApiResults] = resultsObj;
+        const [hnData, stackData, mojangText, wdData, wikiData, mcWikiData, devData, githubData, ddgData, newSearchApiResults] = resultsObj;
 
         // Parse and build results (same logic as before but localized inside background task)
-        let redditResults = [];
-        if (redditData && redditData.data?.children) {
-          redditResults = redditData.data.children.map(item => ({ title: item.data.title, description: `Reddit: ${item.data.subreddit_name_prefixed}`, link: `https://www.reddit.com${item.data.permalink}`, favicon: "https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png" }));
-        }
-        if (redditGlobalData && redditGlobalData.data?.children && redditResults.length < 3) {
-          const _extra = redditGlobalData.data.children.map(item => ({ title: item.data.title, description: `Reddit: ${item.data.subreddit_name_prefixed}`, link: `https://www.reddit.com${item.data.permalink}`, favicon: "https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png" }));
-          redditResults = [...redditResults, ..._extra];
-        }
-
         let hnResults = [];
         if (hnData && hnData.hits) {
           hnResults = hnData.hits?.filter(i => i.title && i.url).map(i => ({ title: i.title, description: (i._highlightResult && i._highlightResult.title && i._highlightResult.title.value) ? i._highlightResult.title.value.replace(/<[^>]+>/g, '').slice(0, 80) : i.title.slice(0, 80), link: i.url, favicon: "" })) || [];
@@ -10572,7 +10459,6 @@
           ...devtoResults,
           ...hnResults,
           ...mojangBugResults,
-          ...redditResults,
           ...minecraftWikiResults,
           ...wikidataResults,
           ...wikiResults,
@@ -11299,36 +11185,6 @@
             } else {
               imageResults = imageResults.concat(staticImages);
             }
-            try {
-              const enableReddit = localStorage.getItem("enableRedditResults") === "true";
-              if (enableReddit && query) {
-              const redditRes = await fetch(
-                `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&limit=20`
-              );
-              const redditData = await redditRes.json();
-              if (redditData.data && Array.isArray(redditData.data.children)) {
-                redditData.data.children.forEach((item) => {
-                const post = item.data;
-                // Only show posts with preview images or thumbnails
-                let imgUrl = "";
-                if (post.preview && post.preview.images && post.preview.images[0]) {
-                  imgUrl = post.preview.images[0].source.url.replace(/&amp;/g, "&");
-                } else if (post.thumbnail && post.thumbnail.startsWith("http")) {
-                  imgUrl = post.thumbnail;
-                }
-                if (imgUrl) {
-                  imageResults.push({
-                  title: post.title,
-                  description: `Reddit: r/${post.subreddit}`,
-                  link: `https://www.reddit.com${post.permalink}`,
-                  image: imgUrl,
-                  favicon: "https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png"
-                  });
-                }
-                });
-              }
-              }
-            } catch (err) {}
             // Stack Overflow images
             try {
               const stackRes = await fetch(
