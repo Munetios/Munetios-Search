@@ -7082,15 +7082,13 @@
                   spokenWords.textContent = window.getTranslation
                     ? window.getTranslation("networkErrorShort")
                     : "Network error";
-                } else {
+                } else if (e.error === "aborted") {
                   errorMessage =
-                    (window.getTranslation
-                      ? window.getTranslation("audioErrorText")
-                      : "Failed to start voice search");
-                  spokenWords.textContent =
-                    (window.getTranslation
-                      ? window.getTranslation("errorPrefix")
-                      : "Failed to start voice search") + e.error;
+                    "Something went wrong when starting voice search. Try again.";
+                  spokenWords.textContent = errorMessage;
+                } else {
+                  errorMessage = "Failed to start voice search";
+                  spokenWords.textContent = errorMessage;
                 }
 
                 window.showToast && window.showToast(errorMessage);
@@ -7110,15 +7108,9 @@
 
               recognition.start();
             } catch (err) {
-              spokenWords.textContent = window.getTranslation
-                ? window.getTranslation("unableToStartVoice")
-                : "Unable to start voice recognition";
+              spokenWords.textContent = "Failed to start voice search";
               window.showToast &&
-                window.showToast(
-                  window.getTranslation
-                    ? window.getTranslation("unableToStartFull")
-                    : "Failed to start voice recognition.",
-                );
+                window.showToast("Failed to start voice search");
               playSound("denied");
             }
           }
@@ -7507,13 +7499,18 @@
                     ? gt("noSpeechShort")
                     : "No speech detected";
                   window.munetiosSounds?.play("voice-search-no-speech");
+                } else if (e.error === "aborted") {
+                  const message =
+                    "Something went wrong when starting voice mode. Try again.";
+                  voiceStatus.textContent = message;
+                  addToHistory(message, "system");
+                  showToast(message);
+                  playSound("denied");
                 } else {
-                  voiceStatus.textContent =
-                    (gt ? gt("errorPrefix") : "Error: ") + e.error;
-                  addToHistory(
-                    (gt ? gt("errorPrefix") : "Error: ") + e.error,
-                    "system",
-                  );
+                  const message = "Failed to start voice mode";
+                  voiceStatus.textContent = message;
+                  addToHistory(message, "system");
+                  showToast(message);
                   playSound("denied");
                 }
               };
@@ -7528,26 +7525,11 @@
 
               recognition.start();
             } catch (err) {
-              const gt = window.getTranslation;
-              voiceStatus.textContent = gt
-                ? gt("unableToStartShort")
-                : "Unable to start";
-              addToHistory(
-                gt
-                  ? gt("sorryMicrophone")
-                  : "Sorry, I couldn't get your Microphone.",
-                "system",
-              );
-              showToast(
-                gt
-                  ? gt("unableToStartVoice")
-                  : "Failed to start voice recognition",
-              );
-              speak(
-                gt
-                  ? gt("sorryMicrophone")
-                  : "Sorry, I couldn't get your Microphone.",
-              );
+              const message = "Failed to start voice mode";
+              voiceStatus.textContent = message;
+              addToHistory(message, "system");
+              showToast(message);
+              speak(message);
               playSound("denied");
             }
           }
@@ -8543,6 +8525,15 @@ if (isAmerica250Date && logo) {
           function renderShortcuts() {
             const shortcutsList = document.getElementById("shortcutsList");
             shortcutsList.innerHTML = "";
+
+            if (sessionStorage.getItem("munetiosTestError") === "true") {
+              const errorMessage = document.createElement("div");
+              errorMessage.className = "shortcut-label";
+              errorMessage.setAttribute("role", "alert");
+              errorMessage.textContent = "Failed to load shortcuts.";
+              shortcutsList.appendChild(errorMessage);
+              return;
+            }
 
             const shortcuts = loadShortcuts();
             shortcuts.forEach((shortcut) => {
@@ -26386,6 +26377,17 @@ if (isAmerica250Date && logo) {
           const shortcutsKey = "shortcuts"; // Match the home page key
 
           function loadShortcutsForSettings() {
+            if (sessionStorage.getItem("munetiosTestError") === "true") {
+              shortcutsGrid.innerHTML = "";
+              const errorMessage = document.createElement("div");
+              errorMessage.setAttribute("role", "alert");
+              errorMessage.style.cssText =
+                "grid-column: 1 / -1; text-align: center; padding: 40px; color: rgba(255,255,255,0.72); font-size: 15px;";
+              errorMessage.textContent = "Failed to load shortcuts.";
+              shortcutsGrid.appendChild(errorMessage);
+              return;
+            }
+
             const shortcuts = window.loadShortcuts
               ? window.loadShortcuts()
               : JSON.parse(localStorage.getItem(shortcutsKey) || "[]");
@@ -31372,10 +31374,10 @@ if (isAmerica250Date && logo) {
         refreshCustomizationTranslations();
         function renderCustomCard(){const grid=document.getElementById("themesGrid"),theme=read("munetiosCustomTheme",null);if(!grid||!theme)return;let card=grid.querySelector(".custom-theme-card");if(!card){card=document.createElement("button");card.type="button";card.className="theme-card custom-theme-card";card.append(document.createElement("div"),document.createElement("div"));grid.append(card)}card.firstElementChild.className="theme-swatch";card.firstElementChild.style.background=`linear-gradient(135deg,${theme.background},${theme.accent})`;card.lastElementChild.className="theme-name";card.lastElementChild.textContent=theme.name;card.onclick=()=>applyCustomTheme(theme)}new MutationObserver(renderCustomCard).observe(document.getElementById("themesGrid"),{childList:true});renderCustomCard();if(localStorage.getItem("munetiosTheme")==="custom-local")applyCustomTheme(read("munetiosCustomTheme",{}));
 
-        function testError(){if(school())return false;sessionStorage.setItem("munetiosTestError","true");window.showToast("Test Error enabled for this tab. Open a new tab to restore services.");return true}window.testError=testError;
+        function testError(){if(school())return false;sessionStorage.setItem("munetiosTestError","true");window.renderShortcuts?.();window.munetiosRefreshShortcutsSettings?.();window.showToast("Test Error enabled for this tab. Open a new tab to restore services.");return true}window.testError=testError;
         document.getElementById("testErrorButton")?.addEventListener("click",()=>{const body=document.createElement("p");body.textContent="Enable simulated failures for search features, shortcuts, maps, news, Wiki, image search, Voice mode, and Voice search in this tab?";modal("Test Error",body,testError)});
         const failed=()=>sessionStorage.getItem("munetiosTestError")==="true";
-        document.addEventListener("click",e=>{if(!failed())return;const blocked=e.target.closest("#addShortcutBtnSettings,.shortcut-preset,#mapsSearchBtn,#refreshBtn,#wikiSearchBtn,#imageSearchBtn,#voiceModeBtn,#micBtn");if(blocked){e.preventDefault();e.stopImmediatePropagation();window.showToast("Test Error: this feature is unavailable in this tab.")}},true);
+        document.addEventListener("click",e=>{if(!failed())return;const activity=e.target.closest(".activity-card");if(activity){e.preventDefault();e.stopImmediatePropagation();window.showToast("Failed to start activity. Please try again.");return}const blocked=e.target.closest("#addShortcutBtnSettings,.shortcut-preset,#mapsSearchBtn,#refreshBtn,#wikiSearchBtn,#imageSearchBtn,#voiceModeBtn,#micBtn");if(blocked){e.preventDefault();e.stopImmediatePropagation();window.showToast("Test Error: this feature is unavailable in this tab.")}},true);
         const nativeFetch=window.fetch.bind(window);window.fetch=(input,init)=>{const url=String(input?.url||input);if(failed()&&/(wikipedia|openverse|algolia|komoot|arcgis|openfreemap)/i.test(url))return Promise.reject(new Error("Test Error simulated failure"));return nativeFetch(input,init)};
 
         function applySchoolRestrictions(){const on=school();document.querySelectorAll(".school-sensitive,#searchHistoryPersonalizationSetting").forEach(el=>el.classList.toggle("school-restricted",on));document.querySelectorAll('#safeSearchSelector [data-level="off"]').forEach(el=>el.classList.toggle("school-restricted",on));if(on&&localStorage.getItem("safeSearchLevel")==="off")window.setSafeSearchLevel?.("moderate",true)}
