@@ -2081,6 +2081,14 @@ window.localResults = [
     link: "https://discord.com",
   },
   {
+    title: "Reddit",
+    description:
+      "The front page of the internet. Discover trending communities, news, and discussions.",
+    url: "https://www.reddit.com",
+    favicon: "",
+    link: "https://www.reddit.com",
+  },
+  {
     title: "Twitter (X)",
     description:
       "Share and discover short messages, news, and trends on X (formerly Twitter).",
@@ -7147,6 +7155,22 @@ window.localResults = [
     url: "https://apps.apple.com/app/discord/id985746746",
     favicon: "",
     link: "https://apps.apple.com/app/discord/id985746746",
+  },
+  {
+    title: "Reddit - Google Play",
+    description:
+      "Reddit app available on Google Play for browsing communities and discussions.",
+    url: "https://play.google.com/store/apps/details?id=com.reddit.frontpage",
+    favicon: "",
+    link: "https://play.google.com/store/apps/details?id=com.reddit.frontpage",
+  },
+  {
+    title: "Reddit - App Store",
+    description:
+      "Reddit app available on the Apple App Store for browsing communities and discussions.",
+    url: "https://apps.apple.com/app/reddit/id1064216828",
+    favicon: "",
+    link: "https://apps.apple.com/app/reddit/id1064216828",
   },
   {
     title: "Instagram - Google Play",
