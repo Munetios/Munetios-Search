@@ -35,7 +35,7 @@
     <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://*.munetios.com https://cdn.jsdelivr.net https://unpkg.com 'wasm-unsafe-eval'; style-src 'self' https://*.munetios.com https://discord.com https://api.munetios.com https://cdn.jsdelivr.net 'unsafe-inline'; img-src * data:; font-src 'self' https://fonts.gstatic.com https://api.munetios.com https://cdn.jsdelivr.net; frame-src 'self' https://www.munetios.com https://games.munetios.com https://tetris.munetios.com https://www.youtube-nocookie.com; connect-src 'self' data: https://*.munetios.com https://api.munetios.com https://analytics.munetios.com https://discordapp.com/* https://discord.com https://*.discord.com https://*.supervidplayer.net https://supervidplayer.net https://munetios.com https://proxy.munetios.com https://cdn.jsdelivr.net https://photon.komoot.io https://hn.algolia.com https://*.wikipedia.org https://openlibrary.org https://*.openlibrary.org https://*.openfreemap.org https://tiles.openfreemap.org https://server.arcgisonline.com https://api.openverse.org https://commons.wikimedia.org; object-src 'none'; base-uri 'self'; form-action 'self' https://*.munetios.com; worker-src 'self' blob:; media-src 'self' https://www.munetios.com https:;"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://*.munetios.com https://cdn.jsdelivr.net https://unpkg.com 'wasm-unsafe-eval'; style-src 'self' https://*.munetios.com https://discord.com https://api.munetios.com https://cdn.jsdelivr.net 'unsafe-inline'; img-src * data:; font-src 'self' https://fonts.gstatic.com https://api.munetios.com https://cdn.jsdelivr.net; frame-src 'self' https://www.munetios.com https://games.munetios.com https://tetris.munetios.com https://www.youtube-nocookie.com; connect-src 'self' data: https://*.munetios.com https://api.munetios.com https://analytics.munetios.com https://discordapp.com/* https://discord.com https://*.discord.com https://*.supervidplayer.net https://supervidplayer.net https://munetios.com https://proxy.munetios.com https://cdn.jsdelivr.net https://photon.komoot.io https://hn.algolia.com https://*.wikipedia.org https://openlibrary.org https://*.openlibrary.org https://*.openfreemap.org https://tiles.openfreemap.org https://server.arcgisonline.com https://api.openverse.org https://commons.wikimedia.org; object-src 'none'; base-uri 'self'; form-action 'self' https://*.munetios.com; worker-src 'self' blob:; media-src 'self' https: blob: data:;"
     />
     <meta
       http-equiv="Content-Security-Policy"
@@ -6656,7 +6656,7 @@
           </div>
           <iframe
             class="apps-iframe"
-            src="https://www.munetios.com/apps"
+            src="apps/index.html"
             title="Munetios Apps"
           ></iframe>
         </div>
@@ -8527,6 +8527,14 @@ if (isAmerica250Date && logo) {
           document.body.appendChild(toastContainer);
 
           function showToast(message, duration = 3000) {
+            const toastPositions = {
+              "top-right": "top:10px;right:10px;bottom:auto;left:auto;transform:none",
+              "top-left": "top:10px;left:10px;right:auto;bottom:auto;transform:none",
+              "bottom-right": "bottom:10px;right:10px;top:auto;left:auto;transform:none",
+              "bottom-left": "bottom:10px;left:10px;top:auto;right:auto;transform:none",
+              "bottom-center": "bottom:10px;left:50%;top:auto;right:auto;transform:translateX(-50%)",
+            };
+            toastContainer.style.cssText += ";" + (toastPositions[localStorage.getItem("munetiosToastPosition")] || toastPositions["top-right"]);
             const toast = document.createElement("div");
             toast.className = "liquid-glass";
             toast.style.position = "relative";
@@ -8534,7 +8542,7 @@ if (isAmerica250Date && logo) {
             toast.style.padding = "10px 20px";
             toast.style.borderRadius = "8px";
             toast.style.color = "white";
-            toast.style.backgroundColor = "rgba(85, 12, 202, 0.25)";
+            toast.style.backgroundColor = localStorage.getItem("munetiosToastColor") || "rgba(85, 12, 202, 0.82)";
             toast.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
             toast.style.transition = "opacity 0.5s ease";
             toast.style.boxSizing = "border-box";
@@ -22600,6 +22608,7 @@ if (isAmerica250Date && logo) {
             quizTranslationKeys.forEach(function (key, index) { additions[key] = values[index]; });
             translations[langCode] = { ...(translations[langCode] || {}), ...additions };
           });
+          window.munetiosTranslations = translations;
 
           Object.entries(runtimeActivityTranslationFallbacks).forEach(function ([langCode, values]) {
             runtimeTranslationFallbacks[langCode] = {
@@ -24375,6 +24384,9 @@ if (isAmerica250Date && logo) {
           };
 
           function setSafeSearch(level, silent) {
+            if (localStorage.getItem("schoolMode") === "true" && level === "off") {
+              level = "moderate";
+            }
             localStorage.setItem("safeSearchLevel", level);
             const labels = getSafeSearchLabels();
             getSafeSearchButtons().forEach(function (button) {
@@ -24830,22 +24842,19 @@ if (isAmerica250Date && logo) {
               const el = document.getElementById(id);
               if (el) el.style.display = on ? "none" : "";
             });
-            // Block/unblock News
+            // News remains available in School Mode with an education-only feed.
             newsNavIds.forEach((id) => {
               const el = document.getElementById(id);
-              if (el) el.style.display = on ? "none" : "";
+              if (el) { el.style.display = ""; el.textContent = on ? "News (New)" : (window.getTranslation?.("navNews") || "News"); }
             });
             document.querySelectorAll('a[href="#/news"]').forEach((el) => {
-              el.style.display = on ? "none" : "";
+              el.style.display = "";
+              el.textContent = on ? "News (New)" : (window.getTranslation?.("navNews") || "News");
             });
-            const newsPage = document.getElementById("newsPage");
-            if (newsPage && on) {
-              newsPage.classList.remove("active");
-            }
             if (on) {
               window.setSafeSearchLevel &&
                 window.setSafeSearchLevel("strict", true);
-              safeItem?.classList.add("locked");
+              safeItem?.classList.remove("locked");
               personalizationItem?.classList.add("locked");
               personalizationToggle?.classList.remove("active");
               personalizationToggle?.setAttribute("aria-checked", "false");
@@ -25030,6 +25039,14 @@ if (isAmerica250Date && logo) {
               bgCss:
                 "body { background: #16213e !important; animation: none !important; }",
               swatch: "linear-gradient(135deg, #16213e 0%, #1a2a5e 100%)",
+            },
+            {
+              id: "traditional",
+              name: "Traditional",
+              nameKey: "themeTraditional",
+              font: "Inter",
+              bgCss: "body { background: #071a33 !important; color: #f4f8ff !important; animation: none !important; } :root { --orchid: #2583ff !important; } .search-button, .voice-mode-btn, .settings-button, .action-button { border-color: rgba(37,131,255,.55) !important; }",
+              swatch: "linear-gradient(135deg, #071a33 0%, #0d3d75 62%, #2583ff 100%)",
             },
             {
               id: "midnight-orchid",
@@ -28822,18 +28839,11 @@ if (isAmerica250Date && logo) {
             }
             if (basePath === "/news") {
               var schoolNewsOverlay = document.getElementById("pageBlock-school-news");
-              if (localStorage.getItem("schoolMode") === "true") {
-                if (schoolNewsOverlay) {
-                  schoolNewsOverlay.style.display = "flex";
-                  schoolNewsOverlay.classList.add("visible");
-                }
-              } else {
-                if (schoolNewsOverlay) {
-                  schoolNewsOverlay.style.display = "none";
-                  schoolNewsOverlay.classList.remove("visible");
-                }
-                initNewsPage(); checkAndShowPageBlock("news");
+              if (schoolNewsOverlay) {
+                schoolNewsOverlay.style.display = "none";
+                schoolNewsOverlay.classList.remove("visible");
               }
+              initNewsPage(); checkAndShowPageBlock("news");
             }
             if (basePath === "/maps") {
               checkAndShowPageBlock("maps");
@@ -29001,6 +29011,7 @@ if (isAmerica250Date && logo) {
 
             var url =
               "https://hn.algolia.com/api/v1/search?tags=story&hitsPerPage=30";
+            if (localStorage.getItem("schoolMode") === "true") query = "education learning science school";
             if (query) url += "&query=" + encodeURIComponent(query);
 
             fetch(url)
@@ -30800,7 +30811,7 @@ if (isAmerica250Date && logo) {
       </style>
       <script>
         (() => { "use strict";
-          const music = new Audio("music.mp3"); music.loop=true; music.preload="auto"; music.volume=1;
+          const music = new Audio(localStorage.getItem("munetiosMusicUrl")||"https://www.munetios.com/music.mp3"); music.loop=true; music.preload="auto"; music.volume=1;
           const musicOn=()=>localStorage.getItem("munetiosVoiceMusic")!=="false";
           const MunetiosSoundDesign = (() => {
             let graph;
@@ -30898,7 +30909,7 @@ if (isAmerica250Date && logo) {
           window.munetiosFeatureTranslations=featureTranslations;const translateFeatures=()=>{const dictionary=featureTranslations[localStorage.getItem("munetiosLanguage")]||featureTranslations["en-US"];document.querySelectorAll("[data-feature-i18n]").forEach(element=>element.textContent=dictionary[element.dataset.featureI18n]||element.textContent)};translateFeatures();document.getElementById("languageSelector")?.addEventListener("click",()=>setTimeout(translateFeatures,0));
           const fontMenu=document.getElementById("fontFamilySelector");const sortFonts=()=>fontMenu&&[...fontMenu.children].sort((a,b)=>(/^(OpenAI|Regular)/i.test(a.dataset.font||a.textContent)?1:0)-(/^(OpenAI|Regular)/i.test(b.dataset.font||b.textContent)?1:0)||a.textContent.localeCompare(b.textContent)).forEach(item=>fontMenu.append(item));sortFonts();document.getElementById("detectLocalFontsBtn")?.addEventListener("click",async()=>{let fonts=[];try{fonts=[...new Set((await window.queryLocalFonts()).map(font=>font.family))]}catch(_){fonts=["Arial","Segoe UI","Georgia","Verdana"]}fonts.forEach(name=>{if([...fontMenu.children].some(item=>item.dataset.font===name))return;const item=document.createElement("div");item.className="dropdown-item";item.dataset.font=name;item.textContent=name;item.addEventListener("click",()=>{localStorage.setItem("munetiosFontFamily",name);document.getElementById("fontFamilyButton").textContent=name;fontMenu.style.display="none"});fontMenu.append(item)});sortFonts();fontMenu.style.display="block"});
           const voicePicker=document.getElementById("voicePickerButton");const voiceNames=()=>speechSynthesis.getVoices();const syncVoicePicker=()=>{const chosen=voiceNames().find(voice=>voice.name===localStorage.getItem("munetiosVoiceName"));if(voicePicker)voicePicker.textContent=chosen?chosen.name:"System voice"};function renderVoicePicker(){if(!voicePicker||document.getElementById("voicePickerMenu"))return;const menu=document.createElement("div"),rect=voicePicker.getBoundingClientRect();menu.id="voicePickerMenu";menu.className="dropdown-wrapper liquid-glass";menu.style.cssText=`display:block;position:fixed;z-index:9999999;top:${rect.bottom+5}px;left:${rect.left}px;max-height:260px;overflow:auto`;voicePicker.setAttribute("aria-expanded","true");(voiceNames().length?voiceNames():[{name:"System voice",lang:""}]).forEach(voice=>{const item=document.createElement("div");item.className="dropdown-item";item.tabIndex=0;item.textContent=voice.name+(voice.lang?" — "+voice.lang:"");const select=()=>{localStorage.setItem("munetiosVoiceName",voice.name);syncVoicePicker();menu.remove();voicePicker.setAttribute("aria-expanded","false");window.munetiosSounds?.play("voice-mode-changed")};item.onclick=select;item.onkeydown=event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();select()}};menu.append(item)});document.body.append(menu)}voicePicker?.addEventListener("click",renderVoicePicker);speechSynthesis.onvoiceschanged=syncVoicePicker;syncVoicePicker();
-          const shortcutsGrid=document.getElementById("shortcutsGrid");if(shortcutsGrid){const groups={Popular:[["Google","https://google.com"],["YouTube","https://youtube.com"]],Trending:[["News","https://news.google.com"],["Reddit","https://reddit.com"]],Featured:[["OmniWrite","https://write.munetios.com"],["Calendar","https://calendar.munetios.com"],["Notes","https://notes.munetios.com"]],Social:[["Discord","https://discord.com"],["Instagram","https://instagram.com"]],Games:[["Tetris","https://tetris.munetios.com"],["Chess","https://chess.com"]],Education:[["Khan Academy","https://khanacademy.org"],["Wikipedia","https://wikipedia.org"]],Work:[["OmniWrite","https://www.munetios.com/apps/omniwrite"],["Calendar","https://calendar.munetios.com"],["Notes","https://notes.munetios.com"]],Developers:[["GitHub","https://github.com"],["MDN","https://developer.mozilla.org"]]};const panel=document.createElement("section");panel.className="shortcuts-preset-panel";panel.innerHTML="<h3>Shortcut presets</h3><p>Presets add to your shortcuts and preserve custom shortcuts.</p><div class='shortcut-presets'></div>";Object.entries(groups).forEach(([name,items])=>{const chip=document.createElement("div");chip.className="shortcut-preset";chip.textContent=name;chip.onclick=()=>{const current=JSON.parse(localStorage.getItem("shortcuts")||"[]"),add=[["Munetios","https://www.munetios.com"],...items];add.reverse().forEach(([title,url])=>{if(!current.some(item=>item.url===url))current.unshift({name:title,url})});const munetios=current.find(item=>item.url==="https://www.munetios.com");localStorage.setItem("shortcuts",JSON.stringify(munetios?[munetios,...current.filter(item=>item!==munetios)]:current));window.renderShortcuts?.();window.munetiosRefreshShortcutsSettings?.();window.dispatchEvent(new Event("shortcutsChanged"))};panel.lastElementChild.append(chip)});const keep=()=>{if(!shortcutsGrid.contains(panel))shortcutsGrid.prepend(panel)};keep();new MutationObserver(keep).observe(shortcutsGrid,{childList:true})}
+          const shortcutsGrid=document.getElementById("shortcutsGrid");if(shortcutsGrid){const groups={Popular:[["Google","https://google.com"],["YouTube","https://youtube.com"]],Trending:[["News","https://news.google.com"]],Featured:[["OmniWrite","https://write.munetios.com"],["Calendar","https://calendar.munetios.com"],["Notes","https://notes.munetios.com"]],Social:[["Discord","https://discord.com"],["Instagram","https://instagram.com"]],Games:[["Tetris","https://tetris.munetios.com"],["Chess","https://chess.com"]],Education:[["Khan Academy","https://khanacademy.org"],["Wikipedia","https://wikipedia.org"]],Work:[["OmniWrite","https://www.munetios.com/apps/omniwrite"],["Calendar","https://calendar.munetios.com"],["Notes","https://notes.munetios.com"]],Developers:[["GitHub","https://github.com"],["MDN","https://developer.mozilla.org"]]};const panel=document.createElement("section");panel.className="shortcuts-preset-panel";panel.innerHTML="<h3>Shortcut presets</h3><p>Presets add to your shortcuts and preserve custom shortcuts.</p><div class='shortcut-presets'></div>";Object.entries(groups).forEach(([name,items])=>{const chip=document.createElement("div");chip.className="shortcut-preset";chip.textContent=name;chip.onclick=()=>{const current=JSON.parse(localStorage.getItem("shortcuts")||"[]"),add=[["Munetios","https://www.munetios.com"],...items];add.reverse().forEach(([title,url])=>{if(!current.some(item=>item.url===url))current.unshift({name:title,url})});const munetios=current.find(item=>item.url==="https://www.munetios.com");localStorage.setItem("shortcuts",JSON.stringify(munetios?[munetios,...current.filter(item=>item!==munetios)]:current));window.renderShortcuts?.();window.munetiosRefreshShortcutsSettings?.();window.dispatchEvent(new Event("shortcutsChanged"))};panel.lastElementChild.append(chip)});const keep=()=>{if(!shortcutsGrid.contains(panel))shortcutsGrid.prepend(panel)};keep();new MutationObserver(keep).observe(shortcutsGrid,{childList:true})}
           document.addEventListener("click",event=>{const trigger=event.target.closest("#languageButton,#safeSearchButton,#countryButton,#fontFamilyButton,#voicePickerButton");if(!trigger||trigger.getAttribute("aria-expanded")!=="true")return;const selector={languageButton:"languageSelector",safeSearchButton:"safeSearchSelector",countryButton:"countrySelector",fontFamilyButton:"fontFamilySelector",voicePickerButton:"voicePickerMenu"}[trigger.id];const source=document.getElementById(selector);if(!source)return;event.preventDefault();event.stopImmediatePropagation();const clone=source.cloneNode(true),rect=trigger.getBoundingClientRect();clone.removeAttribute("id");clone.dataset.dropdownClone="true";clone.dataset.sourceDropdown=selector;clone.style.cssText=`display:block;position:fixed;z-index:9999998;top:${rect.bottom+5}px;left:${rect.left}px`;clone.querySelectorAll("button").forEach(button=>{const item=document.createElement("div");item.className=button.className;item.textContent=button.textContent;button.replaceWith(item)});document.body.append(clone)},true);document.addEventListener("click",event=>{const clone=event.target.closest("[data-dropdown-clone=true]"),item=event.target.closest(".dropdown-item");if(!clone||!item)return;const source=document.getElementById(clone.dataset.sourceDropdown),match=[...source.querySelectorAll(".dropdown-item")].find(original=>original.textContent.trim()===item.textContent.trim());match?.click();clone.remove()});document.addEventListener("keydown",event=>{if(event.key==="Escape")document.querySelectorAll("[data-dropdown-clone=true],#voicePickerMenu").forEach(menu=>menu.remove())});
           function showMiniCloseConfirm(){const existing=document.getElementById("videoCloseConfirm");if(existing)return;const modal=document.createElement("div");modal.id="videoCloseConfirm";modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.style.cssText="position:fixed;inset:0;z-index:10000000;display:grid;place-items:center;padding:24px;background:rgba(16,8,31,.52);backdrop-filter:blur(3px)";modal.innerHTML='<section class="liquid-glass" style="width:min(100%,380px);padding:24px;border-radius:24px;color:#fff;background:rgba(45,22,78,.78);border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 70px rgba(10,2,24,.45)"><h2 style="margin:0 0 10px;font:600 20px Google Sans Flex,Arial,sans-serif">Close video?</h2><p style="margin:0;color:rgba(255,255,255,.78);font:400 15px/1.5 Google Sans Flex,Arial,sans-serif">Your miniplayer will be closed.</p><div style="display:flex;justify-content:flex-end;gap:10px;margin-top:24px"><button type="button" data-close-cancel style="padding:10px 16px;border:1px solid rgba(255,255,255,.24);border-radius:12px;color:#fff;background:rgba(255,255,255,.08);font:600 14px Google Sans Flex,Arial,sans-serif;cursor:pointer">Cancel</button><button type="button" data-close-confirm style="padding:10px 16px;border:0;border-radius:12px;color:#fff;background:#6d28d9;font:600 14px Google Sans Flex,Arial,sans-serif;cursor:pointer">Close video</button></div></section>';const dismiss=()=>modal.remove();modal.querySelector("[data-close-cancel]").onclick=dismiss;modal.querySelector("[data-close-confirm]").onclick=()=>{dismiss();document.querySelector(".video-miniplayer")?.remove()};modal.onclick=event=>{if(event.target===modal)dismiss()};document.body.append(modal);modal.querySelector("[data-close-cancel]").focus()}
           document.addEventListener("pointerdown",event=>{const mini=event.target.closest(".video-miniplayer");if(mini)mini.dataset.swipeStart=String(event.clientX)},true);document.addEventListener("pointerup",event=>{const mini=event.target.closest(".video-miniplayer"),start=Number(mini?.dataset.swipeStart);if(mini&&Number.isFinite(start)&&event.clientX-start>92){event.stopImmediatePropagation();showMiniCloseConfirm()}},true);document.addEventListener("keydown",event=>{if(event.key==="Escape"&&document.querySelector(".video-miniplayer")){event.stopImmediatePropagation();showMiniCloseConfirm()}},true);
@@ -30956,16 +30967,83 @@ if (isAmerica250Date && logo) {
       (() => {
         const DB_NAME = "munetios-school-quizzes";
         const STORE = "quizzes";
+        const makeQuestions = rows => rows.map(([text, answers, correct]) => ({ text, answers, correct }));
         const presets = [
-          { id:"preset-space", title:"Space Explorer", description:"Planets, moons and our Solar System.", questions:[
-            { text:"Which planet is known as the Red Planet?", answers:["Earth","Mars","Venus","Jupiter"], correct:1 },
-            { text:"What is the name of Earth's natural satellite?", answers:["Titan","Europa","The Moon","Phobos"], correct:2 }]},
-          { id:"preset-maths", title:"Maths Challenge", description:"A quick arithmetic warm-up.", questions:[
-            { text:"What is 12 × 8?", answers:["86","96","108","88"], correct:1 },
-            { text:"What is half of 3/4?", answers:["3/8","2/4","1/8","3/2"], correct:0 }]},
-          { id:"preset-science", title:"Science Basics", description:"Test everyday science knowledge.", questions:[
-            { text:"Which gas do plants absorb?", answers:["Oxygen","Nitrogen","Carbon dioxide","Helium"], correct:2 },
-            { text:"Water freezes at what temperature in Celsius?", answers:["0°","10°","32°","100°"], correct:0 }]}
+          { id:"preset-space", title:"Space Explorer", description:"16 questions about planets, moons and space.", questions:makeQuestions([
+            ["Which planet is known as the Red Planet?",["Earth","Mars","Venus","Jupiter"],1],["What is Earth's natural satellite called?",["Titan","Europa","The Moon","Phobos"],2],
+            ["Which planet is closest to the Sun?",["Mercury","Venus","Earth","Mars"],0],["Which is the largest planet in our Solar System?",["Saturn","Neptune","Jupiter","Earth"],2],
+            ["What is the star at the center of our Solar System?",["Polaris","Sirius","The Sun","Betelgeuse"],2],["Which planet is famous for its rings?",["Mars","Saturn","Venus","Mercury"],1],
+            ["How many planets are in our Solar System?",["Seven","Eight","Nine","Ten"],1],["What force keeps planets in orbit?",["Magnetism","Friction","Gravity","Electricity"],2],
+            ["Which planet is hottest?",["Mercury","Venus","Mars","Jupiter"],1],["What is a person who travels into space called?",["Astronaut","Geologist","Navigator","Meteorologist"],0],
+            ["Which galaxy contains our Solar System?",["Andromeda","Milky Way","Whirlpool","Sombrero"],1],["What was the first artificial satellite?",["Apollo 11","Voyager 1","Sputnik 1","Hubble"],2],
+            ["Which planet has the Great Red Spot?",["Jupiter","Mars","Uranus","Saturn"],0],["A light-year measures what?",["Time","Brightness","Distance","Speed"],2],
+            ["Which dwarf planet was once classed as the ninth planet?",["Ceres","Eris","Pluto","Haumea"],2],["What is a rock from space that reaches Earth's surface?",["Comet","Meteorite","Nebula","Asteroid belt"],1]
+          ])},
+          { id:"preset-maths", title:"Maths Challenge", description:"16 questions covering arithmetic and geometry.", questions:makeQuestions([
+            ["What is 12 × 8?",["86","96","108","88"],1],["What is half of 3/4?",["3/8","2/4","1/8","3/2"],0],
+            ["What is 144 ÷ 12?",["10","11","12","14"],2],["What is 15% of 200?",["15","20","30","40"],2],
+            ["What is 7 squared?",["14","42","49","56"],2],["Which number is prime?",["21","29","33","39"],1],
+            ["What is 2.5 + 3.75?",["5.25","6.25","6.5","7.25"],1],["What is the perimeter of a square with side 6?",["12","24","30","36"],1],
+            ["How many degrees are in a right angle?",["45","90","180","360"],1],["What is 5/8 as a decimal?",["0.4","0.5","0.625","0.8"],2],
+            ["Solve: 3x = 27.",["6","7","8","9"],3],["What is the mean of 4, 6 and 8?",["5","6","7","8"],1],
+            ["What is 1,000 minus 376?",["614","624","634","724"],1],["Which fraction equals 0.25?",["1/2","1/3","1/4","3/4"],2],
+            ["What is the area of a 5 by 9 rectangle?",["14","28","45","50"],2],["What is the next number: 2, 4, 8, 16, …?",["20","24","30","32"],3]
+          ])},
+          { id:"preset-science", title:"Science Basics", description:"24 questions across biology, chemistry and physics.", questions:makeQuestions([
+            ["Which gas do plants absorb?",["Oxygen","Nitrogen","Carbon dioxide","Helium"],2],["Water freezes at what temperature in Celsius?",["0°","10°","32°","100°"],0],
+            ["Which organ pumps blood around the body?",["Lungs","Heart","Liver","Kidneys"],1],["What is H₂O commonly called?",["Salt","Oxygen","Water","Hydrogen"],2],
+            ["What is the center of an atom called?",["Nucleus","Cell","Orbit","Crystal"],0],["Which force pulls objects toward Earth?",["Friction","Gravity","Tension","Thrust"],1],
+            ["Which state of matter has a fixed shape?",["Gas","Liquid","Plasma","Solid"],3],["What do bees collect from flowers?",["Nectar","Sand","Dew","Bark"],0],
+            ["Which vitamin can skin make in sunlight?",["Vitamin A","Vitamin C","Vitamin D","Vitamin K"],2],["What is the boiling point of water at sea level?",["50°C","90°C","100°C","120°C"],2],
+            ["Which simple machine is a ramp?",["Lever","Pulley","Inclined plane","Wheel and axle"],2],["What is the largest organ of the human body?",["Heart","Skin","Liver","Lungs"],1],
+            ["Animals that eat only plants are called what?",["Carnivores","Herbivores","Omnivores","Decomposers"],1],["Which blood cells help fight infection?",["Red blood cells","Platelets","White blood cells","Plasma"],2],
+            ["Sound travels fastest through which state?",["Vacuum","Gas","Liquid","Solid"],3],["What is the pH of a neutral solution?",["0","5","7","14"],2],
+            ["Which planet is our main source of light and heat?",["The Sun","The Moon","Mars","Venus"],0],["What process turns liquid water into vapor?",["Condensation","Evaporation","Freezing","Melting"],1],
+            ["Which part of a plant usually absorbs water?",["Flowers","Leaves","Roots","Fruit"],2],["What type of energy is stored in food?",["Chemical","Sound","Light","Nuclear"],0],
+            ["Which material is attracted to a magnet?",["Glass","Iron","Wood","Plastic"],1],["What does a thermometer measure?",["Mass","Temperature","Speed","Volume"],1],
+            ["Which gas is most abundant in Earth's atmosphere?",["Oxygen","Carbon dioxide","Nitrogen","Hydrogen"],2],["What is the basic unit of life?",["Atom","Cell","Tissue","Organ"],1]
+          ])},
+          { id:"preset-geography", title:"World Geography", description:"16 questions about countries, landmarks and oceans.", questions:makeQuestions([
+            ["Which is the largest ocean?",["Atlantic","Indian","Arctic","Pacific"],3],["What is the capital of Japan?",["Kyoto","Tokyo","Osaka","Seoul"],1],
+            ["The Nile River is on which continent?",["Africa","Asia","Europe","South America"],0],["Which country has a maple leaf on its flag?",["Canada","Austria","Denmark","Peru"],0],
+            ["What is the world's largest hot desert?",["Gobi","Sahara","Kalahari","Mojave"],1],["Mount Everest is part of which range?",["Andes","Alps","Himalayas","Rockies"],2],
+            ["Which continent contains Brazil?",["Africa","North America","South America","Europe"],2],["What is the capital of Australia?",["Sydney","Melbourne","Canberra","Perth"],2],
+            ["Which river flows through London?",["Seine","Thames","Danube","Rhine"],1],["Which is the smallest continent by land area?",["Europe","Antarctica","Australia","South America"],2],
+            ["Machu Picchu is in which country?",["Chile","Peru","Mexico","Bolivia"],1],["Which sea separates Europe and Africa?",["Caribbean","Mediterranean","Baltic","Arabian"],1],
+            ["What is the capital of Kenya?",["Lagos","Nairobi","Cairo","Accra"],1],["Which country is shaped like a boot?",["Greece","Portugal","Italy","Croatia"],2],
+            ["The Great Barrier Reef is off the coast of which country?",["Australia","India","Mexico","South Africa"],0],["Which line divides Earth into northern and southern halves?",["Prime Meridian","Equator","Tropic of Cancer","Date Line"],1]
+          ])},
+          { id:"preset-history", title:"History Highlights", description:"16 questions about people, places and past events.", questions:makeQuestions([
+            ["Which ancient civilization built the pyramids at Giza?",["Romans","Egyptians","Vikings","Maya"],1],["Who was the first person to walk on the Moon?",["Yuri Gagarin","Buzz Aldrin","Neil Armstrong","John Glenn"],2],
+            ["The Renaissance began in which country?",["Italy","France","England","Greece"],0],["Which invention is Johannes Gutenberg known for?",["Telephone","Printing press","Steam engine","Compass"],1],
+            ["Which city was buried by Mount Vesuvius in 79 CE?",["Athens","Pompeii","Sparta","Troy"],1],["The Magna Carta was sealed in which century?",["11th","12th","13th","15th"],2],
+            ["Who wrote the Declaration of Independence's first draft?",["Thomas Jefferson","George Washington","Benjamin Franklin","James Madison"],0],["Which people built Machu Picchu?",["Aztec","Roman","Inca","Egyptian"],2],
+            ["What ancient trade route linked China and Europe?",["Amber Road","Silk Road","Royal Road","Appian Way"],1],["Who discovered penicillin?",["Marie Curie","Louis Pasteur","Alexander Fleming","Isaac Newton"],2],
+            ["Which civilization used democracy in ancient Athens?",["Greek","Roman","Persian","Phoenician"],0],["In which year did World War II end?",["1943","1944","1945","1946"],2],
+            ["Which explorer's expedition first circumnavigated Earth?",["Ferdinand Magellan","Marco Polo","James Cook","Ibn Battuta"],0],["What writing system did ancient Egyptians use?",["Cuneiform","Hieroglyphs","Runes","Latin"],1],
+            ["Who was known as the Maid of Orléans?",["Cleopatra","Joan of Arc","Boudica","Eleanor of Aquitaine"],1],["Which empire built roads across much of Europe?",["Roman Empire","Mali Empire","Inca Empire","Mughal Empire"],0]
+          ])},
+          { id:"preset-digital", title:"Digital Smarts", description:"16 questions about computers, privacy and the web.", questions:makeQuestions([
+            ["What should a strong password include?",["Only your name","A varied, unique phrase","Your birthday","The word password"],1],["What does HTTPS help protect?",["Screen brightness","Data sent to a website","Battery life","File size"],1],
+            ["Which is a warning sign of phishing?",["An urgent request for a password","A saved local document","A software update you opened","A known bookmark"],0],["What does CPU stand for?",["Central Processing Unit","Computer Power Utility","Core Program Upload","Central Pixel User"],0],
+            ["Which device stores files long-term?",["Keyboard","Monitor","SSD","Microphone"],2],["What is two-factor authentication?",["Using two usernames","A second verification step","Two browser tabs","Sharing a password"],1],
+            ["Which file extension commonly represents an image?",[".png",".txt",".mp3",".zip"],0],["What is a browser used for?",["Washing hardware","Viewing websites","Charging a battery","Printing money"],1],
+            ["Before sharing a photo, what should you check?",["That it is blurry","Who can see it","That it is large","Your battery level"],1],["What is a backup?",["A duplicate copy of data","A stronger password","A deleted folder","A browser theme"],0],
+            ["Which action best protects privacy on a shared computer?",["Stay signed in","Post your password","Sign out when finished","Disable the screen lock"],2],["What does Wi-Fi provide?",["A wireless network connection","Extra storage","A brighter display","Printed pages"],0],
+            ["What is software?",["Physical computer parts","Programs and applications","A network cable","A desk"],1],["Which is an example of personal information?",["A random color","Your home address","A public weather report","A math formula"],1],
+            ["What should you do with a suspicious attachment?",["Open it quickly","Forward it to everyone","Avoid opening it and verify the sender","Rename it"],2],["What does deleting browser history remove?",["The entire internet","The local list of visited pages","Your computer screen","Every online account"],1]
+          ])},
+          { id:"preset-website-tech", title:"Website Tech", description:"18 questions about websites, browsers and web privacy.", questions:makeQuestions([
+            ["Which website is privacy focused?",["Munetios","Ad Tracker Central","Data Broker Daily","Public Password List"],0],["What language structures the content of a web page?",["HTML","CSS","SQL","PNG"],0],
+            ["What is CSS mainly used for?",["Styling web pages","Storing passwords","Sending email","Compressing audio"],0],["What does a web browser do?",["Displays and runs websites","Builds computer hardware","Prints books","Repairs networks"],0],
+            ["Which protocol indicates an encrypted website connection?",["HTTPS","FTP","HTTP","TXT"],0],["What does a URL identify?",["A resource location on the web","A screen resolution","A battery type","A font weight"],0],
+            ["Which language commonly adds interactivity to websites?",["JavaScript","JPEG","Markdown","CSV"],0],["What is responsive design?",["A layout that adapts to screen sizes","A site that answers email","A faster keyboard","An audio format"],0],
+            ["What is a cookie in web technology?",["Small data stored by a website","A graphics card","A page heading","A network cable"],0],["What does DNS translate?",["Domain names to network addresses","Images to audio","CSS to HTML","Passwords to usernames"],0],
+            ["Which HTML element usually creates a link?",["<a>","<p>","<img>","<title>"],0],["What is website accessibility intended to do?",["Make sites usable by more people","Hide all text","Require a mouse","Remove keyboard support"],0],
+            ["What should alt text describe?",["An image's useful meaning","The page password","The browser version","The site's tracking ID"],0],["What is local storage used for?",["Saving data in the browser","Hosting every website","Encrypting Wi-Fi","Drawing server hardware"],0],
+            ["What does a server send to a browser?",["Web resources and responses","A physical keyboard","Printer ink","Battery power"],0],["What is a domain name?",["A human-readable website address","An image filter","A coding error","A browser tab"],0],
+            ["What does open-source software provide?",["Source code people can inspect under its license","Guaranteed tracking","Only paid access","No license terms"],0],["Which practice improves account security?",["Using a unique password and two-factor authentication","Reusing one short password","Sharing login details","Disabling updates"],0]
+          ])}
         ];
         const openDB = () => new Promise((resolve,reject) => {
           const request=indexedDB.open(DB_NAME,1);
@@ -30980,7 +31058,7 @@ if (isAmerica250Date && logo) {
         const putQuiz = async quiz => { const db=await openDB(); return new Promise((resolve,reject)=>{const r=db.transaction(STORE,"readwrite").objectStore(STORE).put(quiz);r.onsuccess=resolve;r.onerror=()=>reject(r.error);}); };
         const deleteQuiz = async id => { const db=await openDB(); return new Promise((resolve,reject)=>{const r=db.transaction(STORE,"readwrite").objectStore(STORE).delete(id);r.onsuccess=resolve;r.onerror=()=>reject(r.error);}); };
         const library=document.getElementById("quizLibrary"), editor=document.getElementById("quizEditor"), player=document.getElementById("quizPlayer"), quizImage=document.getElementById("quizImage"), quizImageName=document.getElementById("quizImageName");
-        let draft=null, active=null, questionIndex=0, score=0;
+        let draft=null, active=null, questionIndex=0, score=0, questionQueue=[], startingQuestionCount=0;
         const esc=value => String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
         const quizText=(key,values={})=>{
           const template=window.getTranslation?.(key)||getTranslationsFor?.(localStorage.getItem("munetiosLanguage")||"en")[key]||translations.en[key]||key;
@@ -31031,10 +31109,12 @@ if (isAmerica250Date && logo) {
           }catch(err){window.showToast?.(err.message||quizText("quizSaveError"));}
         });
         document.getElementById("quizFinish")?.addEventListener("click",()=>{editor.classList.remove("active");renderLibrary();});
-        function startQuiz(quiz){if(!quiz?.questions.length)return;active=quiz;questionIndex=0;score=0;editor.classList.remove("active");player.classList.add("active");renderQuestion();player.scrollIntoView({behavior:"smooth"});}
+        function startQuiz(quiz){if(!quiz?.questions.length)return;active=quiz;questionIndex=0;score=0;questionQueue=[...quiz.questions];startingQuestionCount=quiz.questions.length;editor.classList.remove("active");player.classList.add("active");renderQuestion();player.scrollIntoView({behavior:"smooth"});}
         function renderQuestion(){
-          const q=active.questions[questionIndex];
-          player.innerHTML=`<p class="quiz-progress">${esc(quizText("quizProgress",{current:questionIndex+1,total:active.questions.length}))}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="${esc(quizText("quizQuestionIllustration"))}">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}">${esc(a)}</label>`).join("")}</div><p class="quiz-feedback" role="status" aria-live="polite" hidden></p><div class="quiz-question-actions"><button class="quiz-primary" type="submit">${esc(quizText("quizSubmitAnswer"))}</button></div></form>`;
+          const q=questionQueue[questionIndex];
+          const isPreset=active.id.startsWith("preset-");
+          const displayedScore=isPreset?Math.max(0,Math.min(100,Math.round(score))):score;
+          player.innerHTML=`<p class="quiz-progress">${esc(quizText("quizProgress",{current:questionIndex+1,total:questionQueue.length}))}${isPreset?` · ${esc(quizText("quizScore",{score:displayedScore,total:100}))}`:""}</p><h2>${esc(q.text)}</h2>${q.image?`<img class="quiz-question-image" src="${q.image}" alt="${esc(quizText("quizQuestionIllustration"))}">`:""}<form class="quiz-question-form"><div>${q.answers.map((a,i)=>`<label class="quiz-option"><input type="radio" name="quizAnswer" value="${i}">${esc(a)}</label>`).join("")}</div><p class="quiz-feedback" role="status" aria-live="polite" hidden></p><div class="quiz-question-actions"><button class="quiz-primary" type="submit">${esc(quizText("quizSubmitAnswer"))}</button></div></form>`;
           const form=player.querySelector(".quiz-question-form");
           const submit=form.querySelector('[type="submit"]');
           const feedback=form.querySelector(".quiz-feedback");
@@ -31047,7 +31127,11 @@ if (isAmerica250Date && logo) {
             const selected=Number(checked.value);
             const correctAnswer=Number(q.correct);
             const isCorrect=selected===correctAnswer;
-            if(isCorrect)score++;
+            if(isPreset){
+              const questionValue=100/startingQuestionCount;
+              score+=isCorrect?questionValue:-questionValue;
+              if(!isCorrect)questionQueue.push(q);
+            }else if(isCorrect)score++;
             player.querySelectorAll(".quiz-option").forEach((option,i)=>{
               option.querySelector("input").disabled=true;
               if(i===correctAnswer)option.classList.add("correct");
@@ -31057,7 +31141,7 @@ if (isAmerica250Date && logo) {
             feedback.classList.add(isCorrect?"correct":"wrong");
             feedback.textContent=isCorrect?quizText("quizCorrectFeedback"):quizText("quizIncorrectFeedback",{answer:q.answers[correctAnswer]});
             submit.disabled=true;
-            setTimeout(()=>{questionIndex++;if(questionIndex<active.questions.length)renderQuestion();else{player.innerHTML=`<h2>${esc(quizText("quizComplete"))}</h2><p>${esc(quizText("quizScore",{score,total:active.questions.length}))}</p><button type="button" class="quiz-primary" id="quizDone">${esc(quizText("backToQuizzes"))}</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");}},1200);
+            setTimeout(()=>{questionIndex++;if(questionIndex<questionQueue.length)renderQuestion();else{const finalScore=isPreset?Math.max(0,Math.min(100,Math.round(score))):score;const maximum=isPreset?100:startingQuestionCount;player.innerHTML=`<h2>${esc(quizText("quizComplete"))}</h2><p>${esc(quizText("quizScore",{score:finalScore,total:maximum}))}</p><button type="button" class="quiz-primary" id="quizDone">${esc(quizText("backToQuizzes"))}</button>`;document.getElementById("quizDone").onclick=()=>player.classList.remove("active");}},1200);
           };
           form.addEventListener("submit",event=>{event.preventDefault();submitAnswer();});
         }
@@ -31085,6 +31169,48 @@ if (isAmerica250Date && logo) {
         document.addEventListener("munetios-wikipedia-voice",async event=>{
           const {query,respond}=event.detail;try{const article=await window.munetiosVoiceWikipedia(query);respond(article.extract||article.title,true);}catch(err){respond(err.message,false);}
         });
+      })();
+    </script>
+    <style id="advanced-customization-styles">
+      .advanced-custom-grid{display:grid;gap:12px}.advanced-custom-grid label{display:grid;gap:6px;font-weight:600}.advanced-custom-grid input,.advanced-custom-grid select{box-sizing:border-box;width:100%;padding:10px 12px;border:1px solid rgba(215,180,255,.3);border-radius:12px;background:rgba(10,3,28,.5);color:inherit;font:inherit}.advanced-color-palette{display:flex;flex-wrap:wrap;gap:8px}.advanced-color-chip{width:34px;height:34px;border:2px solid rgba(255,255,255,.3);border-radius:50%;cursor:pointer}.advanced-color-chip[aria-pressed="true"]{outline:3px solid #fff;outline-offset:2px}.advanced-modal{position:fixed;inset:0;z-index:10000000;display:grid;place-items:center;padding:18px;background:rgba(7,2,20,.72);backdrop-filter:blur(5px)}.advanced-modal-card{width:min(680px,100%);max-height:88vh;overflow:auto;padding:24px;border:1px solid rgba(215,180,255,.32);border-radius:26px;background:rgba(31,12,57,.9);box-shadow:0 28px 80px rgba(0,0,0,.5)}.advanced-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.advanced-modal button,.advanced-settings-button{padding:10px 15px;border:1px solid rgba(215,180,255,.3);border-radius:12px;background:rgba(126,64,220,.3);color:inherit;font:inherit;cursor:pointer}.i18n-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:9px 0}.custom-theme-card{position:relative}.school-restricted{display:none!important}@media(max-width:600px){.i18n-row{grid-template-columns:1fr}}
+      html[data-theme="traditional"] body{font-family:Inter,"Google Sans Flex",sans-serif!important;background:#071a33!important;color:#f4f8ff!important}html[data-theme="traditional"] .liquid-glass{border-color:rgba(37,131,255,.4)!important}
+    </style>
+    <script nonce="IKDjefjewhCujHJeuji3jhekowdijzizkcej">
+      (()=>{
+        "use strict";
+        const school=()=>localStorage.getItem("schoolMode")==="true";
+        const palettes=["#6a00ff","#2583ff","#00a878","#e5484d","#f59e0b","#071a33","#1c064e","#ffffff"];
+        const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch(_){return fallback}};
+        const modal=(title,body,onConfirm)=>{const wrap=document.createElement("div");wrap.className="advanced-modal";wrap.setAttribute("role","dialog");wrap.setAttribute("aria-modal","true");wrap.innerHTML=`<section class="advanced-modal-card liquid-glass"><h2>${title}</h2><div data-modal-body></div><div class="advanced-modal-actions"><button type="button" data-cancel>Cancel</button><button type="button" data-confirm>Confirm</button></div></section>`;wrap.querySelector("[data-modal-body]").append(body);const close=()=>wrap.remove();wrap.querySelector("[data-cancel]").onclick=close;wrap.querySelector("[data-confirm]").onclick=()=>{if(onConfirm?.()!==false)close()};wrap.onclick=e=>{if(e.target===wrap)close()};document.body.append(wrap);return wrap};
+        const palette=(key,fallback,onChange)=>{const el=document.createElement("div");el.className="advanced-color-palette";el.setAttribute("role","group");const paint=()=>[...el.children].forEach(c=>c.setAttribute("aria-pressed",String(c.dataset.color===(localStorage.getItem(key)||fallback))));palettes.forEach(color=>{const b=document.createElement("button");b.type="button";b.className="advanced-color-chip";b.dataset.color=color;b.style.background=color;b.title=color;b.onclick=()=>{localStorage.setItem(key,color);paint();onChange?.(color)};el.append(b)});paint();return el};
+
+        // Toast appearance uses the same local palette component as custom themes.
+        const oldToast=window.showToast;
+        const toastPosition=()=>localStorage.getItem("munetiosToastPosition")||"top-right";
+        window.showToast=(message,duration=3000)=>{const host=document.getElementById("customToastHost")||document.body.appendChild(Object.assign(document.createElement("div"),{id:"customToastHost"}));const positions={"top-right":"top:12px;right:12px","top-left":"top:12px;left:12px","bottom-right":"bottom:12px;right:12px","bottom-left":"bottom:12px;left:12px","bottom-center":"bottom:12px;left:50%;transform:translateX(-50%)"};host.style.cssText=`position:fixed;z-index:312938104124;${positions[toastPosition()]}`;const t=document.createElement("div");t.className="liquid-glass";t.style.cssText=`position:relative;margin:8px;padding:12px 42px 12px 16px;border-radius:12px;color:#fff;background:${localStorage.getItem("munetiosToastColor")||"#6a00ff"};box-shadow:0 8px 28px rgba(0,0,0,.35)`;t.textContent=message;const x=document.createElement("button");x.textContent="×";x.setAttribute("aria-label","Close notification");x.style.cssText="position:absolute;right:8px;top:7px;border:0;background:transparent;color:white;font-size:22px;cursor:pointer";x.onclick=()=>t.remove();t.append(x);host.append(t);setTimeout(()=>t.remove(),duration)};
+
+        const advanced=document.querySelector("#advancedSettingsPage .settings-group");
+        if(advanced){
+          const panel=document.createElement("div");panel.className="settings-group advanced-custom-grid";panel.innerHTML=`<h3>Customization and developer tools</h3><div class="settings-item"><span class="settings-label">Toast color</span><div id="toastPalette"></div></div><label>Toast position<select id="toastPosition"><option value="top-right">Top right</option><option value="top-left">Top left</option><option value="bottom-right">Bottom right</option><option value="bottom-left">Bottom left</option><option value="bottom-center">Bottom center</option></select></label><label>Custom music URL<input id="customMusicUrl" type="url" value="${localStorage.getItem("munetiosMusicUrl")||"https://www.munetios.com/music.mp3"}" placeholder="https://www.munetios.com/music.mp3"></label><button type="button" class="advanced-settings-button" id="saveMusicUrl">Save music URL</button><button type="button" class="advanced-settings-button school-sensitive" id="modifyI18n">Modify i18n</button><button type="button" class="advanced-settings-button school-sensitive" id="testErrorButton">Test Error</button>`;advanced.parentElement.append(panel);panel.querySelector("#toastPalette").append(palette("munetiosToastColor","#6a00ff",c=>window.showToast(`Toast color set to ${c}`)));const pos=panel.querySelector("#toastPosition");pos.value=toastPosition();pos.onchange=()=>localStorage.setItem("munetiosToastPosition",pos.value);panel.querySelector("#saveMusicUrl").onclick=()=>{const input=panel.querySelector("#customMusicUrl");try{const u=new URL(input.value,location.href);if(!/^https?:$/.test(u.protocol))throw 0;localStorage.setItem("munetiosMusicUrl",u.href);window.showToast("Music URL saved. Reopen the page to use it.")}catch(_){window.showToast("Enter a valid HTTPS music URL")}};
+        }
+
+        function openI18n(){if(school())return;const dictionaries=window.munetiosTranslations||{},box=document.createElement("div");box.className="advanced-custom-grid";const language=document.createElement("select");Object.keys(dictionaries).sort().forEach(code=>language.add(new Option(code,code)));const rows=document.createElement("div");const add=document.createElement("button");add.type="button";add.textContent="Add new word";const addRow=(key="",en="",target="")=>{const row=document.createElement("div");row.className="i18n-row";[["key","Translation key",key],["en","English",en],["target","Selected language",target]].forEach(([name,placeholder,value])=>{const input=document.createElement("input");input.dataset[name]="";input.placeholder=placeholder;input.value=value;row.append(input)});rows.append(row)};const render=()=>{rows.replaceChildren();const custom=read("munetiosI18nOverrides",{});Object.entries(custom[language.value]||{}).forEach(([key,value])=>addRow(key,(dictionaries.en||{})[key]||"",value));if(!rows.children.length)addRow()};language.onchange=render;add.onclick=()=>addRow();box.append("English vs language",language,rows,add);render();modal("Modify i18n",box,()=>{const all=read("munetiosI18nOverrides",{});all[language.value]={};rows.querySelectorAll(".i18n-row").forEach(row=>{const key=row.querySelector("[data-key]").value.trim(),value=row.querySelector("[data-target]").value.trim();if(key&&value)all[language.value][key]=value});localStorage.setItem("munetiosI18nOverrides",JSON.stringify(all));Object.assign(dictionaries[language.value]||{},all[language.value]);window.showToast("Language words saved locally")})}
+        document.getElementById("modifyI18n")?.addEventListener("click",openI18n);
+
+        // Traditional and locally-created theme support.
+        const appearance=document.querySelector("#appearanceSettingsPage .settings-group");if(appearance){const maker=document.createElement("div");maker.className="settings-item advanced-custom-grid";maker.innerHTML='<h3>Create your own theme</h3><label>Theme name<input id="customThemeName" maxlength="40" placeholder="My theme"></label><label>Font family<input id="customThemeFont" list="customThemeFonts" value="Google Sans Flex"><datalist id="customThemeFonts"><option>Google Sans Flex</option><option>Inter</option><option>Arial</option><option>Segoe UI</option><option>Georgia</option></datalist></label><span>Background color</span><div id="themeBgPalette"></div><span>Accent color</span><div id="themeAccentPalette"></div><button type="button" class="advanced-settings-button" id="saveCustomTheme">Save custom theme</button>';appearance.append(maker);maker.querySelector("#themeBgPalette").append(palette("munetiosThemeDraftBg","#071a33"));maker.querySelector("#themeAccentPalette").append(palette("munetiosThemeDraftAccent","#2583ff"));maker.querySelector("#saveCustomTheme").onclick=()=>{const theme={name:maker.querySelector("#customThemeName").value.trim()||"Custom",font:maker.querySelector("#customThemeFont").value.trim()||"Google Sans Flex",background:localStorage.getItem("munetiosThemeDraftBg")||"#071a33",accent:localStorage.getItem("munetiosThemeDraftAccent")||"#2583ff"};localStorage.setItem("munetiosCustomTheme",JSON.stringify(theme));applyCustomTheme(theme);renderCustomCard();window.showToast("Custom theme saved")}}
+        function applyCustomTheme(theme){document.documentElement.dataset.theme="custom-local";document.body.style.setProperty("background",theme.background,"important");document.body.style.setProperty("font-family",`${theme.font}, Google Sans Flex, sans-serif`,"important");document.documentElement.style.setProperty("--orchid",theme.accent);localStorage.setItem("munetiosTheme","custom-local")}
+        function renderCustomCard(){const grid=document.getElementById("themesGrid"),theme=read("munetiosCustomTheme",null);if(!grid||!theme)return;let card=grid.querySelector(".custom-theme-card");if(!card){card=document.createElement("button");card.type="button";card.className="theme-card custom-theme-card";card.append(document.createElement("div"),document.createElement("div"));grid.append(card)}card.firstElementChild.className="theme-swatch";card.firstElementChild.style.background=`linear-gradient(135deg,${theme.background},${theme.accent})`;card.lastElementChild.className="theme-name";card.lastElementChild.textContent=theme.name;card.onclick=()=>applyCustomTheme(theme)}new MutationObserver(renderCustomCard).observe(document.getElementById("themesGrid"),{childList:true});renderCustomCard();if(localStorage.getItem("munetiosTheme")==="custom-local")applyCustomTheme(read("munetiosCustomTheme",{}));
+
+        function testError(){if(school())return false;sessionStorage.setItem("munetiosTestError","true");window.showToast("Test Error enabled for this tab. Open a new tab to restore services.");return true}window.testError=testError;
+        document.getElementById("testErrorButton")?.addEventListener("click",()=>{const body=document.createElement("p");body.textContent="Enable simulated failures for search features, shortcuts, maps, news, Wiki, image search, Voice mode, and Voice search in this tab?";modal("Test Error",body,testError)});
+        const failed=()=>sessionStorage.getItem("munetiosTestError")==="true";
+        document.addEventListener("click",e=>{if(!failed())return;const blocked=e.target.closest("#addShortcutBtnSettings,.shortcut-preset,#mapsSearchBtn,#refreshBtn,#wikiSearchBtn,#imageSearchBtn,#voiceModeBtn,#micBtn");if(blocked){e.preventDefault();e.stopImmediatePropagation();window.showToast("Test Error: this feature is unavailable in this tab.")}},true);
+        const nativeFetch=window.fetch.bind(window);window.fetch=(input,init)=>{const url=String(input?.url||input);if(failed()&&/(wikipedia|openverse|algolia|komoot|arcgis|openfreemap)/i.test(url))return Promise.reject(new Error("Test Error simulated failure"));return nativeFetch(input,init)};
+
+        function applySchoolRestrictions(){const on=school();document.querySelectorAll(".school-sensitive,#languageSetting,#searchHistoryPersonalizationSetting").forEach(el=>el.classList.toggle("school-restricted",on));document.querySelectorAll('#safeSearchSelector [data-level="off"]').forEach(el=>el.classList.toggle("school-restricted",on));if(on&&localStorage.getItem("safeSearchLevel")==="off")window.setSafeSearchLevel?.("moderate",true)}
+        applySchoolRestrictions();new MutationObserver(applySchoolRestrictions).observe(document.getElementById("schoolModeToggle"),{attributes:true,attributeFilter:["class"]});
+        const overrides=read("munetiosI18nOverrides",{});Object.entries(overrides).forEach(([code,words])=>Object.assign(window.munetiosTranslations?.[code]||{},words));
       })();
     </script>
   </body>
