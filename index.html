@@ -4512,6 +4512,43 @@
       @media(max-width:600px){.quiz-hero{align-items:flex-start;flex-direction:column}.quiz-primary{width:100%}}
     </style>
     <script src="https://www.munetios.com/munetios-pronounce.js"></script>
+    <style>
+html.halloween-season body {
+  background-image: radial-gradient(ellipse at top, rgba(117, 43, 173, 0.35), transparent 65%), radial-gradient(ellipse at bottom right, rgba(83, 26, 125, 0.30), transparent 60%);
+}
+html.halloween-season .search-bar,
+html.halloween-season .topbar-left,
+html.halloween-season .topbar-right {
+  border-color: rgba(194, 131, 255, 0.45);
+}
+.halloween-logo { cursor: pointer; }
+.halloween-logo:focus-visible { outline: 2px solid #c283ff; outline-offset: 5px; border-radius: 8px; }
+.halloween-game-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  box-sizing: border-box;
+  width: min(940px, calc(100vw - 24px));
+  max-width: none;
+  max-height: calc(100dvh - 24px);
+  padding: 18px;
+  overflow: auto;
+  border: 1px solid rgba(194, 131, 255, 0.45);
+  border-radius: 24px;
+  background: rgba(32, 9, 57, 0.50);
+  color: #f2e6ff;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  font-family: "Google Sans Flex", sans-serif;
+}
+.halloween-game-dialog::backdrop { background: rgba(18, 4, 33, 0.50); backdrop-filter: blur(3px); }
+.halloween-game-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.halloween-game-title { margin: 0; font-size: clamp(18px, 3vw, 24px); }
+.halloween-game-close { border: 1px solid rgba(194, 131, 255, 0.40); border-radius: 12px; padding: 8px 12px; background: rgba(117, 43, 173, 0.35); color: inherit; font: inherit; cursor: pointer; }
+.halloween-game-frame { display: block; width: 900px; max-width: 100%; height: 1100px; border: 0; border-radius: 14px; background: #210d37; }
+
+    </style>
   </head>
   <body>
     <div class="topbar-container">
@@ -31413,6 +31450,167 @@ if (isAmerica250Date && logo) {
         applySchoolRestrictions();new MutationObserver(applySchoolRestrictions).observe(document.getElementById("schoolModeToggle"),{attributes:true,attributeFilter:["class"]});
         const overrides=read("munetiosI18nOverrides",{});Object.entries(overrides).forEach(([code,words])=>Object.assign(window.munetiosTranslations?.[code]||{},words));
       })();
+    </script>
+    <script>
+(() => {
+  "use strict";
+
+  const titles = {
+    en: "Halloween games", es: "Juegos de Halloween", fr: "Jeux d’Halloween", de: "Halloween-Spiele", it: "Giochi di Halloween", pt: "Jogos de Halloween", nl: "Halloweenspellen", pl: "Gry na Halloween", tr: "Cadılar Bayramı oyunları", sv: "Halloweenspel", no: "Halloween-spill", da: "Halloweenspil", fi: "Halloween-pelit", zh: "万圣节游戏", ja: "ハロウィーンゲーム", ko: "할로윈 게임", ar: "ألعاب الهالوين", he: "משחקי ליל כל הקדושים", ru: "Игры на Хэллоуин", uk: "Ігри на Гелловін", el: "Παιχνίδια Χάλοουιν", cs: "Halloweenské hry", ro: "Jocuri de Halloween", hu: "Halloweeni játékok", hi: "हैलोवीन खेल", bn: "হ্যালোইন খেলা", th: "เกมฮาโลวีน", vi: "Trò chơi Halloween", id: "Permainan Halloween", ms: "Permainan Halloween", af: "Halloween-speletjies", sq: "Lojëra për Halloween", am: "የሃሎዊን ጨዋታዎች", hy: "Հելոուինի խաղեր", az: "Hellouin oyunları", ba: "Хэллоуин уйындары", eu: "Halloweeneko jokoak", be: "Гульні на Хэлоўін", bs: "Igre za Noć vještica", br: "C’hoarioù Halloween", bg: "Игри за Хелоуин", my: "ဟယ်လိုဝင်းဂိမ်းများ", ca: "Jocs de Halloween", ceb: "Mga dula sa Halloween", ny: "Masewera a Halloween", co: "Ghjochi di Halloween", hr: "Igre za Noć vještica", cy: "Gemau Calan Gaeaf", eo: "Halovenaj ludoj", et: "Halloweeni mängud", fo: "Halloween-spøl", fil: "Mga laro sa Halloween", tl: "Mga laro sa Halloween", fy: "Halloween-spultsjes", gl: "Xogos de Halloween", ka: "ჰელოუინის თამაშები", gu: "હેલોવીન રમતો", ht: "Jwèt Halloween", ha: "Wasannin Halloween", haw: "Nā pāʻani Halloween", hmn: "Kev ua si Halloween", ig: "Egwuregwu Halloween", is: "Hrekkjavökuleikir", ga: "Cluichí Oíche Shamhna", jw: "Dolanan Halloween", kn: "ಹ್ಯಾಲೋವೀನ್ ಆಟಗಳು", kk: "Хэллоуин ойындары", km: "ហ្គេមហាឡូវីន", rw: "Imikino ya Halloween", ku: "Lîstikên Halloweenê", ky: "Хэллоуин оюндары", lo: "ເກມຮາໂລວີນ", la: "Ludi noctis omnium sanctorum", lv: "Helovīna spēles", lt: "Helovino žaidimai", lb: "Halloween-Spiller", mk: "Игри за Ноќта на вештерките", mg: "Lalao Halloween", ml: "ഹാലോവീൻ ഗെയിമുകൾ", mt: "Logħob ta’ Halloween", mi: "Ngā kēmu Halloween", mr: "हॅलोवीन खेळ", mn: "Хэллоуины тоглоомууд", ne: "हेलोविन खेलहरू", oc: "Jòcs de Halloween", or: "ହାଲୋୱିନ୍ ଖେଳ", ps: "د هالووین لوبې", fa: "بازی‌های هالووین", pa: "ਹੈਲੋਵੀਨ ਖੇਡਾਂ", sm: "Taʻaloga Halloween", sa: "हैलोवीन-क्रीडाः", gd: "Geamannan Oidhche Shamhna", sr: "Игре за Ноћ вештица", st: "Lipapali tsa Halloween", sn: "Mitambo yeHalloween", sd: "هالووين جون رانديون", si: "හැලොවීන් ක්‍රීඩා", sk: "Halloweenske hry", sl: "Igre za noč čarovnic", so: "Ciyaaraha Halloween", su: "Kaulinan Halloween", sw: "Michezo ya Halloween", tg: "Бозиҳои Ҳеллоуин", ta: "ஹாலோவீன் விளையாட்டுகள்", tt: "Хэллоуин уеннары", te: "హాలోవీన్ ఆటలు", ug: "ھالوۋىن ئويۇنلىرى", ur: "ہالووین کھیل", uz: "Hellouin o‘yinlari", xh: "Imidlalo yeHalloween", yi: "האַלאָוועען שפּילערייַ", yo: "Àwọn eré Halloween", zu: "Imidlalo ye-Halloween"
+  };
+
+  function initialize() {
+    const dictionaries = window.munetiosTranslations || {};
+    Object.entries(dictionaries).forEach(([code, dictionary]) => {
+      dictionary.halloweenGame = titles[code] || titles[code.split(/[-_]/)[0]] || titles.en;
+    });
+
+    const logos = [...document.querySelectorAll('#canChangeLogoinDoodles, img[src="ganetios-logo.png"], img[src="ganetios-logo-icon.png"]')];
+    const states = logos.map(logo => ({
+      logo, src: logo.getAttribute("src"), onclick: logo.onclick,
+      tabindex: logo.getAttribute("tabindex"), role: logo.getAttribute("role"),
+      label: logo.getAttribute("aria-label"), cursor: logo.style.cursor,
+      onerror: logo.onerror,
+      banner: logo.id === "canChangeLogoinDoodles" || logo.getAttribute("src") === "ganetios-logo.png"
+    }));
+    let active = false;
+    let dialog;
+    let frame;
+    let opener;
+    let timer;
+
+    const pumpkinArtwork = `<path d="M63 35 Q54 17 71 11 L79 16 Q65 24 76 36" fill="#b69bff"/><ellipse cx="70" cy="77" rx="59" ry="48" fill="#ef8632"/><ellipse cx="70" cy="77" rx="42" ry="48" fill="#ffad42"/><ellipse cx="70" cy="77" rx="23" ry="48" fill="#ffc45c"/><path d="M30 67 L47 49 L55 72 Z M85 72 L93 49 L110 67 Z" fill="#35104f"/><path d="M33 89 Q70 124 107 89 L94 96 L88 90 L79 103 L62 103 L53 90 L46 96 Z" fill="#35104f"/><text x="70" y="88" text-anchor="middle" font-family="Google Sans Flex,Arial,sans-serif" font-size="31" font-weight="800" fill="#5d2183">G</text>`;
+    function embeddedHalloweenLogo(banner) {
+      const artwork = banner
+        ? `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="280" viewBox="0 0 1000 280"><defs><linearGradient id="purple" x2="1" y2="1"><stop stop-color="#dab3ff"/><stop offset="1" stop-color="#9d65f7"/></linearGradient></defs><g transform="translate(18 68) scale(1.2)">${pumpkinArtwork}</g><text x="550" y="173" text-anchor="middle" font-family="Google Sans Flex,Arial,sans-serif" font-size="119" font-weight="700" fill="url(#purple)">Ganetios</text><path d="M250 47 l6 15 15 6-15 6-6 15-6-15-15-6 15-6 Z M910 175 l5 12 12 5-12 5-5 12-5-12-12-5 12-5 Z" fill="#ffc45c"/><path d="M847 55 Q861 38 878 55 Q895 38 912 55 L904 77 L893 64 L879 85 L866 64 L855 77 Z" fill="#aa7aec"/></svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140">${pumpkinArtwork}</svg>`;
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(artwork);
+    }
+
+    function replaceHalloweenLogo(state) {
+      const candidates = state.banner
+        ? ["https://munetios.com/ganetiosspookyhalloweenbanner.png"]
+        : ["https://munetios.com/halloweenlogog.png"];
+      let candidate = 0;
+      state.logo.onerror = () => {
+        if (!active) return;
+        candidate += 1;
+        if (candidate < candidates.length) state.logo.src = candidates[candidate];
+        else {
+          state.logo.onerror = null;
+          state.logo.src = embeddedHalloweenLogo(state.banner);
+        }
+      };
+      state.logo.src = candidates[0];
+    }
+
+    function translate() {
+      const code = document.documentElement.lang || "en";
+      const stored = localStorage.getItem("munetiosLanguage") || code;
+      const words = dictionaries[stored] || dictionaries[code] || dictionaries[code.split("-")[0]] || dictionaries.en || {};
+      const title = words.halloweenGame || titles[stored] || titles[code.split("-")[0]] || titles.en;
+      if (active) logos.forEach(logo => logo.setAttribute("aria-label", title));
+      if (dialog) {
+        dialog.querySelector("h2").textContent = title;
+        dialog.querySelector("button").textContent = words.close || dictionaries.en?.close || "Close";
+        frame.title = title;
+      }
+    }
+
+    function openGame(event) {
+      if (!active) return;
+      event?.preventDefault();
+      opener = event?.currentTarget || document.activeElement;
+      if (!dialog) {
+        dialog = document.createElement("dialog");
+        dialog.className = "halloween-game-dialog liquid-glass";
+        dialog.setAttribute("aria-labelledby", "halloweenGameTitle");
+        const header = document.createElement("div");
+        header.className = "halloween-game-header";
+        const heading = document.createElement("h2");
+        heading.id = "halloweenGameTitle";
+        heading.className = "halloween-game-title";
+        heading.dataset.translate = "halloweenGame";
+        const close = document.createElement("button");
+        close.type = "button";
+        close.className = "halloween-game-close";
+        close.dataset.translate = "close";
+        close.addEventListener("click", () => dialog.close());
+        frame = document.createElement("iframe");
+        frame.className = "halloween-game-frame";
+        frame.width = "900";
+        frame.height = "1100";
+        frame.referrerPolicy = "no-referrer";
+        frame.allow = "fullscreen";
+        frame.dataset.translateTitle = "halloweenGame";
+        header.append(heading, close);
+        dialog.append(header, frame);
+        document.body.append(dialog);
+        dialog.addEventListener("click", event => {
+          const bounds = dialog.getBoundingClientRect();
+          if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+        });
+        dialog.addEventListener("close", () => {
+          frame.removeAttribute("src");
+          opener?.focus();
+        });
+      }
+      translate();
+      if (!dialog.open) {
+        frame.src = "https://games.munetios.com/halloween";
+        dialog.showModal();
+      }
+    }
+
+    function onKeydown(event) {
+      if (active && (event.key === "Enter" || event.key === " ")) openGame(event);
+    }
+
+    function refreshSeason() {
+      clearTimeout(timer);
+      const now = new Date();
+      const october = now.getMonth() === 9 && now.getDate() >= 1 && now.getDate() <= 31;
+      if (october !== active) {
+        active = october;
+        document.documentElement.classList.toggle("halloween-season", active);
+        states.forEach(state => {
+          const { logo } = state;
+          logo.classList.toggle("halloween-logo", active);
+          if (active) {
+            replaceHalloweenLogo(state);
+            logo.onclick = openGame;
+            logo.style.cursor = "pointer";
+            logo.setAttribute("role", "button");
+            logo.tabIndex = 0;
+            logo.addEventListener("keydown", onKeydown);
+          } else {
+            logo.onerror = state.onerror;
+            logo.src = state.src;
+            logo.onclick = state.onclick;
+            logo.style.cursor = state.cursor;
+            logo.removeEventListener("keydown", onKeydown);
+            [["tabindex", state.tabindex], ["role", state.role], ["aria-label", state.label]].forEach(([name, value]) => {
+              if (value === null) logo.removeAttribute(name);
+              else logo.setAttribute(name, value);
+            });
+          }
+        });
+        if (!active && dialog?.open) dialog.close();
+        translate();
+      }
+      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      timer = setTimeout(refreshSeason, midnight - now + 100);
+    }
+
+    new MutationObserver(translate).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshSeason(); });
+    refreshSeason();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => queueMicrotask(initialize), { once: true });
+  else initialize();
+})();
+
     </script>
   </body>
 </html>
