@@ -4513,16 +4513,24 @@
     </style>
     <script src="https://www.munetios.com/munetios-pronounce.js"></script>
     <style>
+@keyframes halloweenGradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 html.halloween-season body {
-  background-image: radial-gradient(ellipse at top, rgba(117, 43, 173, 0.35), transparent 65%), radial-gradient(ellipse at bottom right, rgba(83, 26, 125, 0.30), transparent 60%);
+  background-image: linear-gradient(135deg, #1b0900 0%, #4d1800 20%, #8d2d00 45%, #d76b00 70%, #f7d76a 100%);
+  background-size: 200% 200%;
+  animation: halloweenGradientFlow 12s ease-in-out infinite;
 }
 html.halloween-season .search-bar,
 html.halloween-season .topbar-left,
 html.halloween-season .topbar-right {
-  border-color: rgba(194, 131, 255, 0.45);
+  border-color: rgba(255, 176, 86, 0.5);
 }
 .halloween-logo { cursor: pointer; }
-.halloween-logo:focus-visible { outline: 2px solid #c283ff; outline-offset: 5px; border-radius: 8px; }
+.halloween-logo:focus-visible { outline: 2px solid #ffb347; outline-offset: 5px; border-radius: 8px; }
 .halloween-game-dialog {
   position: fixed;
   inset: 0;
@@ -4534,10 +4542,10 @@ html.halloween-season .topbar-right {
   max-height: calc(100dvh - 24px);
   padding: 18px;
   overflow: auto;
-  border: 1px solid rgba(194, 131, 255, 0.45);
+  border: 1px solid rgba(255, 176, 86, 0.5);
   border-radius: 24px;
-  background: rgba(32, 9, 57, 0.50);
-  color: #f2e6ff;
+  background: rgba(42, 13, 0, 0.5);
+  color: #fff3d8;
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   font-family: "Google Sans Flex", sans-serif;
