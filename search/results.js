@@ -115,12 +115,12 @@ window.localResults = [
     link: "https://games.munetios.com/",
   },
   {
-    title: "Munetios Notebook",
+    title: "Munet Dash",
     description:
-      "Organize your thoughts, ideas, and plans with Munetios Notebook.",
-    url: "https://notebook.munetios.com",
+      "Munet Dash is a Geometry Dash style game with Munet Dash features added.",
+    url: "https://munet-dash.munetios.workers.dev",
     favicon: "",
-    link: "https://notebook.munetios.com",
+    link: "https://munet-dash.munetios.workers.dev",
   },
   {
     title: "Munetios Weather",
