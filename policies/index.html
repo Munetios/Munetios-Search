@@ -57,527 +57,59 @@
     <link rel="apple-touch-icon" href="/favicon-new.ico" />
     <!-- Munetios beautiful css link -->
      <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css" />
-     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL@0..1" />
-     <!--m CSP-->
-     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://api.munetios.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.munetios.com; font-src 'self' https://fonts.gstatic.com https://api.munetios.com; img-src 'self' data: https://api.munetios.com; connect-src 'self' https://api.munetios.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';" />
-  
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght,ROND@6..144,1..1000,80&display=swap');
-      * {
-           font-feature-settings: "ss01" 1;
-                 font-family: "Google Sans Flex", sans-serif;
-                 font-variation-settings: 'ROND' 50;
-      }
-      body {
-        font-family: "Google Sans Flex", sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #270e33ff;
-        color: #e9e9e9;
-      }
-      body.sidebar-open::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: rgba(14, 4, 26, 0.48);
-        backdrop-filter: blur(5px);
-        z-index: 900;
-      }
-      h1,h2,h3,h4,h5,h6 {
-        font-variation-settings: 'ROND' 80;
-        font-feature-settings: "ss01" 1;
-      }
-      button {
-        all: unset;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border-radius: 58px;
-        transition: background 0.3s ease;
-      }
-      button:hover {
-        cursor: pointer;
-        background: rgba(255, 255, 255, 0.2);
-      }
-      .material-symbols-rounded {
-        font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
-        font-size: 22px;
-        line-height: 1;
-      }
-      .btn {
-        border-radius: 40px;
-        background-color: #4f03db;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-      }
-      .btn:hover {
-        background-color: #3d02b8;
-      }
-      .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 1000;
-        box-sizing: border-box;
-      }
-      .navbar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-      }
-      .content {
-        display: none;
-        margin-left: 280px;
-        margin-top: 80px;
-        max-width: calc(100% - 340px);
-        border-radius: 18px;
-        padding: 32px 36px;
-        font-size: 18px;
-        line-height: 1.7;
-        transition: box-shadow 0.3s;
-      }
-      .content.active-section {
-        display: block;
-      }
-      body.sidebar-collapsed .content {
-        margin-left: 24px;
-        max-width: calc(100% - 48px);
-      }
-      .content h1 {
-        font-size: 2.2em;
-        margin-top: 0;
-        margin-bottom: 18px;
-        font-weight: 600;
-        color: #9abaff;
-      }
-      .content h2,
-      .content h3 {
-        color: #b7aaff;
-        margin-top: 28px;
-        margin-bottom: 12px;
-        font-weight: 500;
-      }
-      .content ul {
-        margin: 16px 0 16px 24px;
-        padding: 0;
-      }
-      .content li {
-        margin-bottom: 8px;
-      }
-      .content a {
-        color: #9abaff;
-        text-decoration: underline;
-      }
-      footer {
-        text-align: center;
-        padding: 18px 0;
-        margin-left: 280px; 
-        color: #bbb;
-        font-size: 15px;
-        margin-top: 40px;
-        border-radius: 0 0 18px 18px;
-      }
-      body.sidebar-collapsed footer {
-        margin-left: 24px;
-        margin-right: 24px;
-      }
-      .sidebar {
-        position: fixed;
-        top: 70px;
-        overflow-y: auto;
-        left: 10px;
-        width: 200px;
-        height: calc(100% - 80px);
-        border-radius: 18px;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        transition: transform 0.25s ease, opacity 0.25s ease;
-      }
-      body.sidebar-collapsed .sidebar {
-        transform: translateX(calc(-100% - 36px));
-        opacity: 0;
-        pointer-events: none;
-      }
-      .menu-btn,
-      .top-right {
-        padding: 14px 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .top-right {
-        gap: 10px;
-      }
-      .icon-btn {
-        width: 44px;
-        height: 44px;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-      .action-link {
-        color: inherit;
-        text-decoration: none;
-        white-space: nowrap;
-      }
-      .section-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin: 0 0 26px;
-        align-items: center;
-      }
-      .policy-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 24px;
-      }
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(5px);
-      }
-      .home-grid,
-      .archive-grid,
-      .search-results {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
-      }
-      .search-results {
-        grid-template-columns: 1fr;
-      }
-      .feature-card,
-      .archive-card,
-      .search-result-card {
-        padding: 18px;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.07);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(5px);
-      }
-      .feature-card h3,
-      .archive-card h3,
-      .search-result-card h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-      }
-      .feature-card p,
-      .archive-card p,
-      .search-result-card p {
-        margin: 0 0 14px;
-      }
-      .card-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      .inline-btn {
-        padding: 10px 14px;
-      }
-      .search-panel {
-        position: fixed;
-        inset: 92px 20px 20px 20px;
-        max-width: 920px;
-        margin-left: auto;
-        z-index: 3000;
-        display: none;
-        padding: 22px;
-        overflow: auto;
-      }
-      .search-panel.visible,
-      .dropdown-menu.visible {
-        display: block;
-      }
-      .search-panel-header {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 16px;
-      }
-      .search-input-wrap {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex: 1;
-        padding: 12px 14px;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(5px);
-      }
-      .search-input {
-        width: 100%;
-        background: transparent;
-        border: none;
-        outline: none;
-        color: #fff;
-        font-size: 16px;
-      }
-      .search-input::placeholder {
-        color: rgba(255, 255, 255, 0.72);
-      }
-      .empty-state {
-        color: rgba(255, 255, 255, 0.82);
-      }
-      .search-snippet mark,
-      .search-hit {
-        background: rgba(154, 186, 255, 0.28);
-        color: #fff;
-        padding: 0 3px;
-        border-radius: 4px;
-      }
-      .visually-hidden {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-      }
-      body.search-open::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: rgba(14, 4, 26, 0.56);
-        backdrop-filter: blur(5px);
-        z-index: 2500;
-      }
-      @media print {
-        body * {
-          visibility: hidden !important;
-        }
-        .content.printing,
-        .content.printing * {
-          visibility: visible !important;
-        }
-        .content.printing {
-          position: absolute;
-          inset: 0;
-          margin: 0 !important;
-          padding: 24px !important;
-          max-width: none !important;
-          background: #fff !important;
-          color: #111 !important;
-          box-shadow: none !important;
-        }
-      }
-      .item {
-        padding: 10px 14px;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      .item:hover {
-        background-color: #3a1a5eff;
-      }
-      .item.active {
-        background-color: #4f03dbff;
-      }
-      .liquid-glass {
-        /* Rendered by beautiful-css */
-      }
-      .dropdown-menu {
-        padding: 12px 14px;
-        z-index: 100000;
-        position: absolute;
-        max-height: 500px;
-        min-width: 220px;
-        overflow-y: auto;
-        display: none;
-        border-radius: 12px;
-      }
-      .archive-viewer {
-        position: fixed;
-        inset: 92px 20px 20px 20px;
-        max-width: 920px;
-        margin-left: auto;
-        z-index: 3000;
-        display: none;
-        padding: 22px;
-        overflow: auto;
-      }
-      .archive-viewer.visible {
-        display: block;
-      }
-      .archive-viewer-header {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 16px;
-      }
-      .archive-viewer-meta {
-        color: rgba(255, 255, 255, 0.78);
-        margin: 6px 0 0;
-      }
-      .archive-viewer-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      .archive-viewer-body {
-        padding: 20px;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(5px);
-      }
-      #languageDropdownMenu {
-        top: 70px;
-        right: 170px;
-      }
-      .dropdown-item {
-        padding: 8px 12px;
-        cursor: pointer;
-        border-radius: 8px;
-        transition: background-color 0.3s;
-      }
-      .dropdown-item:hover {
-        background-color: rgba(78, 30, 133, 0.514);
-      }
-      @media (max-width: 400px) {
-        .hide-400 {
-          display: none;
-        }
-        #languageDropdownMenu {
-          right: 10px;
-        }
-      }
-      @media (max-width: 840px) {
-        .topbar {
-          padding: 10px;
-        }
-        .sidebar {
-          top: 78px;
-          left: 10px;
-          width: min(78vw, 280px);
-          height: calc(100% - 88px);
-          transform: translateX(-120%);
-          opacity: 0;
-          pointer-events: none;
-          transition: transform 0.25s ease, opacity 0.25s ease;
-          z-index: 1200;
-        }
-        .sidebar.open {
-          transform: translateX(0);
-          opacity: 1;
-          pointer-events: auto;
-        }
-        .content {
-          margin-left: 10px;
-          margin-right: 10px;
-          max-width: none;
-          padding: 24px 20px;
-        }
-        body.sidebar-collapsed .content {
-          margin-left: 10px;
-          margin-right: 10px;
-          max-width: none;
-        }
-        footer {
-          margin-left: 10px;
-          margin-right: 10px;
-        }
-        body.sidebar-collapsed footer {
-          margin-left: 10px;
-          margin-right: 10px;
-        }
-        .logo-text {
-          display: none;
-        }
-        .search-panel {
-          inset: 84px 10px 14px 10px;
-          padding: 18px;
-        }
-        .archive-viewer {
-          inset: 84px 10px 14px 10px;
-          padding: 18px;
-        }
-        .search-panel-header {
-          flex-wrap: wrap;
-        }
-        .archive-viewer-header {
-          flex-wrap: wrap;
-        }
-      }
-      .topbar-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .logo-text {
-        padding: 14px;
-      }
-      .top-right {
-        padding: 3px !important;
-      }
-    </style>
+    <meta name="color-scheme" content="dark light">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://write.munetios.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://write.munetios.com https://api.munetios.com; font-src 'self' https://api.munetios.com https://write.munetios.com; img-src 'self' data: https://api.munetios.com; connect-src 'self' https://api.munetios.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <link rel="stylesheet" href="https://write.munetios.com/munetios-ui/munetios-ui-v4.css">
+    <link rel="stylesheet" href="./policies-v4.css">
+    <script src="https://write.munetios.com/munetios-ui/munetios-ui-v4.js" defer></script>
   </head>
-  <body>
+  <body class="mu-root">
     <header class="topbar">
       <div class="topbar-left">
-      <div class="menu-btn liquid-glass">
-        <span class="material-symbols-rounded" aria-hidden="true">menu</span>
-      </div>
-      <div class="logo-text liquid-glass">
-        <div>Munetios Policies</div>
-      </div></div>
-      <div class="top-right liquid-glass">
-        <button id="searchButton" class="icon-btn liquid-glass" type="button" aria-label="Search policies" title="Search policies">
-          <span class="material-symbols-rounded" aria-hidden="true">search</span>
+        <button class="menu-btn mu-icon-btn mu-btn-ghost" type="button" aria-label="Menu" aria-controls="policyNavigation" aria-expanded="false">
+          <span class="mu-icon" aria-hidden="true">menu</span>
         </button>
-        <button id="languageDropdownButton" class="icon-btn liquid-glass language-button" type="button" aria-label="Language" title="Language">
-          <span class="material-symbols-rounded" aria-hidden="true">translate</span>
-        </button>
-        <a href="https://www.munetios.com" class="action-link hide-400"
-          >Munetios.com</a>
+        <div class="logo-text mu-glass liquid-glass">
+          <img src="/munetios-logo-icon.png" width="30" height="30" alt="">
+          <div>Munetios Policies</div>
         </div>
       </div>
-    </header>
-    <aside class="sidebar liquid-glass">
-            <div class="navbar">
-        <div class="item" id="homeItem">Home</div>
-        <div class="item" id="privacyItem">Privacy Policy</div>
-        <div class="item" id="termsItem">Terms of Service</div>
-        <div class="item" id="cookiesItem">Cookies Policy</div>
-        <div class="item" id="aboutItem">About Us</div>
-        <div class="item" id="appsItem">Apps</div>
-        <div class="item" id="gdprItem">GDPR</div>
-        <div class="item" id="brandingItem">Branding</div>
-        <div class="item" id="trust-safety">Trust & Safety</div>
-        <div class="item" id="contactItem">Contact Us</div>
+      <div class="top-right">
+        <button id="searchButton" class="mu-icon-btn mu-btn-ghost" type="button" aria-label="Search policies" title="Search policies" aria-controls="searchPanel" aria-expanded="false">
+          <span class="mu-icon" aria-hidden="true">search</span>
+        </button>
+        <button id="languageDropdownButton" class="mu-icon-btn mu-btn-ghost language-button" type="button" aria-label="Language" title="Language" aria-controls="languageDropdownMenu" aria-expanded="false">
+          <span class="mu-icon" aria-hidden="true">translate</span>
+        </button>
+        <a href="https://www.munetios.com" class="mu-btn mu-btn-ghost action-link">Munetios.com</a>
       </div>
-    </aside>
-    <div class="content liquid-glass" id="home">
+    </header>
+    <div class="policies-shell">
+      <aside class="sidebar mu-glass liquid-glass" id="policyNavigation">
+        <nav class="navbar" aria-label="Munetios Policies">
+          <button type="button" class="mu-nav-item item" id="homeItem">Home</button>
+          <button type="button" class="mu-nav-item item" id="privacyItem">Privacy Policy</button>
+          <button type="button" class="mu-nav-item item" id="termsItem">Terms of Service</button>
+          <button type="button" class="mu-nav-item item" id="cookiesItem">Cookies Policy</button>
+          <button type="button" class="mu-nav-item item" id="gdprItem">GDPR</button>
+          <button type="button" class="mu-nav-item item" id="trust-safety">Trust &amp; Safety</button>
+          <button type="button" class="mu-nav-item item" id="aboutItem">About Us</button>
+          <button type="button" class="mu-nav-item item" id="appsItem">Apps</button>
+          <button type="button" class="mu-nav-item item" id="brandingItem">Branding</button>
+          <button type="button" class="mu-nav-item item" id="contactItem">Contact Us</button>
+        </nav>
+      </aside>
+      <main class="policy-main">
+    <div class="policy-content mu-panel mu-glass liquid-glass active-section" id="home">
       <h1>Welcome to Munetios Policies</h1>
       <div class="section-toolbar">
-        <button class="btn inline-btn" type="button" data-download-current>
-          <span class="material-symbols-rounded" aria-hidden="true">picture_as_pdf</span>
+        <button class="mu-btn inline-btn" type="button" data-download-current>
+          <span class="mu-icon" aria-hidden="true">picture_as_pdf</span>
           <span>Download PDF</span>
         </button>
-        <button class="btn inline-btn" type="button" data-open-search>
-          <span class="material-symbols-rounded" aria-hidden="true">search</span>
+        <button class="mu-btn inline-btn" type="button" data-open-search>
+          <span class="mu-icon" aria-hidden="true">search</span>
           <span>Search Policies</span>
         </button>
       </div>
@@ -600,344 +132,91 @@
       <p id="archiveSummary">Recent archived versions from this browser are listed below.</p>
       <div class="archive-grid" id="archiveList"></div>
     </div>
-   <div class="content liquid-glass" id="privacy">
-  <h1>Privacy Policy</h1>
-  <div class="policy-meta">
-    <div class="pill"><span class="material-symbols-rounded" aria-hidden="true">history</span><span>Last updated: May 31, 2026</span></div>
-    <button class="pill" type="button" data-download-section="privacy"><span class="material-symbols-rounded" aria-hidden="true">picture_as_pdf</span><span>Download PDF</span></button>
-  </div>
+   <section class="policy-content mu-panel mu-glass liquid-glass" id="privacy">
+      <h1>Privacy Policy</h1>
+      <div class="policy-meta">
+        <span class="mu-chip pill"><span class="mu-icon" aria-hidden="true">history</span><span>Last updated: November 21, 2026</span></span>
+        <button class="mu-btn pill" type="button" data-download-section="privacy"><span class="mu-icon" aria-hidden="true">picture_as_pdf</span><span>Download PDF</span></button>
+      </div>
+      <p>This policy describes how Munetios handles information when you use Search, Munetios Accounts, and related Munetios apps. The information involved depends on the features you use.</p>
 
-  <p>
-    Munetios is built with privacy as a core principle. We do not collect,
-    harvest, sell, or monetize personal data. Any information you provide
-    is strictly optional and only supplied when you actively choose to use
-    a feature that requires it.
-  </p>
+      <h2>Search and external services</h2>
+      <p>Search, previews, and media can send requests directly to an external provider or through Munetios infrastructure. Depending on the request, a provider may receive a search query or other information needed to return a result, plus technical information such as an IP address and browser headers. A provider’s own privacy policy governs how it handles that information.</p>
+      <p>Sources for Search may include Wikipedia, GitHub, and DuckDuckGo Instant Answers. External resources may also supply favicons, images, maps, or fonts. Browser and operating system providers may process audio when you use voice input. Optional AI features may send prompts and any material you submit to the service used to generate the result.</p>
+      <p>Munetios uses information to deliver the features you request, maintain secure accounts, and prevent abuse. Munetios does not sell personal information or use it for behavioral advertising.</p>
 
-  <p>
-    We do not perform behavioral tracking, profiling, fingerprinting, or
-    cross-site tracking. Your activity is not monitored or analyzed.
-  </p>
+      <h2>Munetios Accounts</h2>
+      <p>When you create an account, we process your email address and a password hash if you use a password. We also process session and device details needed to manage sign-ins and protect your account. The account can store an optional display name, profile photo, and verified recovery email address.</p>
+      <p>If you sign in with Google, we receive your Google account identifier and verified email address. We may use the name and photo Google provides to set up your Munetios profile. Email verification and account recovery use the addresses you supply so we can deliver codes and account messages.</p>
+      <p>You can edit your account details, manage devices, and choose whether other people can see your profile picture under <a href="https://accounts.munetios.com/account/#data">Account → Data &amp; privacy</a>. You can still see your profile picture when you turn off sharing.</p>
 
-  <p>
-    While Munetios itself does not collect personal data, some features may
-    require requests to third-party services. These services operate under
-    their own privacy policies and may process limited technical data as
-    part of standard web communication.
-  </p>
+      <h2>Documents, sharing, and mail</h2>
+      <p>OmniWrite can store documents on your device. When you enable encrypted sync, Munetios stores encrypted copies. Munetios can read files shared with anyone who has the link. Sharing also makes information such as your display name and permitted profile picture visible to people with access.</p>
+      <p>Munetios Mail processes sender and recipient addresses and message content to send mail, route incoming messages, and display your mailbox. Mail providers also process the messages they send or receive.</p>
 
-  <!-- THIRD PARTY REQUESTS -->
-  <h2>Third-Party Requests & External Services</h2>
+      <h2>Managed classrooms and devices</h2>
+      <p>On managed devices, a school or organization can use Munetios WebFilter to manage browsing rules and device access. Authorized staff may see device information, open tabs, and screen views through the features their organization enables. Ask the organization that manages your device about its use of those features.</p>
 
-  <p>
-    Munetios minimizes external requests wherever possible. However, certain
-    features such as search results, content previews, and media rendering
-    may require communication with third-party services.
-  </p>
+      <h2>Cookies and browser storage</h2>
+      <p>Munetios uses session cookies to keep you signed in. Browser storage can hold preferences, local documents, and other data used by apps. See the <a href="#cookiesPolicy" data-policy-link>Cookies Policy</a> for details.</p>
 
-  <p>
-    These requests are performed only when required to deliver functionality
-    requested by the user and are never used for advertising, profiling, or
-    tracking by Munetios.
-  </p>
+      <h2>Your choices and privacy requests</h2>
+      <p>Account settings let you change your information, sign out devices, export local app data, or request account deletion. Manage data stored only on your device through the app or your browser settings.</p>
+      <p>Depending on where you live, you may have rights to access, correct, delete, or receive a copy of your personal information, restrict or object to certain processing, and complain to a data protection authority. To make a request, contact <a href="mailto:munetios96@gmail.com">munetios96@gmail.com</a>. If you believe a child’s personal information was provided to Munetios, use the same address to contact us.</p>
+    </section>
 
-  <p>
-    When a third-party request occurs, the external service may receive:
-  </p>
-
-  <ul>
-    <li>IP address</li>
-    <li>Browser user agent</li>
-    <li>Request headers</li>
-  </ul>
-
-  <p>
-    This information is part of standard internet communication. Some
-    third-party services may independently collect telemetry or logs in
-    accordance with their own privacy policies.
-  </p>
-
-  <p>
-    Munetios does not send personal identifiers, account data, or behavioral
-    tracking information to third parties.
-  </p>
-
-  <p>
-    Where possible, Munetios applies privacy-enhancing techniques such as:
-  </p>
-
-  <ul>
-    <li>Proxying requests through Munetios infrastructure</li>
-    <li>Reducing or removing referrer data</li>
-    <li>Limiting metadata exposure</li>
-  </ul>
-
-  <!-- SEARCH SOURCES -->
-  <h2>Search Data Sources</h2>
-
-  <p>
-    Munetios Search aggregates publicly available data from multiple sources
-    to provide useful and relevant results.
-  </p>
-
-  <p>Sources may include:</p>
-
-  <ul>
-    <li>GitHub</li>
-    <li>Wikipedia</li>
-    <li>Hacker News</li>
-    <li>Minecraft Wiki</li>
-    <li>Stack Overflow</li>
-    <li>Reddit</li>
-    <li>DuckDuckGo Instant Answers API</li>
-    <li>Wikidata</li>
-    <li>dev.to</li>
-  </ul>
-
-  <p>
-    Requests to these services may be sent directly or through Munetios
-    infrastructure depending on the feature.
-  </p>
-
-  <p>
-    Each provider operates independently and may collect limited technical
-    data such as request logs or telemetry.
-  </p>
-
-  <p>
-    Munetios does not enable cross-site tracking and does not combine data
-    from these services into user profiles.
-  </p>
-
-  <!-- IMAGES -->
-  <h2>Third-Party Images & Media</h2>
-
-  <p>
-    Munetios may display images, thumbnails, and icons from third-party
-    providers to improve usability and presentation.
-  </p>
-
-  <p>Examples include:</p>
-
-  <ul>
-    <li>Google Favicons service (site icons)</li>
-    <li>Wikimedia / Wikipedia images</li>
-    <li>YouTube thumbnail images</li>
-    <li>OpenMapTiles</li>
-    <li>Esri</li>
-  </ul>
-
-  <p>
-    When these resources are loaded, the provider may receive standard
-    request data such as IP address and request headers.
-  </p>
-
-  <p>
-    These resources are used only for visual display. Munetios does not embed
-    tracking pixels or hidden identifiers within media.
-  </p>
-
-  <p>
-    Any data collection performed by third-party media providers is governed
-    by their own privacy policies.
-  </p>
-
-  <!-- CDNs -->
-  <h2>Content Delivery</h2>
-
-  <p>
-    Munetios may load static resources such as stylesheets, icons, or scripts
-    from trusted content delivery networks (CDNs) to ensure performance and
-    compatibility.
-  </p>
-
-  <p>Examples may include:</p>
-
-  <ul>
-    <li>Google Fonts</li>
-    <li>jsDelivr</li>
-    <li>cdnjs.cloudflare.com</li>
-    <li>unpkg</li>
-  </ul>
-
-  <p>
-    These services may receive limited technical information required to
-    deliver content but are not used by Munetios for tracking or analytics.
-  </p>
-
-  <!-- AI -->
-  <h2>AI Features</h2>
-
-  <p>
-    Munetios includes optional AI-powered features designed to improve
-    productivity and usability.
-  </p>
-
-  <p>
-    AI interactions are not used for training by default and are not retained
-    beyond the active session unless explicitly stated.
-  </p>
-
-  <p>
-    Munetios does not use AI to profile users or infer personal traits.
-  </p>
-
-  <p>
-    Any optional data sharing for improvement purposes will be clearly
-    disclosed and fully controlled by the user.
-  </p>
-
-  <!-- SPEECH -->
-  <h2>Speech Recognition</h2>
-
-  <p>
-    Munetios uses the Web Speech API for voice input features.
-  </p>
-
-  <p>
-    Speech processing is handled by your browser or operating system.
-    Munetios does not process or store voice recordings.
-  </p>
-
-  <p>
-    Voice input is converted to text and used only for the requested action.
-  </p>
-
-  <!-- ENCRYPTION -->
-  <h2>Encryption</h2>
-
-  <p>
-    Munetios uses end-to-end encryption where applicable. Data is encrypted
-    on your device and cannot be accessed by Munetios servers.
-  </p>
-
-  <p>
-    Encryption keys are managed locally and are never shared.
-  </p>
-
-  <!-- COOKIES -->
-  <h2>Cookies</h2>
-
-  <p>
-    Munetios uses minimal cookies strictly for essential functionality such
-    as preferences and session handling.
-  </p>
-
-  <p>
-    Cookies are not used for tracking, analytics, or advertising.
-  </p>
-
-  <!-- COPPA -->
-  <h2>COPPA</h2>
-
-  <p>
-    Munetios does not collect personal data and does not knowingly collect
-    information from children under 13.
-  </p>
-
-  <!-- GDPR -->
-  <h2>GDPR</h2>
-
-  <p>
-    Munetios follows GDPR principles by design. Because no personal data is
-    collected or stored, user rights are inherently respected.
-  </p>
-
-</div>
-
-    <div class="content liquid-glass" id="terms">
+    <section class="policy-content mu-panel mu-glass liquid-glass" id="terms">
       <h1>Terms of Service</h1>
       <div class="policy-meta">
-        <div class="pill"><span class="material-symbols-rounded" aria-hidden="true">history</span><span>Last updated: January 30, 2026</span></div>
-        <button class="pill" type="button" data-download-section="terms"><span class="material-symbols-rounded" aria-hidden="true">picture_as_pdf</span><span>Download PDF</span></button>
+        <span class="mu-chip pill"><span class="mu-icon" aria-hidden="true">history</span><span>Last updated: November 21, 2026</span></span>
+        <button class="mu-btn pill" type="button" data-download-section="terms"><span class="mu-icon" aria-hidden="true">picture_as_pdf</span><span>Download PDF</span></button>
       </div>
+      <h2>Acceptance of Terms</h2>
+      <p>By accessing or using Munetios services, you agree to these Terms of Service. If you do not agree, do not use the services.</p>
 
-     <h2>Acceptance of Terms</h2>
-      <p>
-        By accessing or using Munetios services, you agree to be bound by these
-        Terms of Service. If you do not agree to these terms, you may not use
-        our services.
-      </p>
-      <h2>Munetios Apps</h2>
-      <p>
-        Munetios provides various applications that are subject to these Terms
-        of Service. By using any Munetios app, you agree to comply with these
-        terms and any additional guidelines or rules provided within the app.
-        You may not use Munetios apps for any illegal or unauthorized purpose.
-      </p>
-      <h2>Browser Integrity & Execution Environment</h2>
-      <p>
-        Munetios services must be accessed through browsers and environments that do not modify, inject, intercept, or alter the execution of Munetios content, scripts, network requests, or security mechanisms. <br>
+      <h2>Munetios apps and accounts</h2>
+      <p>These terms apply to Munetios Search and other Munetios apps. Follow any additional rules shown in the app you use. When you create an account, keep your sign-in credentials secure and use account settings to manage your sessions and recovery details.</p>
 
-You may not access or use Munetios services through any browser, in-app browser, WebView, proxy, or platform that injects scripts, trackers, analytics, or other code into Munetios pages without explicit authorization. <br>
+      <h2>Your content and sharing</h2>
+      <p>Only upload or share content you have permission to use. Choose sharing permissions appropriate for the information in your file. When you choose anyone-with-the-link sharing, people who receive the link can access the file according to the permissions you set, and Munetios can read the file.</p>
+      <p>For devices managed by a school or organization, its administrators may set access rules, manage device enrollment, or use monitoring features. Follow the organization’s rules when using its managed services.</p>
 
-Any modification of page content, JavaScript execution, cryptographic operations, storage behavior, or network communication is strictly prohibited and constitutes a violation of these Terms of Service.
-      </p>
-      <h2>Rate Limiting & Blocking</h2>
-      <p>
-        To ensure fair and reliable access for all users, Munetios Search may
-        apply rate limits to prevent excessive or automated requests. If you
-        reach these limits, you may be asked to complete a captcha or wait
-        before making additional requests. These measures help maintain service
-        quality and protect against misuse.
-      </p>
-      <h2>Modifications to Terms</h2>
-      <p>
-        Munetios reserves the right to modify these Terms of Service at any
-        time. Changes will be effective immediately upon posting. Your continued
-        use of the services after any changes constitutes your acceptance of the
-        new terms.
-      </p>
+      <h2>Acceptable use and browser integrity</h2>
+      <p>Use Munetios for lawful, authorized purposes. Do not interfere with the services, use accounts or resources without permission, or bypass security or access controls.</p>
+      <p>Do not use unauthorized environments or tools to inject code into Munetios services or modify their execution, network traffic, storage, or cryptographic operations.</p>
+
+      <h2>Rate limiting and blocking</h2>
+      <p>Munetios Search may limit excessive or automated requests to protect service reliability. If you reach a limit, you may need to wait or complete a verification challenge.</p>
+
+      <h2>Changes to these terms</h2>
+      <p>Munetios may update these terms and will post the current version here. Changes take effect as described in the update and subject to any notice required by applicable law.</p>
+
       <h2 class="section-archive-heading">Archived Versions</h2>
       <p class="section-archive-summary" id="termsArchiveSummary">Recent archived versions for Terms of Service from this browser are listed below.</p>
       <div class="archive-grid" id="termsArchiveList" data-archive-section="terms"></div>
-    </div>
-    <div class="content liquid-glass" id="gdprPolicy">
+    </section>
+
+    <section class="policy-content mu-panel mu-glass liquid-glass" id="gdprPolicy">
       <h1>GDPR Compliance</h1>
-      <p>
-        If you are located in the European Economic Area (EEA), Munetios
-        complies with the General Data Protection Regulation (GDPR).
-      </p>
+      <p>If the GDPR applies to the processing of your personal data, you may have rights to access and correct it, request erasure, restrict or object to processing, receive a portable copy where applicable, and lodge a complaint with a supervisory authority.</p>
+      <p>Munetios relies on service necessity under Article 6(1)(b) and legitimate interests under Article 6(1)(f) where applicable to providing and securing its services. See the <a href="#privacy" data-policy-link>Privacy Policy</a> for the types of information handled. To make a request, contact <a href="mailto:munetios96@gmail.com">munetios96@gmail.com</a>.</p>
+    </section>
 
-      <p>
-        <strong>Local-Only Products:</strong> For products that store data only
-        on your device, no personal data is processed on Munetios servers. As a
-        result, GDPR rights such as data deletion, correction, or portability
-        are satisfied by default and are not applicable at the service level.
-      </p>
-
-      <p>
-        <strong>Planned Account-Based Services:</strong> Munetios Accounts and
-        other account-based services are planned but not yet active. When these
-        services launch and involve server-side processing of personal data,
-        Munetios will provide appropriate tools to exercise GDPR rights,
-        including access, correction, deletion, and data export.
-      </p>
-
-      <p>
-        Munetios relies on GDPR Article 6(1)(b) (service necessity) and Article
-        6(1)(f) (legitimate interest for security and functionality) where
-        applicable. Munetios does not use consent-based tracking technologies.
-      </p>
-      <p>
-        If you are located in Europe, please use Munetios New Search instead of Classic Search to ensure full compliance with regional regulations.
-      </p>
-    </div>
-    <div class="content liquid-glass" id="about">
+    <div class="policy-content mu-panel mu-glass liquid-glass" id="about">
       <h1>About Us</h1>
       <p>
        For about see <a href="https://www.munetios.com/about">our about page</a>.
        </p>
     </div>
-    <div class="content liquid-glass" id="apps">
+    <div class="policy-content mu-panel mu-glass liquid-glass" id="apps">
       <h1>Our Apps</h1>
       <p>For Apps and Products, Go to this page <a href="https://www.munetios.com/apps1.html">here</a>.</p>
     </div>
-    <div class="content liquid-glass" id="cookiesPolicy">
+    <div class="policy-content mu-panel mu-glass liquid-glass" id="cookiesPolicy">
       <h1>Cookies Policy</h1>
       <div class="policy-meta">
-        <div class="pill"><span class="material-symbols-rounded" aria-hidden="true">history</span><span>Last updated: January 30, 2026</span></div>
-        <button class="pill" type="button" data-download-section="cookiesPolicy"><span class="material-symbols-rounded" aria-hidden="true">picture_as_pdf</span><span>Download PDF</span></button>
+        <div class="mu-chip pill"><span class="mu-icon" aria-hidden="true">history</span><span>Last updated: January 30, 2026</span></div>
+        <button class="mu-btn pill" type="button" data-download-section="cookiesPolicy"><span class="mu-icon" aria-hidden="true">picture_as_pdf</span><span>Download PDF</span></button>
       </div>
       <p>Munetios uses first party cookies only for essential functionality.</p>
       <h3>Which cookies are used?</h3>
@@ -960,7 +239,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
       <div class="archive-grid" id="cookiesArchiveList" data-archive-section="cookiesPolicy"></div>
 
     </div>
-    <div class="content liquid-glass" id="branding">
+    <div class="policy-content mu-panel mu-glass liquid-glass" id="branding">
       <h1>Branding</h1>
       <p>
         You can download the official Munetios logo for use in accordance with
@@ -988,7 +267,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
           />
         </div>
         <div>
-          <button class="btn" id="downloadLogoBtn">Download Logo</button>
+          <button class="mu-btn btn" id="downloadLogoBtn">Download Logo</button>
           <p style="font-size: 13px; color: #bbb; margin-top: 8px">
             PNG format, transparent background
           </p>
@@ -1336,7 +615,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
         style="margin-top: 10px; font-size: 14px; color: #bbb"
       ></p>
     </div>
-    <div class="content liquid-glass" id="trust">
+    <div class="policy-content mu-panel mu-glass liquid-glass" id="trust">
       <h1>Trust & Safety</h1>
       <p>
         Munetios is committed to providing a safe and trustworthy environment
@@ -1351,7 +630,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
         contact us immediately.
       </p>
     </div>
-    <div class="content liquid-glass" id="contact">
+    <div class="policy-content mu-panel mu-glass liquid-glass" id="contact">
       <h1>Contact Us</h1>
       <p>
         If you have any questions, feedback, or need support, please reach out
@@ -1371,80 +650,82 @@ Any modification of page content, JavaScript execution, cryptographic operations
       </ul>
       <p>We value your input and are here to help!</p>
     </div>
-    <footer class="liquid-glass">
+      </main>
+    </div>
+    <footer class="policy-footer">
       <p>
         &copy; 2026 Munetios.
       </p>
-      <a style="color: white;" href="https://www.munetios.com">Home</a>
+      <a href="https://www.munetios.com">Home</a>
     </footer>
-    <section class="search-panel liquid-glass" id="searchPanel" aria-label="Search policies">
+    <section class="search-panel mu-glass mu-glass-solid liquid-glass" id="searchPanel" aria-label="Search policies">
       <div class="search-panel-header">
-        <div class="search-input-wrap">
-          <span class="material-symbols-rounded" aria-hidden="true">search</span>
+        <div class="search-input-wrap mu-search">
+          <span class="mu-icon" aria-hidden="true">search</span>
           <label class="visually-hidden" for="policySearchInput">Search policies</label>
           <input id="policySearchInput" class="search-input" type="search" placeholder="Search policies" autocomplete="off" />
         </div>
-        <button class="btn inline-btn" id="closeSearchButton" type="button">
-          <span class="material-symbols-rounded" aria-hidden="true">close</span>
+        <button class="mu-btn inline-btn" id="closeSearchButton" type="button">
+          <span class="mu-icon" aria-hidden="true">close</span>
           <span>Close</span>
         </button>
       </div>
       <p id="searchStatus" class="empty-state">Search across policy titles, headings, and paragraph text.</p>
       <div class="search-results" id="searchResults"></div>
     </section>
-    <section class="archive-viewer liquid-glass" id="archiveViewer" aria-label="Archived policy version">
+    <section class="archive-viewer mu-glass mu-glass-solid liquid-glass" id="archiveViewer" aria-label="Archived policy version">
       <div class="archive-viewer-header">
         <div>
           <h2 id="archiveViewerTitle">Archived Version</h2>
           <p class="archive-viewer-meta" id="archiveViewerMeta">Preview archived policy content.</p>
         </div>
         <div class="archive-viewer-actions">
-          <button class="btn inline-btn" id="archiveViewerDownload" type="button">
-            <span class="material-symbols-rounded" aria-hidden="true">picture_as_pdf</span>
+          <button class="mu-btn inline-btn" id="archiveViewerDownload" type="button">
+            <span class="mu-icon" aria-hidden="true">picture_as_pdf</span>
             <span>Download PDF</span>
           </button>
-          <button class="btn inline-btn" id="archiveViewerClose" type="button">
-            <span class="material-symbols-rounded" aria-hidden="true">close</span>
+          <button class="mu-btn inline-btn" id="archiveViewerClose" type="button">
+            <span class="mu-icon" aria-hidden="true">close</span>
             <span>Close</span>
           </button>
         </div>
       </div>
       <div class="archive-viewer-body" id="archiveViewerBody"></div>
     </section>
-    <div class="dropdown-menu liquid-glass" id="languageDropdownMenu">
-      <div class="dropdown-item" id="englishItem">
+    <div class="dropdown-menu mu-menu liquid-glass" id="languageDropdownMenu">
+      <button type="button" class="dropdown-item mu-menu-item" id="englishItem">
         English
-      </div>
-      <div class="dropdown-item" id="spanishItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="spanishItem">
         Spanish
-      </div>
-      <div class="dropdown-item" id="frenchItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="frenchItem">
         French
-      </div>
-      <div class="dropdown-item" id="germanItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="germanItem">
         German
-      </div>
-      <div class="dropdown-item" id="italianItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="italianItem">
         Italian
-      </div>
-      <div class="dropdown-item" id="portugueseItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="portugueseItem">
         Portuguese
-      </div>
-      <div class="dropdown-item" id="japaneseItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="japaneseItem">
         Japanese
-      </div>
-      <div class="dropdown-item" id="koreanItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="koreanItem">
         Korean
-      </div>
-      <div class="dropdown-item" id="chineseItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="chineseItem">
         Chinese
-      </div>
-      <div class="dropdown-item" id="russianItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="russianItem">
         Russian
-      </div>
-      <div class="dropdown-item" id="arabicItem">
+      </button>
+      <button type="button" class="dropdown-item mu-menu-item" id="arabicItem">
         Arabic
-      </div>
+      </button>
     </div>
     <script>
       (() => {
@@ -2161,7 +1442,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
         }
 
         function showSection(sectionId, options = {}) {
-          const nextSectionId = getSection(sectionId) ? sectionId : "home";
+          const nextSectionId = sectionConfig.some(entry => entry.sectionId === sectionId) ? sectionId : "home";
           sectionConfig.forEach((entry) => {
             const section = getSection(entry.sectionId);
             const nav = document.getElementById(entry.navId);
@@ -2171,8 +1452,12 @@ Any modification of page content, JavaScript execution, cryptographic operations
             }
             if (nav) {
               nav.classList.toggle("active", active);
+              if (active) nav.setAttribute("aria-current", "page");
+              else nav.removeAttribute("aria-current");
             }
           });
+          if (state.currentSection !== nextSectionId) window.scrollTo(0, 0);
+          if (state.currentSection !== nextSectionId) window.scrollTo(0, 0);
           state.currentSection = nextSectionId;
           if (!options.skipHistory) {
             const nextHash = nextSectionId === "home" ? "" : "#" + nextSectionId;
@@ -2233,6 +1518,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
 
         function openSearchPanel() {
           dom.searchPanel.classList.add("visible");
+          dom.searchButton.setAttribute("aria-expanded", "true");
           dom.body.classList.add("search-open");
           renderSearchResults(dom.searchInput.value);
           dom.searchInput.focus();
@@ -2240,6 +1526,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
 
         function closeSearchPanel() {
           dom.searchPanel.classList.remove("visible");
+          dom.searchButton.setAttribute("aria-expanded", "false");
           if (!dom.archiveViewer.classList.contains("visible")) {
             dom.body.classList.remove("search-open");
           }
@@ -2247,6 +1534,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
 
         function closeLanguageMenu() {
           dom.languageMenu.classList.remove("visible");
+          dom.languageButton.setAttribute("aria-expanded", "false");
         }
 
         function openArchivePreview(snapshot) {
@@ -2341,7 +1629,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
             actions.className = "card-actions";
 
             const openButton = document.createElement("button");
-            openButton.className = "btn inline-btn";
+            openButton.className = "mu-btn inline-btn";
             openButton.type = "button";
             openButton.textContent = translateText("Open Section", state.currentLanguage);
             openButton.addEventListener("click", () => showSection(result.sectionId));
@@ -2464,13 +1752,13 @@ Any modification of page content, JavaScript execution, cryptographic operations
               actions.className = "card-actions";
 
               const previewButton = document.createElement("button");
-              previewButton.className = "btn inline-btn";
+              previewButton.className = "mu-btn inline-btn";
               previewButton.type = "button";
               previewButton.textContent = translateText("Preview", state.currentLanguage);
               previewButton.addEventListener("click", () => openArchivePreview(entry));
 
               const downloadButton = document.createElement("button");
-              downloadButton.className = "btn inline-btn";
+              downloadButton.className = "mu-btn inline-btn";
               downloadButton.type = "button";
               downloadButton.textContent = translateText("Download PDF", state.currentLanguage);
               downloadButton.addEventListener("click", () => downloadHtmlAsPdf(entry.title, entry.html));
@@ -2507,13 +1795,13 @@ Any modification of page content, JavaScript execution, cryptographic operations
               actions.className = "card-actions";
 
               const previewButton = document.createElement("button");
-              previewButton.className = "btn inline-btn";
+              previewButton.className = "mu-btn inline-btn";
               previewButton.type = "button";
               previewButton.textContent = translateText("Preview", state.currentLanguage);
               previewButton.addEventListener("click", () => openArchivePreview(entry));
 
               const downloadButton = document.createElement("button");
-              downloadButton.className = "btn inline-btn";
+              downloadButton.className = "mu-btn inline-btn";
               downloadButton.type = "button";
               downloadButton.textContent = translateText("Download PDF", state.currentLanguage);
               downloadButton.addEventListener("click", () => downloadHtmlAsPdf(entry.title, entry.html));
@@ -2589,16 +1877,16 @@ Any modification of page content, JavaScript execution, cryptographic operations
 
         function getPdfBlockStyle(type) {
           if (type === "title") {
-            return { font: "700 32px Google Sans Flex", lineHeight: 44, color: "#111111", gapBefore: 0, gapAfter: 20 };
+            return { font: "300 32px Google Sans Flex", lineHeight: 44, color: "#111111", gapBefore: 0, gapAfter: 20 };
           }
           if (type === "heading-1") {
-            return { font: "700 26px Google Sans Flex", lineHeight: 36, color: "#111111", gapBefore: 10, gapAfter: 12 };
+            return { font: "300 26px Google Sans Flex", lineHeight: 36, color: "#111111", gapBefore: 10, gapAfter: 12 };
           }
           if (type === "heading-2") {
-            return { font: "700 22px Google Sans Flex", lineHeight: 32, color: "#111111", gapBefore: 14, gapAfter: 10 };
+            return { font: "300 22px Google Sans Flex", lineHeight: 32, color: "#111111", gapBefore: 14, gapAfter: 10 };
           }
           if (type === "heading-3") {
-            return { font: "700 18px Google Sans Flex", lineHeight: 27, color: "#222222", gapBefore: 12, gapAfter: 8 };
+            return { font: "300 18px Google Sans Flex", lineHeight: 27, color: "#222222", gapBefore: 12, gapAfter: 8 };
           }
           if (type === "list-item") {
             return { font: "400 16px Google Sans Flex", lineHeight: 24, color: "#222222", gapBefore: 3, gapAfter: 5 };
@@ -2884,7 +2172,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
           });
           captureOriginalAttribute(dom.searchInput, "placeholder");
 
-          document.querySelectorAll("#home h2, #home h3, #home p, #home button span:last-child, .policy-meta .pill span:last-child, .section-archive-heading, .section-archive-summary, #searchPanel label, #closeSearchButton span:last-child, #languageDropdownMenu .dropdown-item, .sidebar .item, .content > h1, footer p").forEach((element) => {
+          document.querySelectorAll("#home h2, #home h3, #home p, #home button span:last-child, .policy-meta .pill span:last-child, .section-archive-heading, .section-archive-summary, #searchPanel label, #closeSearchButton span:last-child, #languageDropdownMenu .dropdown-item, .sidebar .item, .policy-content > h1, footer p").forEach((element) => {
             captureOriginalText(element);
           });
         }
@@ -2901,10 +2189,10 @@ Any modification of page content, JavaScript execution, cryptographic operations
             button.addEventListener("click", openSearchPanel);
           });
 
-          document.querySelectorAll('a[href="#contactItem"]').forEach((link) => {
+          document.querySelectorAll('a[href="#contactItem"], [data-policy-link]').forEach((link) => {
             link.addEventListener("click", (event) => {
               event.preventDefault();
-              showSection("contact");
+              showSection(link.hasAttribute("data-policy-link") ? link.hash.slice(1) : "contact");
             });
           });
         }
@@ -2918,7 +2206,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
         function wireLanguages() {
           dom.languageButton.addEventListener("click", (event) => {
             event.stopPropagation();
-            dom.languageMenu.classList.toggle("visible");
+            dom.languageButton.setAttribute("aria-expanded", String(dom.languageMenu.classList.toggle("visible")));
           });
 
           Object.entries(languageCodeByItemId).forEach(([itemId, language]) => {
@@ -2963,8 +2251,11 @@ Any modification of page content, JavaScript execution, cryptographic operations
         }
 
         function wireSidebar() {
+          const syncMenu = () => dom.menuButton.setAttribute("aria-expanded", String(getComputedStyle(dom.sidebar).display !== "none"));
+          new MutationObserver(syncMenu).observe(dom.body, { attributes: true, attributeFilter: ["class"] });
           dom.menuButton.addEventListener("click", toggleSidebar);
-          window.addEventListener("resize", syncSidebarForViewport);
+          window.addEventListener("resize", () => { syncSidebarForViewport(); syncMenu(); });
+          syncMenu();
         }
 
         function wireDismissals() {
@@ -2978,11 +2269,17 @@ Any modification of page content, JavaScript execution, cryptographic operations
           });
 
           document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape") {
+            if (event.key !== "Escape") return;
+            if (dom.archiveViewer.classList.contains("visible")) closeArchivePreview();
+            else if (dom.searchPanel.classList.contains("visible")) {
               closeSearchPanel();
+              dom.searchButton.focus();
+            } else if (dom.languageMenu.classList.contains("visible")) {
               closeLanguageMenu();
-              closeArchivePreview();
+              dom.languageButton.focus();
+            } else if (dom.sidebar.classList.contains("open")) {
               closeSidebar();
+              dom.menuButton.focus();
             }
           });
 
@@ -2993,6 +2290,7 @@ Any modification of page content, JavaScript execution, cryptographic operations
 
         function closeLanguageMenu() {
           dom.languageMenu.classList.remove("visible");
+          dom.languageButton.setAttribute("aria-expanded", "false");
         }
 
         function initialize() {
