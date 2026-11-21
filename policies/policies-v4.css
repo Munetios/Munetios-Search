@@ -45,7 +45,11 @@ body.mu-root {
 }
 
 .topbar-left, .top-right { min-inline-size: 0; }
-.top-right { gap: 4px; }
+.topbar .menu-btn { width: 48px; height: 48px; flex-basis: 48px; }
+.topbar .menu-btn .mu-icon { font-size: 24px; }
+.topbar .menu-btn:hover { border-color: var(--mu-current-border); }
+.topbar .top-right { gap: 4px; height: auto; padding: 3px; flex: none; }
+.topbar .top-right .action-link { min-height: 40px; }
 .logo-text { min-inline-size: 0; border-radius: var(--mu-radius-pill); padding: 8px 14px; line-height: 1.2; }
 .logo-text img { flex: none; border-radius: 50%; }
 .logo-text div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

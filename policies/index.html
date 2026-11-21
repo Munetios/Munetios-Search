@@ -67,7 +67,7 @@
   <body class="mu-root">
     <header class="topbar">
       <div class="topbar-left">
-        <button class="menu-btn mu-icon-btn mu-btn-ghost" type="button" aria-label="Menu" aria-controls="policyNavigation" aria-expanded="false">
+        <button class="menu-btn mu-capsule-btn liquid-glass" type="button" aria-label="Menu" aria-controls="policyNavigation" aria-expanded="false">
           <span class="mu-icon" aria-hidden="true">menu</span>
         </button>
         <div class="logo-text mu-glass liquid-glass">
@@ -75,12 +75,15 @@
           <div>Munetios Policies</div>
         </div>
       </div>
-      <div class="top-right">
-        <button id="searchButton" class="mu-icon-btn mu-btn-ghost" type="button" aria-label="Search policies" title="Search policies" aria-controls="searchPanel" aria-expanded="false">
+      <div class="top-right mu-capsule liquid-glass">
+        <button id="searchButton" class="mu-icon-btn mu-icon-btn-sm mu-btn-ghost" type="button" aria-label="Search policies" title="Search policies" aria-controls="searchPanel" aria-expanded="false">
           <span class="mu-icon" aria-hidden="true">search</span>
         </button>
-        <button id="languageDropdownButton" class="mu-icon-btn mu-btn-ghost language-button" type="button" aria-label="Language" title="Language" aria-controls="languageDropdownMenu" aria-expanded="false">
+        <button id="languageDropdownButton" class="mu-icon-btn mu-icon-btn-sm mu-btn-ghost language-button" type="button" aria-label="Language" title="Language" aria-controls="languageDropdownMenu" aria-expanded="false">
           <span class="mu-icon" aria-hidden="true">translate</span>
+        </button>
+        <button id="policyThemeButton" class="mu-icon-btn mu-icon-btn-sm mu-btn-ghost" type="button" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode" disabled>
+          <span class="mu-icon" aria-hidden="true">dark_mode</span>
         </button>
         <a href="https://www.munetios.com" class="mu-btn mu-btn-ghost action-link">Munetios.com</a>
       </div>
@@ -1302,6 +1305,19 @@
           }
         };
 
+        const themeLabels = {
+          en: ["Dark mode", "Switch to light mode", "Switch to dark mode"],
+          es: ["Modo oscuro", "Cambiar al modo claro", "Cambiar al modo oscuro"],
+          fr: ["Mode sombre", "Passer au mode clair", "Passer au mode sombre"],
+          de: ["Dunkelmodus", "Zum Hellmodus wechseln", "Zum Dunkelmodus wechseln"],
+          it: ["Modalità scura", "Passa alla modalità chiara", "Passa alla modalità scura"],
+          pt: ["Modo escuro", "Mudar para o modo claro", "Mudar para o modo escuro"],
+          ja: ["ダークモード", "ライトモードに切り替える", "ダークモードに切り替える"],
+          ko: ["다크 모드", "라이트 모드로 전환", "다크 모드로 전환"],
+          zh: ["深色模式", "切换到浅色模式", "切换到深色模式"],
+          ru: ["Тёмная тема", "Переключиться на светлую тему", "Переключиться на тёмную тему"],
+          ar: ["الوضع الداكن", "التبديل إلى الوضع الفاتح", "التبديل إلى الوضع الداكن"]
+        };
         const directionByLanguage = { ar: "rtl" };
         const dom = {
           html: document.documentElement,
@@ -1311,6 +1327,7 @@
           topbarTitle: document.querySelector(".logo-text div"),
           topLink: document.querySelector(".top-right .action-link"),
           footerLink: document.querySelector("footer a"),
+          themeButton: document.getElementById("policyThemeButton"),
           searchButton: document.getElementById("searchButton"),
           searchPanel: document.getElementById("searchPanel"),
           searchInput: document.getElementById("policySearchInput"),
@@ -2112,10 +2129,31 @@
           }
         }
 
+        function updateThemeButton() {
+          const dark = dom.html.dataset.muTheme === "dark";
+          const [label, toLight, toDark] = themeLabels[state.currentLanguage];
+          dom.themeButton.setAttribute("aria-label", label);
+          dom.themeButton.setAttribute("aria-pressed", String(dark));
+          dom.themeButton.title = dark ? toLight : toDark;
+          dom.themeButton.querySelector(".mu-icon").textContent = dark ? "light_mode" : "dark_mode";
+        }
+
+        function wireTheme() {
+          const theme = window.MunetiosUI?.theme;
+          if (!theme) return;
+          updateThemeButton();
+          dom.themeButton.disabled = false;
+          dom.themeButton.addEventListener("click", () => {
+            theme.set(dom.html.dataset.muTheme === "dark" ? "light" : "dark");
+          });
+          document.addEventListener("mu-theme", updateThemeButton);
+        }
+
         function applyLanguage(language) {
           state.currentLanguage = supportedLanguages.includes(language) ? language : "en";
           dom.html.lang = state.currentLanguage;
           dom.html.dir = directionByLanguage[state.currentLanguage] || "ltr";
+          updateThemeButton();
 
           [
             dom.topbarTitle,
@@ -2310,6 +2348,7 @@
         }
 
         initialize();
+        document.addEventListener("DOMContentLoaded", wireTheme, { once: true });
       })();
     </script>
 
