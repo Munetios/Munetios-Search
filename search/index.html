@@ -69,9 +69,18 @@
     />
   
 
+    <script src="/search-font-preferences.js"></script>
     <style>
+      @font-face {
+        font-family: "Google Sans Flex";
+        src: url("https://api.munetios.com/fonts/google-sans-flex/googlesansflex.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 1 1000;
+        font-stretch: 25% 151%;
+        font-display: swap;
+      }
       * {
-        font-family: "Google Sans Flex", sans-serif;
+        font-family: "Munetios UI v4 Font", sans-serif;
         font-variation-settings:
           "wght" 480,
           "GRAD" 30,
@@ -79,7 +88,7 @@
           "opsz" 18;
       }
       body {
-        font-family: "Google Sans Flex", sans-serif;
+        font-family: "Munetios UI v4 Font", sans-serif;
         overflow-x: hidden;
         overflow-y: auto;
         margin: 0;
@@ -364,7 +373,7 @@
         height: 44px !important;
         line-height: 44px !important;
         font-size: 22px !important;
-        font-family: "Google Sans Flex", system-ui, sans-serif !important;
+        font-family: "Munetios UI v4 Font", system-ui, sans-serif !important;
         border: none !important;
       }
 
@@ -685,9 +694,9 @@
     <script nonce="rjighegujregergrejge">
       // Apply saved font family from home page settings
       (function () {
-        var font = localStorage.getItem("munetiosFontFamily") || "Google Sans Flex";
+        var font = window.munetiosSearchFont();
         // Load the Google Font if it's not already linked (for non-default fonts)
-        var defaultFonts = ["Google Sans Flex", "Google Sans", "Segoe UI"];
+        var defaultFonts = ["Munetios UI v4 Font", "Google Sans Flex", "Google Sans", "Segoe UI"];
         if (defaultFonts.indexOf(font) === -1) {
           var link = document.createElement("link");
           link.rel = "stylesheet";
@@ -696,7 +705,10 @@
         }
         var style = document.createElement("style");
         style.id = "munetios-font-override";
-        style.textContent = '* { font-family: "' + font + '", sans-serif !important; }';
+        var tags = font === "Google Sans Flex" ? ["ss01", "ss02"] : font === "Munetios UI v4 Font" ? ["ss02"] : [];
+        var enabled = tags.filter(tag => localStorage.getItem("munetiosFont_" + font + "_" + tag) === "true");
+        var features = enabled.map(tag => JSON.stringify(tag) + " 1").join(", ") || "normal";
+        style.textContent = 'body, body *:not(icon):not(.material-symbols-rounded):not(.material-icons):not(.mu-icon) { font-family: ' + CSS.escape(font) + ', sans-serif !important; font-feature-settings: ' + features + ' !important; }';
         document.head.appendChild(style);
       })();
     </script>
@@ -13702,16 +13714,6 @@ function getQueryFromURL() {
             }
           }
         }, 60 * 1000);
-      })();
-      // --- Munetios Settings: Detect and apply singleStory font feature ---
-      (function () {
-        try {
-          if (localStorage.getItem("munetiosFont_Google Sans Flex_ss01") === "true") {
-        const style = document.createElement("style");
-        style.innerHTML = `* { font-feature-settings: 'ss02' off, 'ss01' on, 'liga' off, 'clig' off !important; }`;
-        document.head.appendChild(style);
-          }
-        } catch (e) {}
       })();
       // --- Enable Voice Mode by Default on Load ---
       window.addEventListener("DOMContentLoaded", function () {

@@ -106,20 +106,21 @@
         }
       }
     </script>
+    <script src="/search-font-preferences.js"></script>
     <style>
       @font-face {
         font-family: "Google Sans Flex";
-        src: url("https://api.munetios.com/fonts/google-sans-flex/googlesansflex.ttf")
-          format("truetype");
-        font-weight: 100 900;
-        font-feature-settings: "ss01" 0 !important;
-        unicode-range: U+000-5FF; /* Latin glyphs */
+        src: url("https://api.munetios.com/fonts/google-sans-flex/googlesansflex.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 1 1000;
+        font-stretch: 25% 151%;
+        font-display: swap;
       }
       * {
         margin: 0;
         padding: 0;
         font-family:
-          "Google Sans Flex", "Google Sans", "Roboto", "Noto Sans", Arial, sans-serif;
+          "Munetios UI v4 Font", "Google Sans", "Roboto", "Noto Sans", Arial, sans-serif;
         font-variation-settings: "ROND" 50;
 
       }
@@ -4405,7 +4406,7 @@
         border: 1px solid rgba(216, 180, 254, 0.18);
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.38);
         z-index: 1000000;
-        font-family: "Google Sans Flex", "Google Sans", Arial, sans-serif !important;
+        font-family: "Munetios UI v4 Font", "Google Sans", Arial, sans-serif !important;
         font-size: 12px;
         line-height: 1.2;
         pointer-events: none;
@@ -4536,7 +4537,7 @@ html.halloween-season .topbar-right {
   color: #fff3d8;
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
-  font-family: "Google Sans Flex", sans-serif;
+  font-family: "Munetios UI v4 Font", sans-serif;
 }
 .halloween-game-dialog::backdrop { background: rgba(18, 4, 33, 0.50); backdrop-filter: blur(3px); }
 .halloween-game-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
@@ -5594,7 +5595,7 @@ html.halloween-season .topbar-right {
                   </div>
                   <div class="settings-item">
                     <span class="settings-label" data-translate="fontFamily">Font Family</span>
-                    <button id="fontFamilyButton">Google Sans Flex</button>
+                    <button id="fontFamilyButton">Munetios UI v4 Font</button>
                   </div>
                   <div id="fontFeatures" style="margin-top: 10px"></div>
                   <div class="font-detect-section">
@@ -6007,6 +6008,7 @@ html.halloween-season .topbar-right {
         <div class="dropdown-item" data-country="pk">Pakistan</div>
       </div>
       <div class="dropdown-wrapper liquid-glass" id="fontFamilySelector">
+        <div class="dropdown-item" data-font="Munetios UI v4 Font">Munetios UI v4 Font</div>
         <div class="dropdown-item" data-font="Google Sans Flex">
           Google Sans Flex
         </div>
@@ -25145,7 +25147,7 @@ if (isAmerica250Date && logo) {
               id: "munetios-default",
               name: "Munetios Default",
               nameKey: "themeMunetiosDefault",
-              font: "Google Sans Flex",
+              font: "Munetios UI v4 Font",
               bgCss: "",
               swatch:
                 "linear-gradient(135deg, #0d0914 0%, #32106c 55%, #4d8bff 100%)",
@@ -25154,7 +25156,7 @@ if (isAmerica250Date && logo) {
               id: "light-mode",
               name: "Light Mode",
               nameKey: "themeLightMode",
-              font: "Google Sans Flex",
+              font: "Munetios UI v4 Font",
               bgCss: " *, input::placeholder { color: inherit !important; }  body{ background: #ffffff !important; color: #000000 !important; } #changeCountryLink { color: #a3bef1 !important;} .settings-modal,  .modal, .bookmarks-overlay, .sidebar-overlay {background-color: rgb(136 136 136 / 40%);}",
               swatch:
                 "linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #ffffff 100%)",
@@ -25163,7 +25165,7 @@ if (isAmerica250Date && logo) {
               id: "super-beautiful",
               name: "Big Paddings",
               nameKey: "themeBigPaddings",
-              font: "Google Sans Flex",
+              font: "Munetios UI v4 Font",
               bgCss: "",
               swatch:
                 "linear-gradient(135deg, #1a0050 0%, #6a00ff 50%, #c060ff 100%)",
@@ -25172,7 +25174,7 @@ if (isAmerica250Date && logo) {
               id: "material-3",
               name: "Material Design 3",
               nameKey: "themeMaterial3",
-              font: "Google Sans Flex",
+              font: "Munetios UI v4 Font",
               bgCss: "",
               swatch:
                 "linear-gradient(135deg, #141218 0%, #4f378b 55%, #d0bcff 100%)",
@@ -25181,7 +25183,7 @@ if (isAmerica250Date && logo) {
               id: "blueish",
               name: "Blueish",
               nameKey: "themeBlueish",
-              font: "Google Sans Flex",
+              font: "Munetios UI v4 Font",
               bgCss:
                 "body { background: linear-gradient(270deg, #020a1e, #0c1b6a, #1a2eb0, #020a1e) !important; background-size: 400% 400% !important; animation: gradientMove 10s ease-in-out infinite !important; }",
               swatch:
@@ -25208,7 +25210,7 @@ if (isAmerica250Date && logo) {
               id: "midnight-orchid",
               name: "Midnight Orchid",
               nameKey: "themeMidnightOrchid",
-              font: "Google Sans Flex",
+              font: "Munetios UI v4 Font",
               bgCss: "body { background: radial-gradient(circle at 18% 12%, #8a3dca 0%, transparent 31%), radial-gradient(circle at 85% 85%, #3d187f 0%, transparent 36%), #10051d !important; }",
               swatch: "linear-gradient(135deg, #10051d 0%, #60268f 55%, #d37cff 100%)",
             },
@@ -25505,7 +25507,7 @@ if (isAmerica250Date && logo) {
           const savedTextColor =
             localStorage.getItem("munetiosTextColor") || getDefaultTextColor();
           const savedFont =
-            localStorage.getItem("munetiosFontFamily") || "Google Sans Flex";
+            window.munetiosSearchFont();
           const reduceTransparency =
             localStorage.getItem("munetiosReduceTransparency") === "true";
           let googleSansTextFontReady = false;
@@ -26200,7 +26202,7 @@ if (isAmerica250Date && logo) {
               localStorage.getItem("munetiosTextColor") || getDefaultTextColor();
             const bgImage = localStorage.getItem("munetiosBgImage") || "";
             const font =
-              localStorage.getItem("munetiosFontFamily") || "Google Sans Flex";
+              window.munetiosSearchFont();
             ensureGoogleSansTextFont(font);
 
             // Apply background to body using style injection
@@ -26248,33 +26250,6 @@ if (isAmerica250Date && logo) {
             let opticalSizingCSS = "";
             let fontVariationCSS = "";
 
-            // For Google Sans Flex, manage features via @font-face injection
-            if (font === "Google Sans Flex") {
-              let gsfFontFaceEl = document.getElementById("munetios-gsf-fontface");
-              if (!gsfFontFaceEl) {
-                gsfFontFaceEl = document.createElement("style");
-                gsfFontFaceEl.id = "munetios-gsf-fontface";
-                document.head.appendChild(gsfFontFaceEl);
-              }
-              const ss01On = localStorage.getItem("munetiosFont_Google Sans Flex_ss01") === "true";
-              const ss02On = localStorage.getItem("munetiosFont_Google Sans Flex_ss02") === "true";
-              const featureValue = [
-                `"ss01" ${ss01On ? 1 : 0}`,
-                `"ss02" ${ss02On ? 1 : 0}`,
-              ].join(", ");
-              gsfFontFaceEl.textContent = `* {  font-feature-settings: ${featureValue};}  @font-face {
-  font-family: "Google Sans Flex";
-  src: url("https://api.munetios.com/fonts/google-sans-flex/googlesansflex.ttf") format("truetype");
-  font-weight: 100 900;
-
-  unicode-range: U+000-5FF;
-}`;
-            } else {
-              // Clear any GSF font-face override if switching away
-              const gsfFontFaceEl = document.getElementById("munetios-gsf-fontface");
-              if (gsfFontFaceEl) gsfFontFaceEl.textContent = "";
-            }
-
             features.forEach((feature) => {
               const isEnabled =
                 localStorage.getItem(`munetiosFont_${font}_${feature.tag}`) ===
@@ -26289,8 +26264,7 @@ if (isAmerica250Date && logo) {
                 if (isEnabled) {
                   fontVariationCSS = "font-variation-settings: 'opsz' 17;";
                 }
-              } else if (font !== "Google Sans Flex" && isEnabled) {
-                // For Google Sans Flex, features are handled via @font-face above
+              } else if (isEnabled) {
                 fontFeatureSettings.push(`"${feature.tag}"`);
               }
             });
@@ -26300,7 +26274,7 @@ if (isAmerica250Date && logo) {
                 ? `font-feature-settings: ${fontFeatureSettings
                     .map((tag) => `${tag} on`)
                     .join(", ")} !important;`
-                : "";
+                : "font-feature-settings: normal !important;";
             const fontFamilyCSS =
               font === "Google Sans Text"
                 ? '"Google Sans 17pt Text", "Google Sans Text", "Google Sans", sans-serif'
@@ -26358,8 +26332,7 @@ if (isAmerica250Date && logo) {
               googleSansTextFontReady = true;
               googleSansTextFontLoading = false;
               if (
-                (localStorage.getItem("munetiosFontFamily") ||
-                  "Google Sans Flex") === "Google Sans Text"
+                (window.munetiosSearchFont()) === "Google Sans Text"
               ) {
                 applyAppearanceSettings();
               }
@@ -26416,6 +26389,7 @@ if (isAmerica250Date && logo) {
             ];
             const featuresMap = {
               "Google Sans": genericStylisticSets,
+              "Munetios UI v4 Font": [{ name: "Double-Story a", tag: "ss02" }],
               "Google Sans Flex": [
                 { name: "Single-Story a", tag: "ss01" },
                 { name: "Double-Story g", tag: "ss02" },
@@ -26436,11 +26410,6 @@ if (isAmerica250Date && logo) {
             // Font features are now handled by applyAppearanceSettings
             // This function is kept for compatibility but just calls applyAppearanceSettings
             applyAppearanceSettings();
-          }
-
-          // Set default: Single-Story a (ss01) on for Google Sans Flex
-          if (localStorage.getItem("munetiosFont_Google Sans Flex_ss01") === null) {
-            localStorage.setItem("munetiosFont_Google Sans Flex_ss01", "true");
           }
 
           // Initialize font features
@@ -28036,7 +28005,7 @@ if (isAmerica250Date && logo) {
               localStorage.getItem("munetiosTextColor") || getDefaultTextColor();
             const bgImage = localStorage.getItem("munetiosBgImage") || "";
             const font =
-              localStorage.getItem("munetiosFontFamily") || "Google Sans Flex";
+              window.munetiosSearchFont();
             const reduceTransparency =
               localStorage.getItem("munetiosReduceTransparency") === "true";
             const fontFamilyCSS =
@@ -28166,6 +28135,7 @@ if (isAmerica250Date && logo) {
             ];
             const featuresMap = {
               "Google Sans": genericStylisticSets,
+              "Munetios UI v4 Font": [{ name: "Double-Story a", tag: "ss02" }],
               "Google Sans Flex": [
                 { name: "Single-Story a", tag: "ss01" },
                 { name: "Double-Story g", tag: "ss02" },
