@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
 
-  <title>Redirecting… | Ganetios Search</title>
+  <title>Redirecting… | Munetios Search</title>
 
   <!-- Munetios Beautiful.css -->
   <link
@@ -174,7 +174,7 @@
     <h1>Redirecting…</h1>
 
     <p id="message">
-      Taking you to Ganetios Search.
+      Taking you to Munetios Search.
     </p>
 
     <div
@@ -185,7 +185,7 @@
 
     <div class="destination">
       Destination:
-      <strong id="destination">Ganetios Search</strong>
+      <strong id="destination">Munetios Search</strong>
     </div>
   </main>
 
@@ -333,27 +333,27 @@
       }
 
       /*
-       * Otherwise use Ganetios Search.
+       * Otherwise use Munetios Search.
        *
        * Required format:
        *
        * /search?q={query}#/all?q={query}
        */
       setDestination(
-        "Ganetios Search"
+        "Munetios Search"
       );
 
       const encodedQuery =
         encodeURIComponent(query);
 
-      const ganetiosURL =
+      const munetiosURL =
         "/search?q=" +
         encodedQuery +
         "#/all?q=" +
         encodedQuery;
 
       window.location.replace(
-        ganetiosURL
+        munetiosURL
       );
     })();
   </script>

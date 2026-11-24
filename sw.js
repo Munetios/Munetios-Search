@@ -1,13 +1,11 @@
-const CACHE_NAME = 'munetios-cache-v5';
+const CACHE_NAME = 'munetios-cache-v6';
 const URLS_TO_CACHE = [
   '/',
   '/#/',
   '/index.html',
   '/search/search.html',
-  '/favicon.ico',
-  '/favicon-16x16.png',
-  '/favicon-32x32.png',
-  '/Munetios-Logo.png',
+  '/munetios-logo-icon.png',
+  '/munetios-logo.png',
   '/site.webmanifest',
   '/robots.txt',
   '/sitemap.xml',

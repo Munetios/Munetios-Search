@@ -1,15 +1,10 @@
 {
-  "name": "Ganetios",
-  "short_name": "Ganetios",
+  "name": "Munetios Search",
+  "short_name": "Munetios",
   "icons": [
     {
-      "src": "/android-chrome-192x192-ganetios.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/android-chrome-512x512-ganetios.png",
-      "sizes": "512x512",
+      "src": "/munetios-logo-icon.png",
+      "sizes": "468x470",
       "type": "image/png"
     }
   ],
