@@ -1249,7 +1249,7 @@ kbd {
     }
 
     function updateMusic() {
-        if (!musicEnabled || state !== "running" || document.hidden) {
+        if (!musicEnabled || state === "ready") {
             music.pause();
             return;
         }
@@ -1454,9 +1454,7 @@ kbd {
         level = 1;
 
         newStage();
-        music.currentTime = 0;
         resume();
-        beep(620);
     }
 
     function togglePause() {
