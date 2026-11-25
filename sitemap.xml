@@ -130,9 +130,14 @@
 
   <url>
     <loc>https://weather.munetios.com/</loc>
-    <lastmod>2025-09-25</lastmod>
+    <lastmod>2026-11-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://webfilter.munetios.com/</loc>
+    <lastmod>2026-11-24</lastmod>
   </url>
 
   <url>
