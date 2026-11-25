@@ -751,7 +751,7 @@ kbd {
 
                 <div class="stat">
                     <span>Lives</span>
-                    <output id="lives">3</output>
+                    <output id="lives">5</output>
                 </div>
 
                 <div class="stat">
@@ -858,6 +858,12 @@ kbd {
 
             </div>
 
+            <div class="toolbar" aria-label="Music controls">
+                <button id="music" class="mu-btn game-button" aria-pressed="true">
+                    <span class="mu-icon" data-icon="volume_up" aria-hidden="true"></span>
+                    <span id="music-label">Music on</span>
+                </button>
+            </div>
             <div class="status" id="status">
                 Ready to harvest
             </div>
@@ -952,11 +958,16 @@ kbd {
 
     <footer class="foot">
         <span>Munetios · Thanksgiving special</span>
+        <span>Music: <a href="https://www.soundhelix.com/audio-examples" target="_blank" rel="noopener noreferrer">SoundHelix Song 5</a> — T. Schürger / SoundHelix</span>
         <a href="https://www.munetios.com/">Back to Munetios</a>
     </footer>
 
 </div>
 
+<audio id="background-music" preload="none" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" type="audio/mpeg">
+</audio>
+<script src="https://munetios.com/tone.js"></script>
 <script>
 "use strict";
 
@@ -1106,7 +1117,8 @@ kbd {
     const STORAGE = {
         best: "munetios-turkey-dash-best-v1",
         theme: "munetios-turkey-dash-theme-v1",
-        sound: "munetios-turkey-dash-sound-v1"
+        sound: "munetios-turkey-dash-sound-v1",
+        music: "munetios-turkey-dash-music-v1"
     };
 
     function read(key, fallback) {
@@ -1131,7 +1143,8 @@ kbd {
     );
 
     let score = 0;
-    let lives = 3;
+    const STARTING_LIVES = 5;
+    let lives = STARTING_LIVES;
     let level = 1;
 
     let board;
@@ -1150,8 +1163,13 @@ kbd {
 
     let state = "ready";
 
-    let sound = read(STORAGE.sound, "false") === "true";
-    let audio = null;
+    let sound = read(STORAGE.sound, "true") === "true";
+    let musicEnabled = read(STORAGE.music, "true") === "true";
+    const music = $("background-music");
+    music.volume = 0.28;
+    let synth = null;
+    let toneReady = null;
+    let lastNoteTime = 0;
 
     let elapsed = 0;
     let lastFrame = 0;
@@ -1190,45 +1208,64 @@ kbd {
         setTheme(theme === "light" ? "dark" : "light");
     });
 
+    function unlockSound() {
+        if (!sound || !window.Tone) return Promise.resolve(false);
+        if (!toneReady) {
+            toneReady = Promise.resolve().then(() => Tone.start()).then(() => {
+                if (!synth) {
+                    synth = new Tone.PolySynth(Tone.Synth, {
+                        oscillator: { type: "triangle" },
+                        envelope: { attack: 0.005, decay: 0.06, sustain: 0.12, release: 0.07 }
+                    }).toDestination();
+                    synth.volume.value = -19;
+                }
+                return true;
+            }).catch(() => {
+                toneReady = null;
+                return false;
+            });
+        }
+        return toneReady;
+    }
+
     function beep(frequency = 440, duration = 0.08) {
         if (!sound) return;
-
-        try {
-            const AudioContextClass =
-                window.AudioContext || window.webkitAudioContext;
-
-            if (!AudioContextClass) return;
-
-            audio ??= new AudioContextClass();
-
-            if (audio.state === "suspended") {
-                audio.resume().catch(() => {});
+        unlockSound().then(ready => {
+            if (!ready || !sound || !synth) return;
+            try {
+                const time = Math.max(Tone.now(), lastNoteTime + 0.005);
+                lastNoteTime = time;
+                synth.triggerAttackRelease(frequency, duration, time);
+            } catch (error) {
+                console.warn("Turkey Dash sound effect failed.", error);
             }
+        });
+    }
 
-            const oscillator = audio.createOscillator();
-            const gain = audio.createGain();
-            const time = audio.currentTime;
+    function syncMusic() {
+        $("music").setAttribute("aria-pressed", String(musicEnabled));
+        $("music-label").textContent = musicEnabled ? "Music on" : "Music off";
+        setIcon($("music").querySelector(".mu-icon"), musicEnabled ? "volume_up" : "volume_off");
+    }
 
-            oscillator.type = "sine";
-            oscillator.frequency.setValueAtTime(frequency, time);
-
-            gain.gain.setValueAtTime(0.045, time);
-
-            gain.gain.exponentialRampToValueAtTime(
-                0.001,
-                time + duration
-            );
-
-            oscillator.connect(gain);
-            gain.connect(audio.destination);
-
-            oscillator.start(time);
-            oscillator.stop(time + duration);
-
-        } catch {
+    function updateMusic() {
+        if (!musicEnabled || state !== "running" || document.hidden) {
+            music.pause();
             return;
         }
+        music.play().catch(() => {
+            // Autoplay restrictions or a network failure must not interrupt gameplay.
+        });
     }
+
+    syncMusic();
+
+    $("music").addEventListener("click", () => {
+        musicEnabled = !musicEnabled;
+        save(STORAGE.music, musicEnabled);
+        syncMusic();
+        updateMusic();
+    });
 
     function syncSound() {
         $("sound").setAttribute("aria-pressed", String(sound));
@@ -1253,7 +1290,12 @@ kbd {
 
         syncSound();
 
-        if (sound) beep(660);
+        if (sound) {
+            unlockSound();
+            beep(660);
+        } else if (synth) {
+            synth.releaseAll();
+        }
     });
 
     function open(x, y) {
@@ -1392,6 +1434,8 @@ kbd {
     function resume() {
         state = "running";
         elapsed = 0;
+        unlockSound();
+        updateMusic();
 
         $("overlay").hidden = true;
 
@@ -1406,10 +1450,11 @@ kbd {
 
     function start() {
         score = 0;
-        lives = 3;
+        lives = STARTING_LIVES;
         level = 1;
 
         newStage();
+        music.currentTime = 0;
         resume();
         beep(620);
     }
@@ -1417,6 +1462,7 @@ kbd {
     function togglePause() {
         if (state === "running") {
             state = "paused";
+            updateMusic();
 
             show(
                 "Paused",
@@ -1570,6 +1616,7 @@ kbd {
         if (document.hidden && state === "running") {
             togglePause();
         }
+        updateMusic();
     });
 
     function distances(target) {
@@ -1688,6 +1735,7 @@ kbd {
 
                 if (lives === 0) {
                     state = "over";
+                    updateMusic();
 
                     show(
                         "Harvest over",
@@ -1801,6 +1849,8 @@ kbd {
             newStage();
 
             state = "next";
+            updateMusic();
+            beep(1046, 0.22);
 
             show(
                 "Harvest complete!",
