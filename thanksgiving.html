@@ -1,0 +1,2242 @@
+
+<!DOCTYPE html>
+<html lang="en" data-mu-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#110736">
+<meta name="description" content="Celebrate Thanksgiving with Turkey Dash, a harvest maze game from Munetios.">
+<title>Turkey Dash — Munetios Thanksgiving 2026</title>
+
+<link rel="preconnect" href="https://api.munetios.com" crossorigin>
+
+<link rel="preload"
+      href="https://api.munetios.com/fonts/google-sans-flex/munetios-ui-v4-font.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous">
+
+<link rel="stylesheet"
+      href="https://api.munetios.com/beautiful-css/beautiful.css">
+
+<link rel="stylesheet"
+      href="https://beta.munetios.com/munetios-ui/munetios-ui-v4.css">
+
+<style>
+@font-face {
+    font-family: "Turkey Dash UI v4";
+    src: url("https://api.munetios.com/fonts/google-sans-flex/munetios-ui-v4-font.ttf") format("truetype");
+    font-weight: 1 1000;
+    font-stretch: 23% 149%;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Turkey Dash Material Symbols";
+    src: url("https://api.munetios.com/fonts/material-symbols/MaterialSymbolsRounded-VariableFont_FILL,GRAD,opsz,wght.ttf") format("truetype");
+    font-weight: 100 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --mu-accent: #8f5cff;
+    --mu-text: #f6f3ff;
+    --mu-text-muted: #ddd0e7;
+    --mu-border: rgba(255, 255, 255, 0.14);
+    --mu-field: rgba(255, 255, 255, 0.07);
+    --mu-glass: linear-gradient(
+        180deg,
+        rgba(75, 37, 84, 0.50),
+        rgba(38, 19, 59, 0.48)
+    );
+    --mu-shadow:
+        0 18px 48px rgba(8, 3, 26, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --mu-blur: blur(2px) saturate(170%) brightness(1.06);
+    --harvest: #ffc477;
+    --page:
+        radial-gradient(ellipse at 12% 0%, #713b35 0%, transparent 47%),
+        radial-gradient(ellipse at 90% 10%, #4b2369 0%, transparent 55%),
+        #110736;
+    color-scheme: dark;
+}
+
+[data-mu-theme="light"] {
+    --harvest: #9b4e13;
+    --page:
+        radial-gradient(ellipse at 10% 0%, #ffdbab 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 20%, #e4d1ff 0%, transparent 55%),
+        #f8f0ec;
+    --mu-text: #30213a;
+    --mu-text-muted: #655669;
+    --mu-border: rgba(57, 35, 74, 0.13);
+    --mu-field: rgba(255, 255, 255, 0.46);
+    --mu-glass: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.50),
+        rgba(255, 245, 237, 0.42)
+    );
+    --mu-shadow:
+        0 12px 40px rgba(81, 52, 92, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.50);
+    color-scheme: light;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body.mu-root,
+body.mu-root button,
+body.mu-root input,
+body.mu-root select,
+body.mu-root textarea {
+    font-family:
+        "Turkey Dash UI v4",
+        "Munetios UI v4 Font",
+        system-ui,
+        sans-serif !important;
+    font-feature-settings: "ss01" 1;
+    font-weight: 400;
+}
+
+body.mu-root {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--page);
+    background-attachment: fixed;
+    color: var(--mu-text);
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+body.mu-root .mu-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+    overflow: hidden;
+    font-family: "Turkey Dash Material Symbols", sans-serif !important;
+    font-size: 24px;
+    font-weight: 400;
+    font-style: normal;
+    font-feature-settings: "liga" 1;
+    font-variation-settings:
+        "FILL" 0,
+        "wght" 400,
+        "GRAD" 0,
+        "opsz" 24;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.icon-fallback {
+    display: block;
+    width: 1em;
+    height: 1em;
+    flex: none;
+}
+
+.icon-ligature {
+    display: none;
+    font: inherit;
+    font-feature-settings: "liga" 1;
+    white-space: nowrap;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+html.td-icons-loaded .icon-fallback {
+    display: none;
+}
+
+html.td-icons-loaded .icon-ligature {
+    display: block;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+canvas:focus-visible {
+    outline: 3px solid var(--mu-accent);
+    outline-offset: 3px;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.game-glass {
+    background: var(--mu-glass);
+    border: 1px solid var(--mu-border);
+    box-shadow: var(--mu-shadow);
+    backdrop-filter: var(--mu-blur);
+    -webkit-backdrop-filter: var(--mu-blur);
+    border-radius: 36px;
+}
+
+.game-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 20px;
+    border: 1px solid var(--mu-border);
+    border-radius: 999px;
+    background: var(--mu-field);
+    color: var(--mu-text);
+    font: inherit;
+    text-decoration: none;
+    touch-action: manipulation;
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.game-button:hover {
+    border-color: var(--mu-accent);
+}
+
+.game-button:active {
+    transform: scale(0.96);
+}
+
+.game-button.primary {
+    background: var(--mu-accent);
+    color: white;
+    border-color: transparent;
+}
+
+.icon-button {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.shell {
+    width: min(1120px, 100%);
+    margin: auto;
+    padding: 16px clamp(12px, 3vw, 28px) 30px;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px 10px 20px;
+    border-radius: 999px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.brand-mark {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--mu-accent);
+    color: white;
+}
+
+.brand-text {
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.top-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.hero {
+    padding: 26px 6px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+}
+
+.eyebrow {
+    color: var(--harvest);
+    font-size: 18px;
+}
+
+body.mu-root .hero h1 {
+    font-size: clamp(36px, 6vw, 48px);
+    font-weight: 300;
+    line-height: 1.12;
+    margin: 5px 0 8px;
+}
+
+.hero p {
+    margin: 0;
+    color: var(--mu-text-muted);
+}
+
+.date {
+    white-space: nowrap;
+    border: 1px solid var(--mu-border);
+    border-radius: 999px;
+    padding: 8px 16px;
+    background: var(--mu-field);
+}
+
+.main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 18px;
+    align-items: start;
+}
+
+.game-panel {
+    padding: 16px;
+    min-width: 0;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.stat {
+    padding: 10px 6px;
+    border: 1px solid var(--mu-border);
+    border-radius: 24px;
+    background: var(--mu-field);
+    text-align: center;
+    min-width: 0;
+}
+
+.stat span {
+    display: block;
+    color: var(--mu-text-muted);
+    font-size: 18px;
+}
+
+.stat output {
+    display: block;
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.25;
+}
+
+.board {
+    position: relative;
+    max-width: 650px;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #251723;
+    border: 1px solid #e5a76d65;
+    line-height: 0;
+    isolation: isolate;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+#board {
+    touch-action: none;
+    outline-offset: -4px;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(33, 19, 41, 0.48);
+    color: #fff4e6;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.overlay[hidden] {
+    display: none;
+}
+
+.overlay-content {
+    width: min(360px, 100%);
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 22px 16px;
+    border-radius: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    background: linear-gradient(
+        160deg,
+        rgba(118, 69, 57, 0.44),
+        rgba(49, 29, 75, 0.50)
+    );
+    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.26);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+}
+
+.overlay canvas {
+    width: 76px;
+    height: 76px;
+}
+
+body.mu-root .overlay h2 {
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 300;
+    line-height: 1.12;
+    margin: 0;
+}
+
+.overlay p {
+    margin: 0;
+    font-size: 18px;
+}
+
+.overlay .game-button {
+    min-width: 150px;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 14px 0 0;
+}
+
+.status {
+    min-height: 28px;
+    text-align: center;
+    color: var(--mu-text-muted);
+    margin: 12px 0 0;
+}
+
+.side {
+    display: grid;
+    gap: 14px;
+}
+
+.side-card {
+    padding: 22px;
+}
+
+body.mu-root .side-card h2 {
+    font-size: 26px;
+    font-weight: 300;
+    margin: 0 0 14px;
+}
+
+.side-card p {
+    margin: 0;
+    color: var(--mu-text-muted);
+}
+
+.legend {
+    display: grid;
+    gap: 12px;
+}
+
+.legend-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.legend-row canvas {
+    width: 42px;
+    height: 42px;
+    flex: none;
+}
+
+.legend-row span {
+    display: block;
+}
+
+.legend-row small {
+    display: block;
+    font-size: 18px;
+    color: var(--mu-text-muted);
+}
+
+.dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(2, 54px);
+    justify-content: center;
+    gap: 7px;
+    margin: 16px auto 4px;
+}
+
+.dpad button {
+    padding: 0;
+    min-height: 54px;
+    touch-action: none;
+}
+
+.dpad .mu-icon {
+    font-size: 28px !important;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--mu-field);
+    margin: 12px 0 8px;
+}
+
+.progress div {
+    height: 100%;
+    background: linear-gradient(90deg, #f0a04d, #e5c16d);
+    border-radius: inherit;
+    width: 0;
+    transition: width 0.18s;
+}
+
+.foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 22px 6px 0;
+    color: var(--mu-text-muted);
+}
+
+.foot a {
+    color: inherit;
+}
+
+.keyboard {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}
+
+kbd {
+    font: inherit;
+    border: 1px solid var(--mu-border);
+    background: var(--mu-field);
+    border-radius: 12px;
+    padding: 3px 9px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 760px) {
+    .main {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding: 20px 6px 16px;
+    }
+
+    .date {
+        display: none;
+    }
+
+    .game-panel {
+        padding: 10px;
+        border-radius: 30px;
+    }
+
+    .side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stats {
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    .stat {
+        padding: 8px 2px;
+        border-radius: 18px;
+    }
+
+    .top {
+        padding-left: 12px;
+    }
+
+    .brand-text {
+        font-size: 20px;
+    }
+
+    .side-card {
+        padding: 16px;
+    }
+
+    .toolbar .game-button {
+        padding: 0 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .side {
+        grid-template-columns: 1fr;
+    }
+
+    .shell {
+        padding: 10px 8px 24px;
+    }
+
+    body.mu-root .hero h1 {
+        font-size: 39px;
+    }
+
+    .overlay-content {
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .overlay canvas {
+        width: 56px;
+        height: 56px;
+    }
+
+    body.mu-root .overlay h2 {
+        font-size: 27px;
+    }
+
+    .toolbar .game-button {
+        padding: 0 12px;
+    }
+
+    .top-actions {
+        gap: 4px;
+    }
+
+    .brand {
+        gap: 7px;
+    }
+
+    .brand-text {
+        font-size: 18px;
+    }
+
+    .brand-mark {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+</style>
+</head>
+
+<body class="mu-root">
+
+<div class="shell">
+
+    <header class="top mu-glass game-glass liquid-glass">
+        <a class="brand" href="https://www.munetios.com/">
+            <span class="brand-mark">
+                <span class="mu-icon"
+                      data-icon="sports_esports"
+                      aria-hidden="true"></span>
+            </span>
+            <span class="brand-text">Munetios Games</span>
+        </a>
+
+        <div class="top-actions">
+            <button class="mu-btn game-button icon-button"
+                    id="theme"
+                    aria-label="Change theme"
+                    title="Change theme">
+                <span class="mu-icon"
+                      data-icon="light_mode"
+                      aria-hidden="true"></span>
+            </button>
+
+            <button class="mu-btn game-button icon-button"
+                    id="sound"
+                    aria-label="Enable sound"
+                    aria-pressed="false"
+                    title="Sound">
+                <span class="mu-icon"
+                      data-icon="volume_off"
+                      aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div>
+            <div class="eyebrow">Thanksgiving 2026</div>
+            <h1>Turkey Dash</h1>
+            <p>A little turkey. A big harvest. A maze full of surprises.</p>
+        </div>
+
+        <div class="date">November 25–26, 2026</div>
+    </section>
+
+    <main class="main">
+
+        <section class="game-panel mu-glass game-glass"
+                 aria-label="Turkey Dash game">
+
+            <div class="stats">
+                <div class="stat">
+                    <span>Score</span>
+                    <output id="score">0</output>
+                </div>
+
+                <div class="stat">
+                    <span>Best</span>
+                    <output id="best">0</output>
+                </div>
+
+                <div class="stat">
+                    <span>Lives</span>
+                    <output id="lives">3</output>
+                </div>
+
+                <div class="stat">
+                    <span>Level</span>
+                    <output id="level">1</output>
+                </div>
+            </div>
+
+            <div class="board">
+                <canvas id="board"
+                        width="600"
+                        height="600"
+                        tabindex="0"
+                        aria-label="Harvest maze. Use arrow keys, WASD, or swipe to move the turkey.">
+                </canvas>
+
+                <div class="overlay" id="overlay">
+                    <div class="overlay-content">
+
+                        <canvas id="hero-art"
+                                width="80"
+                                height="80"
+                                aria-hidden="true">
+                        </canvas>
+
+                        <h2 id="overlay-title">
+                            Happy Thanksgiving!
+                        </h2>
+
+                        <p id="overlay-msg">
+                            Collect the harvest and outsmart the pumpkin ghosts.
+                        </p>
+
+                        <button id="play"
+                                class="mu-btn mu-btn-primary game-button primary">
+                            <span class="mu-icon"
+                                  data-icon="play_arrow"
+                                  aria-hidden="true"></span>
+                            <span id="play-label">Play game</span>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar">
+
+                <button id="pause"
+                        class="mu-btn game-button"
+                        disabled>
+                    <span class="mu-icon"
+                          data-icon="pause"
+                          aria-hidden="true"></span>
+                    <span id="pause-label">Pause</span>
+                </button>
+
+                <button id="restart"
+                        class="mu-btn game-button">
+                    <span class="mu-icon"
+                          data-icon="restart_alt"
+                          aria-hidden="true"></span>
+                    Restart
+                </button>
+
+            </div>
+
+            <div class="dpad" aria-label="Directional controls">
+
+                <span></span>
+
+                <button class="mu-btn game-button"
+                        data-dir="0,-1"
+                        aria-label="Move up">
+                    <span class="mu-icon"
+                          data-icon="keyboard_arrow_up"
+                          aria-hidden="true"></span>
+                </button>
+
+                <span></span>
+
+                <button class="mu-btn game-button"
+                        data-dir="-1,0"
+                        aria-label="Move left">
+                    <span class="mu-icon"
+                          data-icon="keyboard_arrow_left"
+                          aria-hidden="true"></span>
+                </button>
+
+                <button class="mu-btn game-button"
+                        data-dir="0,1"
+                        aria-label="Move down">
+                    <span class="mu-icon"
+                          data-icon="keyboard_arrow_down"
+                          aria-hidden="true"></span>
+                </button>
+
+                <button class="mu-btn game-button"
+                        data-dir="1,0"
+                        aria-label="Move right">
+                    <span class="mu-icon"
+                          data-icon="keyboard_arrow_right"
+                          aria-hidden="true"></span>
+                </button>
+
+            </div>
+
+            <div class="status" id="status">
+                Ready to harvest
+            </div>
+
+            <div id="announcer"
+                 class="sr-only"
+                 aria-live="polite"></div>
+
+        </section>
+
+        <aside class="side">
+
+            <section class="side-card mu-glass game-glass">
+                <h2>Harvest progress</h2>
+
+                <div id="progress-label">0 of 0 collected</div>
+
+                <div class="progress"
+                     role="progressbar"
+                     id="progress"
+                     aria-label="Harvest progress"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-valuenow="0">
+                    <div id="progress-fill"></div>
+                </div>
+
+                <p id="power-label">No active power-up</p>
+            </section>
+
+            <section class="side-card mu-glass game-glass">
+                <h2>How to play</h2>
+
+                <div class="legend">
+
+                    <div class="legend-row">
+                        <canvas width="42"
+                                height="42"
+                                data-art="corn"
+                                aria-hidden="true"></canvas>
+                        <div>
+                            <span>Corn kernels</span>
+                            <small>10 points each</small>
+                        </div>
+                    </div>
+
+                    <div class="legend-row">
+                        <canvas width="42"
+                                height="42"
+                                data-art="pie"
+                                aria-hidden="true"></canvas>
+                        <div>
+                            <span>Pumpkin pies</span>
+                            <small>50 points + power</small>
+                        </div>
+                    </div>
+
+                    <div class="legend-row">
+                        <canvas width="42"
+                                height="42"
+                                data-art="ghost"
+                                aria-hidden="true"></canvas>
+                        <div>
+                            <span>Pumpkin ghosts</span>
+                            <small>200 points when powered</small>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="side-card mu-glass game-glass">
+                <h2>Controls</h2>
+
+                <div class="keyboard">
+                    <kbd>↑</kbd>
+                    <kbd>←</kbd>
+                    <kbd>↓</kbd>
+                    <kbd>→</kbd>
+                </div>
+
+                <p>
+                    Use arrow keys or WASD. On a touchscreen,
+                    swipe on the maze or tap the direction buttons.
+                    Press Space to pause.
+                </p>
+            </section>
+
+        </aside>
+
+    </main>
+
+    <footer class="foot">
+        <span>Munetios · Thanksgiving special</span>
+        <a href="https://www.munetios.com/">Back to Munetios</a>
+    </footer>
+
+</div>
+
+<script>
+"use strict";
+
+(() => {
+
+    const $ = id => document.getElementById(id);
+
+    const canvas = $("board");
+    const ctx = canvas.getContext("2d");
+
+    const iconPaths = {
+        sports_esports:
+            '<path d="M6 7h12a4 4 0 0 1 3.9 3.1l1 5a3 3 0 0 1-5 2.8l-3-2.9H9l-3 2.9a3 3 0 0 1-5-2.8l1-5A4 4 0 0 1 6 7Z"/><path d="M7 9v6m-3-3h6m6-1h.01m3 3h.01"/>',
+
+        light_mode:
+            '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+
+        dark_mode:
+            '<path d="M20.9 13.5A9 9 0 0 1 10.5 3.1 9 9 0 1 0 20.9 13.5Z"/>',
+
+        volume_off:
+            '<path d="M11 5 6 9H3v6h3l5 4V5Zm5 4 6 6m0-6-6 6"/>',
+
+        volume_up:
+            '<path d="M11 5 6 9H3v6h3l5 4V5Zm4 4a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/>',
+
+        play_arrow:
+            '<path d="m8 5 12 7-12 7Z" fill="currentColor" stroke="none"/>',
+
+        pause:
+            '<path d="M9 5v14m6-14v14" stroke-width="3"/>',
+
+        restart_alt:
+            '<path d="M3 11a9 9 0 1 1 3 8m-3-8V5m0 6h6"/>',
+
+        keyboard_arrow_up:
+            '<path d="m6 15 6-6 6 6"/>',
+
+        keyboard_arrow_down:
+            '<path d="m6 9 6 6 6-6"/>',
+
+        keyboard_arrow_left:
+            '<path d="m15 6-6 6 6 6"/>',
+
+        keyboard_arrow_right:
+            '<path d="m9 6 6 6-6 6"/>'
+    };
+
+    function setIcon(element, name) {
+        if (!element) return;
+
+        if (!Object.prototype.hasOwnProperty.call(iconPaths, name)) {
+            return;
+        }
+
+        element.dataset.icon = name;
+
+        element.innerHTML = `
+            <svg class="icon-fallback"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 aria-hidden="true"
+                 focusable="false">
+                ${iconPaths[name]}
+            </svg>
+            <span class="icon-ligature">${name}</span>
+        `;
+    }
+
+    document.querySelectorAll("[data-icon]").forEach(element => {
+        setIcon(element, element.dataset.icon);
+    });
+
+    if (document.fonts) {
+        document.fonts.load(
+            '400 24px "Turkey Dash Material Symbols"',
+            Object.keys(iconPaths).join(" ")
+        ).then(faces => {
+            if (
+                faces.length > 0 &&
+                faces.every(face => face.status === "loaded")
+            ) {
+                document.documentElement.classList.add("td-icons-loaded");
+            }
+        }).catch(() => {
+            document.documentElement.classList.remove("td-icons-loaded");
+        });
+
+        document.fonts.load(
+            '400 18px "Turkey Dash UI v4"'
+        ).catch(() => {
+            console.warn("Munetios UI v4 Font couldn't be loaded.");
+        });
+    }
+
+    const MAZE = [
+        "###############",
+        "#o....#.#....o#",
+        "#.##.#...#.##.#",
+        "#.............#",
+        "###.##.#.##.###",
+        "#...#.....#...#",
+        "#.#.#.###.#.#.#",
+        "#.............#",
+        "#.#.#.###.#.#.#",
+        "#...#.....#...#",
+        "###.##.#.##.###",
+        "#.............#",
+        "#.##.#...#.##.#",
+        "#o....#.#....o#",
+        "###############"
+    ];
+
+    const N = MAZE.length;
+    const T = 40;
+
+    const DIRS = [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1]
+    ];
+
+    const ZERO = [0, 0];
+
+    const START = {
+        x: 7,
+        y: 11
+    };
+
+    const HOMES = [
+        { x: 1, y: 1 },
+        { x: 13, y: 1 },
+        { x: 7, y: 3 }
+    ];
+
+    const COLORS = [
+        "#f4a13d",
+        "#e57477",
+        "#b49aee"
+    ];
+
+    const STORAGE = {
+        best: "munetios-turkey-dash-best-v1",
+        theme: "munetios-turkey-dash-theme-v1",
+        sound: "munetios-turkey-dash-sound-v1"
+    };
+
+    function read(key, fallback) {
+        try {
+            return localStorage.getItem(key) ?? fallback;
+        } catch {
+            return fallback;
+        }
+    }
+
+    function save(key, value) {
+        try {
+            localStorage.setItem(key, String(value));
+        } catch {
+            return;
+        }
+    }
+
+    let best = Math.max(
+        0,
+        Number(read(STORAGE.best, 0)) || 0
+    );
+
+    let score = 0;
+    let lives = 3;
+    let level = 1;
+
+    let board;
+    let player;
+    let ghosts;
+
+    let total = 0;
+    let remaining = 0;
+
+    let queued = ZERO;
+    let direction = ZERO;
+
+    let power = 0;
+    let shield = 0;
+    let tick = 0;
+
+    let state = "ready";
+
+    let sound = read(STORAGE.sound, "false") === "true";
+    let audio = null;
+
+    let elapsed = 0;
+    let lastFrame = 0;
+
+    const systemTheme = matchMedia("(prefers-color-scheme: light)");
+
+    let theme = read(
+        STORAGE.theme,
+        systemTheme.matches ? "light" : "dark"
+    );
+
+    function setTheme(value) {
+        theme = value === "light" ? "light" : "dark";
+
+        document.documentElement.dataset.muTheme = theme;
+
+        setIcon(
+            $("theme").querySelector(".mu-icon"),
+            theme === "light" ? "dark_mode" : "light_mode"
+        );
+
+        $("theme").setAttribute(
+            "aria-label",
+            theme === "light" ? "Use dark theme" : "Use light theme"
+        );
+
+        document.querySelector('meta[name="theme-color"]').content =
+            theme === "light" ? "#f8f0ec" : "#110736";
+
+        save(STORAGE.theme, theme);
+    }
+
+    setTheme(theme);
+
+    $("theme").addEventListener("click", () => {
+        setTheme(theme === "light" ? "dark" : "light");
+    });
+
+    function beep(frequency = 440, duration = 0.08) {
+        if (!sound) return;
+
+        try {
+            const AudioContextClass =
+                window.AudioContext || window.webkitAudioContext;
+
+            if (!AudioContextClass) return;
+
+            audio ??= new AudioContextClass();
+
+            if (audio.state === "suspended") {
+                audio.resume().catch(() => {});
+            }
+
+            const oscillator = audio.createOscillator();
+            const gain = audio.createGain();
+            const time = audio.currentTime;
+
+            oscillator.type = "sine";
+            oscillator.frequency.setValueAtTime(frequency, time);
+
+            gain.gain.setValueAtTime(0.045, time);
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                time + duration
+            );
+
+            oscillator.connect(gain);
+            gain.connect(audio.destination);
+
+            oscillator.start(time);
+            oscillator.stop(time + duration);
+
+        } catch {
+            return;
+        }
+    }
+
+    function syncSound() {
+        $("sound").setAttribute("aria-pressed", String(sound));
+
+        $("sound").setAttribute(
+            "aria-label",
+            sound ? "Mute sound" : "Enable sound"
+        );
+
+        setIcon(
+            $("sound").querySelector(".mu-icon"),
+            sound ? "volume_up" : "volume_off"
+        );
+    }
+
+    syncSound();
+
+    $("sound").addEventListener("click", () => {
+        sound = !sound;
+
+        save(STORAGE.sound, sound);
+
+        syncSound();
+
+        if (sound) beep(660);
+    });
+
+    function open(x, y) {
+        return (
+            y >= 0 &&
+            y < N &&
+            x >= 0 &&
+            x < N &&
+            MAZE[y][x] !== "#"
+        );
+    }
+
+    function same(a, b) {
+        return a.x === b.x && a.y === b.y;
+    }
+
+    function resetPositions() {
+        player = {
+            ...START,
+            px: START.x,
+            py: START.y
+        };
+
+        ghosts = HOMES.map((home, index) => ({
+            ...home,
+            px: home.x,
+            py: home.y,
+            color: COLORS[index],
+            home,
+            cooldown: 0,
+            lastX: undefined,
+            lastY: undefined
+        }));
+
+        direction = ZERO;
+        queued = ZERO;
+
+        shield = 12;
+        power = 0;
+    }
+
+    function newStage() {
+        board = MAZE.map(row => row.split(""));
+
+        board[START.y][START.x] = " ";
+
+        total = board.flat().filter(cell => (
+            cell === "." || cell === "o"
+        )).length;
+
+        remaining = total;
+        tick = 0;
+
+        resetPositions();
+        sync();
+    }
+
+    function stepMs() {
+        return Math.max(
+            85,
+            150 - (level - 1) * 6
+        );
+    }
+
+    function sync() {
+        const values = {
+            score,
+            best,
+            lives,
+            level
+        };
+
+        for (const [key, value] of Object.entries(values)) {
+            $(key).value = value;
+        }
+
+        const percentage = Math.round(
+            (total - remaining) * 100 / Math.max(total, 1)
+        );
+
+        $("progress-fill").style.width = percentage + "%";
+
+        $("progress").setAttribute(
+            "aria-valuenow",
+            percentage
+        );
+
+        $("progress-label").textContent =
+            `${total - remaining} of ${total} collected`;
+
+        $("power-label").textContent =
+            power > 0
+                ? `Pie power · ${Math.ceil(power * stepMs() / 1000)}s remaining`
+                : "No active power-up";
+    }
+
+    function add(points) {
+        score += points;
+
+        if (score > best) {
+            best = score;
+            save(STORAGE.best, best);
+        }
+
+        sync();
+    }
+
+    function announce(message) {
+        $("status").textContent = message;
+        $("announcer").textContent = message;
+    }
+
+    function show(title, message, label) {
+        $("overlay-title").textContent = title;
+        $("overlay-msg").textContent = message;
+        $("play-label").textContent = label;
+
+        $("overlay").hidden = false;
+    }
+
+    function pauseUI() {
+        const paused = state === "paused";
+
+        $("pause").disabled =
+            !["running", "paused"].includes(state);
+
+        setIcon(
+            $("pause").querySelector(".mu-icon"),
+            paused ? "play_arrow" : "pause"
+        );
+
+        $("pause-label").textContent =
+            paused ? "Resume" : "Pause";
+    }
+
+    function resume() {
+        state = "running";
+        elapsed = 0;
+
+        $("overlay").hidden = true;
+
+        pauseUI();
+
+        canvas.focus({
+            preventScroll: true
+        });
+
+        announce("Collect the harvest!");
+    }
+
+    function start() {
+        score = 0;
+        lives = 3;
+        level = 1;
+
+        newStage();
+        resume();
+        beep(620);
+    }
+
+    function togglePause() {
+        if (state === "running") {
+            state = "paused";
+
+            show(
+                "Paused",
+                "Your harvest is safe.",
+                "Resume"
+            );
+
+            pauseUI();
+
+            announce("Paused");
+
+        } else if (state === "paused") {
+            resume();
+        }
+    }
+
+    $("play").addEventListener("click", () => {
+        if (state === "paused" || state === "next") {
+            resume();
+        } else {
+            start();
+        }
+    });
+
+    $("pause").addEventListener("click", togglePause);
+
+    $("restart").addEventListener("click", start);
+
+    function input(newDirection) {
+        if (state === "ready") {
+            start();
+        }
+
+        if (state === "running") {
+            queued = newDirection;
+        }
+    }
+
+    const keys = {
+        ArrowUp: [0, -1],
+        ArrowDown: [0, 1],
+        ArrowLeft: [-1, 0],
+        ArrowRight: [1, 0],
+        w: [0, -1],
+        s: [0, 1],
+        a: [-1, 0],
+        d: [1, 0]
+    };
+
+    document.addEventListener("keydown", event => {
+        if (
+            event.ctrlKey ||
+            event.metaKey ||
+            event.altKey ||
+            /INPUT|TEXTAREA|SELECT/.test(event.target.tagName)
+        ) {
+            return;
+        }
+
+        const newDirection =
+            keys[event.key] ||
+            keys[event.key.toLowerCase()];
+
+        if (newDirection) {
+            event.preventDefault();
+            input(newDirection);
+
+        } else if (
+            event.code === "Space" &&
+            event.target.tagName !== "BUTTON"
+        ) {
+            event.preventDefault();
+
+            if (event.repeat) return;
+
+            if (state === "ready" || state === "over") {
+                start();
+            } else if (state === "next") {
+                resume();
+            } else {
+                togglePause();
+            }
+
+        } else if (
+            event.key === "Escape" &&
+            state === "running"
+        ) {
+            togglePause();
+        }
+    });
+
+    document.querySelectorAll("[data-dir]").forEach(button => {
+        button.addEventListener("pointerdown", event => {
+            event.preventDefault();
+
+            input(
+                button.dataset.dir.split(",").map(Number)
+            );
+        });
+
+        button.addEventListener("click", event => {
+            if (event.detail === 0) {
+                input(
+                    button.dataset.dir.split(",").map(Number)
+                );
+            }
+        });
+    });
+
+    let touch = null;
+
+    canvas.addEventListener("pointerdown", event => {
+        touch = {
+            x: event.clientX,
+            y: event.clientY,
+            id: event.pointerId
+        };
+
+        canvas.setPointerCapture(event.pointerId);
+    });
+
+    canvas.addEventListener("pointermove", event => {
+        if (!touch || touch.id !== event.pointerId) return;
+
+        const dx = event.clientX - touch.x;
+        const dy = event.clientY - touch.y;
+
+        if (Math.max(Math.abs(dx), Math.abs(dy)) >= 14) {
+            input(
+                Math.abs(dx) > Math.abs(dy)
+                    ? [Math.sign(dx), 0]
+                    : [0, Math.sign(dy)]
+            );
+
+            touch.x = event.clientX;
+            touch.y = event.clientY;
+        }
+    });
+
+    [
+        "pointerup",
+        "pointercancel",
+        "lostpointercapture"
+    ].forEach(eventName => {
+        canvas.addEventListener(eventName, () => {
+            touch = null;
+        });
+    });
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden && state === "running") {
+            togglePause();
+        }
+    });
+
+    function distances(target) {
+        const map = Array.from(
+            { length: N },
+            () => Array(N).fill(Infinity)
+        );
+
+        const queue = [target];
+
+        map[target.y][target.x] = 0;
+
+        for (let index = 0; index < queue.length; index++) {
+            const position = queue[index];
+
+            for (const [dx, dy] of DIRS) {
+                const x = position.x + dx;
+                const y = position.y + dy;
+
+                if (open(x, y) && map[y][x] === Infinity) {
+                    map[y][x] =
+                        map[position.y][position.x] + 1;
+
+                    queue.push({ x, y });
+                }
+            }
+        }
+
+        return map;
+    }
+
+    function ghostMove(ghost, distanceMap) {
+        const options = DIRS.map(([dx, dy]) => ({
+            x: ghost.x + dx,
+            y: ghost.y + dy
+        })).filter(position => (
+            open(position.x, position.y)
+        ));
+
+        if (!options.length) return;
+
+        if (ghost.cooldown > 0) {
+            ghost.cooldown--;
+            return;
+        }
+
+        let candidates = options.filter(position => (
+            position.x !== ghost.lastX ||
+            position.y !== ghost.lastY
+        ));
+
+        if (!candidates.length) {
+            candidates = options;
+        }
+
+        let position;
+
+        if (Math.random() < 0.24) {
+            position = candidates[
+                Math.floor(Math.random() * candidates.length)
+            ];
+        } else {
+            candidates.sort((a, b) => {
+                if (power > 0) {
+                    return (
+                        distanceMap[b.y][b.x] -
+                        distanceMap[a.y][a.x]
+                    );
+                }
+
+                return (
+                    distanceMap[a.y][a.x] -
+                    distanceMap[b.y][b.x]
+                );
+            });
+
+            position = candidates[0];
+        }
+
+        ghost.lastX = ghost.x;
+        ghost.lastY = ghost.y;
+
+        ghost.x = position.x;
+        ghost.y = position.y;
+    }
+
+    function collision() {
+        for (const ghost of ghosts) {
+            if (
+                !same(ghost, player) ||
+                ghost.cooldown > 0
+            ) {
+                continue;
+            }
+
+            if (power > 0) {
+                add(200);
+
+                beep(880, 0.13);
+
+                Object.assign(ghost, {
+                    ...ghost.home,
+                    px: ghost.home.x,
+                    py: ghost.home.y,
+                    cooldown: 4,
+                    lastX: undefined,
+                    lastY: undefined
+                });
+
+                announce("Pumpkin ghost defeated! +200");
+
+            } else if (!shield) {
+                lives--;
+
+                beep(155, 0.25);
+
+                if (lives === 0) {
+                    state = "over";
+
+                    show(
+                        "Harvest over",
+                        `Final score: ${score.toLocaleString()}. Try another run?`,
+                        "Play again"
+                    );
+
+                    announce("Game over");
+
+                } else {
+                    resetPositions();
+
+                    announce(
+                        `${lives} lives remaining. Keep going!`
+                    );
+                }
+
+                sync();
+                pauseUI();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function update() {
+        if (state !== "running") return;
+
+        tick++;
+
+        if (shield > 0) shield--;
+        if (power > 0) power--;
+
+        player.px = player.x;
+        player.py = player.y;
+
+        for (const ghost of ghosts) {
+            ghost.px = ghost.x;
+            ghost.py = ghost.y;
+        }
+
+        if (
+            (queued[0] || queued[1]) &&
+            open(
+                player.x + queued[0],
+                player.y + queued[1]
+            )
+        ) {
+            direction = queued;
+        }
+
+        if (
+            open(
+                player.x + direction[0],
+                player.y + direction[1]
+            )
+        ) {
+            player.x += direction[0];
+            player.y += direction[1];
+        }
+
+        const cell = board[player.y][player.x];
+
+        if (cell === "." || cell === "o") {
+            board[player.y][player.x] = " ";
+
+            remaining--;
+
+            if (cell === "o") {
+                power = Math.ceil(6500 / stepMs());
+
+                add(50);
+
+                beep(740, 0.12);
+
+                announce(
+                    "Pumpkin pie power! Chase the ghosts."
+                );
+
+            } else {
+                add(10);
+
+                beep(440);
+            }
+        }
+
+        if (collision()) return;
+
+        const ghostSpeed = Math.max(
+            2,
+            4 - Math.floor((level - 1) / 3)
+        );
+
+        if (tick % ghostSpeed === 0) {
+            const distanceMap = distances(player);
+
+            for (const ghost of ghosts) {
+                ghostMove(ghost, distanceMap);
+            }
+
+            if (collision()) return;
+        }
+
+        if (remaining === 0) {
+            add(500);
+
+            level++;
+
+            newStage();
+
+            state = "next";
+
+            show(
+                "Harvest complete!",
+                `Level ${level} is ready. You earned 500 bonus points.`,
+                "Continue"
+            );
+
+            announce("Level complete");
+
+            pauseUI();
+
+        } else if (power === 0) {
+            $("status").textContent =
+                `${remaining} food items remaining`;
+        }
+
+        sync();
+    }
+
+    function ellipse(context, x, y, rx, ry, color, rotation = 0) {
+        context.beginPath();
+
+        context.ellipse(
+            x,
+            y,
+            rx,
+            ry,
+            rotation,
+            0,
+            Math.PI * 2
+        );
+
+        context.fillStyle = color;
+        context.fill();
+    }
+
+    function circle(context, x, y, radius, color) {
+        ellipse(
+            context,
+            x,
+            y,
+            radius,
+            radius,
+            color
+        );
+    }
+
+    function corn(context, x, y, scale = 1) {
+        context.save();
+
+        context.translate(x, y);
+        context.scale(scale, scale);
+
+        ellipse(
+            context,
+            0, 0,
+            3.5, 5.4,
+            "#ffd778",
+            0.4
+        );
+
+        ellipse(
+            context,
+            -1, -1.6,
+            1, 2,
+            "#fff0b4",
+            0.4
+        );
+
+        context.restore();
+    }
+
+    function pie(context, x, y, scale = 1) {
+        context.save();
+
+        context.translate(x, y);
+        context.scale(scale, scale);
+
+        circle(context, 0, 0, 12, "#bc7535");
+        circle(context, 0, 0, 9.8, "#f3b65b");
+
+        context.strokeStyle = "#a96336";
+        context.lineWidth = 1.3;
+
+        for (let index = 0; index < 3; index++) {
+            const angle = index * Math.PI / 3;
+
+            context.beginPath();
+
+            context.moveTo(
+                -9 * Math.cos(angle),
+                -9 * Math.sin(angle)
+            );
+
+            context.lineTo(
+                9 * Math.cos(angle),
+                9 * Math.sin(angle)
+            );
+
+            context.stroke();
+        }
+
+        circle(context, 0, 0, 2.3, "#fff1b6");
+
+        context.restore();
+    }
+
+    function pumpkin(
+        context,
+        x,
+        y,
+        color,
+        powered = false,
+        scale = 1
+    ) {
+        context.save();
+
+        context.translate(x, y);
+        context.scale(scale, scale);
+
+        const pumpkinColor =
+            powered ? "#9284eb" : color;
+
+        ellipse(context, -7, 0, 7.4, 11, pumpkinColor);
+        ellipse(context, 7, 0, 7.4, 11, pumpkinColor);
+        ellipse(context, 0, 0, 9.8, 13, pumpkinColor);
+
+        context.strokeStyle = "rgba(0,0,0,0.13)";
+        context.lineWidth = 1;
+
+        context.beginPath();
+
+        context.ellipse(
+            0, 0,
+            9.8, 13,
+            0, -1, 1
+        );
+
+        context.stroke();
+
+        context.fillStyle = "#8da651";
+        context.fillRect(-2, -17, 4, 6);
+
+        circle(context, -4, -2, 3, "#fff6e4");
+        circle(context, 4, -2, 3, "#fff6e4");
+
+        circle(context, -4, -1, 1.4, "#281723");
+        circle(context, 4, -1, 1.4, "#281723");
+
+        context.strokeStyle = "#281723";
+        context.lineWidth = 2;
+
+        context.beginPath();
+
+        if (powered) {
+            context.moveTo(-5, 6);
+            context.lineTo(-2, 3);
+            context.lineTo(1, 6);
+            context.lineTo(4, 3);
+        } else {
+            context.arc(0, 3, 5, 0, Math.PI);
+        }
+
+        context.stroke();
+        context.restore();
+    }
+
+    function turkey(
+        context,
+        x,
+        y,
+        scale = 1,
+        facing = 1,
+        mouth = 0
+    ) {
+        context.save();
+
+        context.translate(x, y);
+        context.scale(scale * facing, scale);
+
+        const feathers = [
+            "#b54e3b",
+            "#de793a",
+            "#f1b75b",
+            "#de793a",
+            "#b54e3b"
+        ];
+
+        for (let index = 0; index < 5; index++) {
+            const angle =
+                Math.PI + index * Math.PI / 4;
+
+            ellipse(
+                context,
+                Math.cos(angle) * 10,
+                Math.sin(angle) * 8,
+                5.4,
+                9.4,
+                feathers[index],
+                angle - Math.PI / 2
+            );
+        }
+
+        ellipse(context, 0, 4, 11, 10, "#8d5637");
+        ellipse(context, 1, 5, 7, 7, "#b67c4e");
+
+        circle(context, 5, -3, 7.5, "#c18c56");
+        circle(context, 7, -5, 1.8, "#211321");
+
+        context.fillStyle = "#ffd162";
+
+        context.beginPath();
+        context.moveTo(10, -3);
+        context.lineTo(17, 0);
+        context.lineTo(10, 2 + mouth);
+        context.closePath();
+        context.fill();
+
+        circle(context, 10, 4, 2.6, "#cf4f46");
+
+        context.strokeStyle = "#d6a05f";
+        context.lineWidth = 1.6;
+
+        context.beginPath();
+        context.moveTo(-3, 12);
+        context.lineTo(-5, 15);
+        context.moveTo(4, 12);
+        context.lineTo(5, 15);
+        context.stroke();
+
+        context.restore();
+    }
+
+    function drawWall(context, x, y) {
+        context.fillStyle = "#674334";
+
+        context.beginPath();
+
+        context.roundRect(
+            x + 1,
+            y + 1,
+            T - 2,
+            T - 2,
+            7
+        );
+
+        context.fill();
+
+        context.strokeStyle = "#ac7548";
+        context.lineWidth = 1.3;
+        context.stroke();
+
+        context.fillStyle = "rgba(236,181,107,0.13)";
+
+        context.fillRect(
+            x + 7,
+            y + 6,
+            T - 14,
+            2
+        );
+    }
+
+    function draw(alpha) {
+        ctx.fillStyle = "#251723";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        for (let y = 0; y < N; y++) {
+            for (let x = 0; x < N; x++) {
+                const tileX = x * T;
+                const tileY = y * T;
+
+                const centerX = tileX + T / 2;
+                const centerY = tileY + T / 2;
+
+                if (MAZE[y][x] === "#") {
+                    drawWall(ctx, tileX, tileY);
+
+                } else if (board[y][x] === ".") {
+                    corn(ctx, centerX, centerY);
+
+                } else if (board[y][x] === "o") {
+                    pie(ctx, centerX, centerY);
+                }
+            }
+        }
+
+        for (const ghost of ghosts) {
+            const ghostX = (
+                ghost.px +
+                (ghost.x - ghost.px) * alpha
+            ) * T + T / 2;
+
+            const ghostY = (
+                ghost.py +
+                (ghost.y - ghost.py) * alpha
+            ) * T + T / 2;
+
+            if (ghost.cooldown) {
+                ctx.globalAlpha = 0.45;
+            }
+
+            pumpkin(
+                ctx,
+                ghostX,
+                ghostY,
+                ghost.color,
+                power > 0
+            );
+
+            ctx.globalAlpha = 1;
+        }
+
+        const playerX = (
+            player.px +
+            (player.x - player.px) * alpha
+        ) * T + T / 2;
+
+        const playerY = (
+            player.py +
+            (player.y - player.py) * alpha
+        ) * T + T / 2;
+
+        if (
+            shield &&
+            tick % 2 === 0 &&
+            state === "running"
+        ) {
+            ctx.globalAlpha = 0.65;
+        }
+
+        turkey(
+            ctx,
+            playerX,
+            playerY,
+            1,
+            direction[0] < 0 ? -1 : 1,
+            Math.sin(tick + alpha) > 0 ? 2 : 0
+        );
+
+        ctx.globalAlpha = 1;
+
+        if (power > 0) {
+            ctx.strokeStyle = "#e0c4ff";
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                playerX,
+                playerY,
+                18,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.stroke();
+        }
+    }
+
+    function renderArtwork() {
+        const heroContext =
+            $("hero-art").getContext("2d");
+
+        turkey(heroContext, 40, 42, 2.1);
+
+        document.querySelectorAll("[data-art]").forEach(element => {
+            const context = element.getContext("2d");
+
+            switch (element.dataset.art) {
+                case "corn":
+                    corn(context, 21, 21, 2.4);
+                    break;
+
+                case "pie":
+                    pie(context, 21, 21, 1.45);
+                    break;
+
+                case "ghost":
+                    pumpkin(
+                        context,
+                        21,
+                        23,
+                        "#f4a13d",
+                        false,
+                        1.1
+                    );
+                    break;
+            }
+        });
+    }
+
+    function frame(now) {
+        const delta = lastFrame
+            ? Math.min(100, now - lastFrame)
+            : 0;
+
+        lastFrame = now;
+
+        if (state === "running") {
+            elapsed += delta;
+
+            while (
+                elapsed >= stepMs() &&
+                state === "running"
+            ) {
+                elapsed -= stepMs();
+
+                update();
+            }
+        }
+
+        const alpha = state === "running"
+            ? Math.min(1, elapsed / stepMs())
+            : 1;
+
+        draw(alpha);
+
+        requestAnimationFrame(frame);
+    }
+
+    renderArtwork();
+
+    newStage();
+
+    pauseUI();
+
+    requestAnimationFrame(frame);
+
+})();
+</script>
+
+</body>
+</html>
