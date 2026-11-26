@@ -2835,7 +2835,19 @@
         background: rgba(255, 255, 255, 0.07);
         border: 1px solid rgba(106, 0, 255, 0.35);
       }
+      #videoSearchEngine {
+        font: inherit;
+        color: inherit;
+        background: rgba(128, 80, 180, 0.12);
+        backdrop-filter: blur(2px) saturate(180%);
+        border: 1px solid rgba(200, 160, 255, 0.3);
+        border-radius: 24px;
+        padding: 6px 8px;
+        max-width: 42%;
+        cursor: pointer;
+      }
       .videos-searchbar input {
+        min-width: 0;
         flex: 1;
         background: none;
         border: none;
@@ -4752,10 +4764,14 @@ html.halloween-season .topbar-right {
               id="videoSearchInput"
               autocomplete="off"
             />
+            <select id="videoSearchEngine" class="liquid-glass" aria-label="Video search engine">
+              <option value="youtube">YouTube</option>
+              <option value="vimeo">Vimeo</option>
+            </select>
             <icon id="videoSearchBtn" title="Search">arrow_forward</icon>
           </div>
           <p class="videos-hint" data-translate="videoSearchHint">
-            Press Enter or click the arrow to search videos
+            Search on the selected video platform in a new tab.
           </p>
         </div>
       </div>
@@ -31162,22 +31178,21 @@ if (isAmerica250Date && logo) {
     </div>
     <script>
       (() => {
-        // Do not load third-party video thumbnails, players, or advertisements.
-        const page = document.getElementById("videosPage");
-        if (!page) return;
-        const hero = page.querySelector(".videos-hero");
-        if (hero) {
-          hero.querySelector(".videos-searchbar")?.remove();
-          hero.querySelector(".videos-hint")?.remove();
-        }
-        let message = page.querySelector(".video-search-empty");
-        if (!message) {
-          message = document.createElement("p");
-          message.className = "video-search-empty liquid-glass";
-          message.textContent = "Videos are unavailable on Munetios Search to maintain an ad-free experience.";
-          message.style.cssText = "max-width:720px;margin:24px auto;padding:22px;border:1px solid rgba(212,166,255,.24);border-radius:18px;text-align:center;";
-          page.append(message);
-        }
+        const input = document.getElementById("videoSearchInput");
+        const engine = document.getElementById("videoSearchEngine");
+        if (!input || !engine) return;
+        const engines = {
+          youtube: query => "https://www.youtube.com/results?search_query=" + encodeURIComponent(query),
+          vimeo: query => "https://vimeo.com/search?q=" + encodeURIComponent(query)
+        };
+        window.munetiosVideos = {
+          render(query = "") {
+            const value = String(query).trim();
+            if (!value) { input.focus(); return; }
+            const buildURL = engines[engine.value];
+            if (buildURL) window.open(buildURL(value), "_blank", "noopener,noreferrer");
+          }
+        };
       })();
     </script>
     <script nonce="IKDjefjewhCujHJeuji3jhekowdijzizkcej">
