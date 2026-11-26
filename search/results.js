@@ -118,9 +118,9 @@ window.localResults = [
     title: "Munet Dash",
     description:
       "Munet Dash is a Geometry Dash style game with Munet Dash features added.",
-    url: "https://munet-dash.munetios.workers.dev",
+    url: "https://games.munetios.com/munet-dash",
     favicon: "",
-    link: "https://munet-dash.munetios.workers.dev",
+    link: "https://games.munetios.com/munet-dash",
   },
   {
     title: "Munetios Weather",
