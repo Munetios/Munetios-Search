@@ -82,23 +82,15 @@
           <p>Search privately, get work done, and discover apps for everyday tasks.</p>
 
           <div class="hero-actions">
-            <button
-              class="btn mu-btn mu-btn-primary"
-              type="button"
-              onclick="window.location.href='https://www.munetios.com/search/search.html'"
-            >
+            <a class="mu-btn mu-btn-primary" href="https://www.munetios.com/search/search.html">
               <icon aria-hidden="true">travel_explore</icon>
               Open Munetios Search
-            </button>
+            </a>
 
-            <button
-              class="btn-secondary mu-btn"
-              type="button"
-              onclick="document.getElementById('products').scrollIntoView({ behavior: 'smooth' })"
-            >
+            <a class="mu-btn" href="#products">
               <icon aria-hidden="true">apps</icon>
               Browse products
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -167,7 +159,7 @@
             <input
               id="productSearch"
               class="product-search mu-input"
-              type="text"
+              type="search"
               placeholder="Search products"
               autocomplete="off"
             />
@@ -183,7 +175,7 @@
         </div>
 
         <div class="products-toolbar">
-          <div class="results-count" id="resultsCount" role="status">Showing 13 products</div>
+          <div class="results-count" id="resultsCount" role="status">Showing 14 products</div>
           <div class="toolbar-actions">
             <button class="btn-secondary mu-btn" type="button" id="resetFiltersBtn">
               <icon aria-hidden="true">filter_alt_off</icon>
@@ -193,6 +185,21 @@
         </div>
 
         <div class="grid-apps-list" id="productsGrid">
+          <article class="box-app-list liquid-glass mu-card mu-glass"
+            id="mail" data-category="productivity" data-status="live" data-title="Munetios Mail">
+            <div class="card-head">
+              <div class="app-icon"><img src="/apps/mail.png" alt="" width="48" height="48" /></div>
+              <div class="card-tags">
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
+                <span class="tag tag-category">Productivity</span>
+              </div>
+            </div>
+            <h2>Munetios Mail</h2>
+            <p data-info-i18n="mailDescription">Get an @munetios.com address, a 20 GB mailbox, and tools for writing and organizing email.</p>
+            <div class="card-footer">
+              <a class="mu-btn mu-btn-primary" href="https://mail.munetios.com/"><span data-info-i18n="openMail">Open Mail</span><icon aria-hidden="true">arrow_outward</icon></a>
+            </div>
+          </article>
           <article
             class="box-app-list liquid-glass mu-card mu-glass"
             data-category="search"
@@ -214,16 +221,8 @@
               our users.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://www.munetios.com/search/search.html'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://www.munetios.com/search/search.html">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://www.munetios.com/search/search.html" aria-label="Open Munetios Search">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -245,16 +244,8 @@
             <h2>Munetios OmniWrite</h2>
             <p>Munetios OmniWrite is a advanced document writing tool.</p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://write.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://write.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://write.munetios.com" aria-label="Open Munetios OmniWrite">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -279,16 +270,8 @@
               and openstreetmap data.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://maps.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://maps.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://maps.munetios.com" aria-label="Open Munetios Maps">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -313,16 +296,8 @@
               calendars, favorite dates and more.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://calendar.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://calendar.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://calendar.munetios.com" aria-label="Open Munetios Calendar">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -347,16 +322,8 @@
               app that helps you capture your ideas and thoughts securely.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://notes.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://notes.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://notes.munetios.com" aria-label="Open Munetios SupaNotes">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -366,7 +333,7 @@
             data-category="productivity"
             data-status="upcoming"
             data-title="Munetios Meet"
-            data-description="Munetios Meet is a upcoming service that meetings are encrypted and secure for everyone."
+            data-description="Munetios Meet is an upcoming video meeting app."
           >
             <div class="card-head">
               <div class="app-icon"><icon aria-hidden="true">video_call</icon></div>
@@ -377,16 +344,8 @@
             </div>
             <h2>Munetios Meet</h2>
             <p>
-              Munetios Meet is a upcoming service that meetings are encrypted and
-              secure for everyone.
+              Munetios Meet is an upcoming video meeting app.
             </p>
-            <div class="card-footer">
-              <button class="btn mu-btn mu-btn-primary" type="button">Coming Soon</button>
-              <button class="secondary-link mu-btn" type="button" disabled aria-disabled="true">
-                <icon aria-hidden="true">hourglass_top</icon>
-                Upcoming
-              </button>
-            </div>
           </article>
 
           <article
@@ -406,16 +365,8 @@
             <h2>Munetios Meals</h2>
             <p>Munetios Meals is a secure and better planning meals and more.</p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://calendar.munetios.com/new/meals'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://calendar.munetios.com/new/meals">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://calendar.munetios.com/new/meals" aria-label="Open Munetios Meals">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -440,16 +391,8 @@
               your tasks and to-dos.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://tasks.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://tasks.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://tasks.munetios.com" aria-label="Open Munetios Tasks">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -474,16 +417,8 @@
               memories safe.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://photos.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://photos.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://photos.munetios.com" aria-label="Open Munetios Photos">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -508,16 +443,8 @@
               calculations without tracking.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://calculator.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://calculator.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://calculator.munetios.com" aria-label="Open Munetios Calculator">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -542,16 +469,8 @@
               your notes and ideas.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://notebook.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://notebook.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://notebook.munetios.com" aria-label="Open Munetios Notebook">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -576,16 +495,8 @@
               you can play online.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://www.munetios.com/games'"
-              >
-                Play
-              </button>
-              <a class="secondary-link mu-btn" href="https://www.munetios.com/games">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://www.munetios.com/games" aria-label="Play Munetios Games Hub">
+                Play <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -610,16 +521,8 @@
               and up-to-date weather information.
             </p>
             <div class="card-footer">
-              <button
-                class="btn mu-btn mu-btn-primary"
-                type="button"
-                onclick="window.location.href='https://weather.munetios.com'"
-              >
-                Try it out
-              </button>
-              <a class="secondary-link mu-btn" href="https://weather.munetios.com">
-                <icon aria-hidden="true">open_in_new</icon>
-                Open
+              <a class="mu-btn mu-btn-primary" href="https://weather.munetios.com" aria-label="Open Munetios Weather">
+                Open app <icon aria-hidden="true">arrow_outward</icon>
               </a>
             </div>
           </article>
@@ -659,7 +562,7 @@
 
       cards.forEach((card) => {
         const title = (card.dataset.title || '').toLowerCase();
-        const description = (card.dataset.description || '').toLowerCase();
+        const description = (card.dataset.description || card.querySelector('p').textContent).toLowerCase();
         const category = (card.dataset.category || '').toLowerCase();
 
         const matchesSearch =
@@ -673,7 +576,7 @@
 
         const shouldShow = matchesSearch && matchesCategory;
 
-        card.style.display = shouldShow ? '' : 'none';
+        card.hidden = !shouldShow;
 
         if (shouldShow) {
           visibleCount += 1;

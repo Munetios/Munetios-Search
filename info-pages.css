@@ -54,6 +54,8 @@
   inset-block-start: 100%;
   inset-inline-end: 0;
   width: min(320px, 100%);
+  max-height: calc(100dvh - 8.5rem);
+  overflow-y: auto;
   display: grid;
   gap: 4px;
   padding: 12px;
@@ -132,6 +134,8 @@
   background: var(--mu-current-bg);
 }
 .card-icon { margin-bottom: 12px; }
+.app-icon img { display: block; border-radius: inherit; }
+.info-page [id="mail"] { scroll-margin-top: 125px; }
 .info-page .compare-grid { margin: 0; padding: 0; list-style: none; }
 .compare-grid li {
   display: flex;
@@ -178,7 +182,7 @@
   background: var(--mu-current-bg);
   color: var(--info-link);
 }
-.update-art img { display: block; max-width: 100%; height: auto; }
+.update-art img { display: block; max-width: 100%; height: auto; border-radius: var(--mu-radius-sm); }
 .update-details { display: grid; gap: 8px; list-style: none; padding: 0; margin-block: 20px; }
 .scroll-top { position: fixed; z-index: 4; inset-inline-end: 14px; inset-block-end: 14px; visibility: hidden; }
 .scroll-top.show { visibility: visible; }
