@@ -222,16 +222,9 @@
       </munetios-apps-list>
       <hr />
       <munetios-apps-list>
-        <munetios-app-button style="display: none;">
-          <img
-            src="image3.png"
-            style="height: 90px !important; width: 60px !important"
-            alt="App Icon"
-            slot="icon"
-          />
-          <a href="https://notebook.munetios.com" target="_top" slot="title"
-            >Notebook</a
-          >
+        <munetios-app-button>
+          <img src="/apps/webfilter-icon.png" width="82" height="82" alt="" slot="icon" />
+          <a href="https://webfilter.munetios.com/" target="_top" slot="title">Munetios WebFilter</a>
         </munetios-app-button>
         <munetios-app-button>
           <img
@@ -299,22 +292,6 @@
           hi: "ऐप्स खोजें...",
           tr: "Uygulama ara...",
           nl: "Apps zoeken...",
-        },
-        notebook: {
-          en: "Notebook",
-          es: "Bloc de notas",
-          fr: "Cahier",
-          de: "Notizbuch",
-          it: "Taccuino",
-          pt: "Bloco de notas",
-          ru: "Блокнот",
-          zh: "笔记本",
-          ja: "ノート",
-          ko: "노트",
-          ar: "دفتر الملاحظات",
-          hi: "नोटबुक",
-          tr: "Not Defteri",
-          nl: "Notitieboek",
         },
         games: {
           en: "Games Hub",
@@ -511,9 +488,7 @@
           const link = button.querySelector("a");
           if (!link) return;
           const href = link.getAttribute("href") || "";
-          if (href.includes("notebook"))
-            link.textContent = translate("notebook");
-          else if (href.includes("games"))
+          if (href.includes("games"))
             link.textContent = translate("games");
           else if (href.includes("weather"))
             link.textContent = translate("weather");
