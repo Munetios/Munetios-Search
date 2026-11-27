@@ -1,185 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What's New - Munetios</title>
-    <link rel="icon" href="apple-touch-icon-new.png" type="image/png">
-    <link rel="apple-touch-icon" href="apple-touch-icon-new.png">
-    
-    <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0..1&display=swap">
-    <style>
-@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght,ROND@6..144,1..1000,80&display=swap');
-*{
-    box-sizing: border-box;
-    font-family: 'Google Sans Flex', sans-serif;
-    font-variation-settings: 'wght' 500 'ROND' 80;
-}
-body {
-    font-family: 'Google Sans Flex', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #e7e7e7;
-    color: rgb(0, 0, 0);
-}
-
-body.dark-mode {
-    background-color: #190047;
-    color: #ffffff;
-}
-icon {
-    font-family: 'Material Symbols Rounded';
-    font-size: 24px;
-}
-.topbar {
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    height: 80px;
-    position: sticky;
-    top: 0;
-}
-.logo {
-    height: 50px;
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-    font-size: 1.5em;
-    gap: 10px;
-    padding: 10px 18px;
-}
-a {
-    color: #7c3aed;
-    text-decoration: none;
-}
-nav a {
-    color: inherit;
-    text-decoration: none;
-    margin: 0 10px;
-    font-weight: 500;
-}
-nav {
-        padding: 7px 12px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-}
-nav a:hover {
-    text-decoration: underline;
-}
-button {
-    background-color: #7c3aed;
-    color: #ffffff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 44px;
-    font-family: inherit;
-    font-variation-settings: 'wght' 500 'ROND' 80;
-    cursor: pointer;
-}
-button:hover {
-    background-color: #5b21b6;
-}
-.top-right {
-    margin-left: auto;
-        padding: 8px 16px;
-}
-.content {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-.content h1, h2, h3, h4, h5, h6, p {
-    padding: 10px 0;
-    font-feature-settings: 'ss02' off, 'ss01' on, 'liga' off, 'clig' off !important;
-    font-family: 'Google Sans Flex', sans-serif;
-}
-.content p {
-    font-feature-settings: 'ss02' off, 'ss01' on, 'liga' off, 'clig' off !important;
-    font-family: 'Google Sans Flex', sans-serif;
-    font-size: 21px;
-}
-.content-section {
-    margin-bottom: 40px;
-    background-color: #7a0abb10;
-    border-radius: 12px;
-    padding: 20px;
-}
-
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #7a0abb10;
-    border-radius: 12px;
-    margin-top: 40px;
-}
-
-footer a {
-    margin: 0 10px;
-    color: #7c3aed;
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-.click-to-load-video {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 20px;
-    background-color: #7a0abb10;
-    border-radius: 12px;
-    margin-top: 20px;
-}
-.click-to-load-video icon {
-    font-size: 48px;
-    margin-bottom: 10px;
-}
-@media (max-width: 700px) {
-    .logo {
-        display: none;
-    }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>What's New - Munetios</title>
+  <link rel="icon" href="/apple-touch-icon-new.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon-new.png" />
+  <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/munetios-ui/munetios-ui-v4.css" />
+  <link rel="stylesheet" href="/info-pages.css" />
+  <script src="/munetios-ui/munetios-ui-v4.js"></script>
+  <script src="/info-pages.js" defer></script>
 </head>
-<body>
-   <div class="topbar">
-    <div class="logo liquid-glass">
-        <img src="apple-touch-icon-new.png" alt="Munetios Logo" width="40" />
-        Munetios
-    </div>
-    <nav class="liquid-glass">
-        <a href="/">Home</a>
-        <a href="/apps1.html">Products</a>
-        <a href="https://blog.munetios.com">Blog</a>
-        <a href="/whats-new.html">What's New</a>
-    </nav>
-    <div class="top-right liquid-glass">
-        <div class="dark-mode-toggle">
-            <icon>dark_mode</icon>
+<body class="mu-root info-page updates-page">
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="header-inner mu-topbar">
+        <a class="logo mu-btn mu-glass liquid-glass" href="/">
+          <img src="/apple-touch-icon-new.png" alt="" width="32" height="32" />
+          Munetios
+        </a>
+        <nav class="desktop-nav mu-glass liquid-glass" aria-label="Primary navigation">
+          <a class="mu-nav-item" href="/">Home</a>
+          <a class="mu-nav-item" href="/about.html">About</a>
+          <a class="mu-nav-item" href="/apps1.html">Products</a>
+          <a class="mu-nav-item" href="/whats-new.html" aria-current="page">What's New</a>
+          <a class="mu-nav-item" href="https://blog.munetios.com">Blog</a>
+        </nav>
+        <button class="dark-mode-toggle mu-icon-btn liquid-glass" type="button" aria-label="Dark mode" aria-pressed="false">
+          <span class="mu-icon" aria-hidden="true">dark_mode</span>
+        </button>
+        <button class="menu-toggle mu-icon-btn liquid-glass" type="button" aria-label="Navigation menu" aria-controls="siteMenu" aria-expanded="false">
+          <span class="mu-icon" aria-hidden="true">menu</span>
+        </button>
+      </div>
+      <nav class="mobile-panel mu-glass liquid-glass" id="siteMenu" aria-label="Mobile navigation" hidden>
+          <a class="mu-nav-item" href="/">Home</a>
+          <a class="mu-nav-item" href="/about.html">About</a>
+          <a class="mu-nav-item" href="/apps1.html">Products</a>
+          <a class="mu-nav-item" href="/whats-new.html" aria-current="page">What's New</a>
+          <a class="mu-nav-item" href="https://blog.munetios.com">Blog</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero-card mu-card mu-glass liquid-glass" aria-labelledby="updates-title">
+        <h1 id="updates-title">What’s new at Munetios</h1>
+      </section>
+      <article class="update-feature mu-card mu-glass liquid-glass" aria-labelledby="supanotes-title">
+        <div class="update-art"><img src="/apps/supanotes-icon.png" alt="" width="128" height="128" /></div>
+        <div>
+          <h2 id="supanotes-title">Munetios SupaNotes</h2>
+          <p>Capture ideas, organize notes with tags, and keep them private with end-to-end encryption.</p>
+          <ul class="update-details" aria-label="SupaNotes features">
+            <li><span class="mu-icon" aria-hidden="true">lock</span>End-to-end encryption</li>
+            <li><span class="mu-icon" aria-hidden="true">code</span>Open source</li>
+            <li><span class="mu-icon" aria-hidden="true">shield</span>Ad-free and tracker-free</li>
+          </ul>
+          <a class="mu-btn mu-btn-primary" href="https://notes.munetios.com">Try SupaNotes <span class="mu-icon" aria-hidden="true">arrow_outward</span></a>
         </div>
-    </div>
-   </div> 
-   <div class="content">
-    <h2>What is New at Munetios</h2>
-    <p>New App is Munetios SupaNotes, Advanced end to end encrypted note taking app.</p>
-    <p>Lets compare Munetios SupaNotes vs Google Keep and others:</p>
-    <ul>
-        <li>Munetios SupaNotes: No Ads, No Tracking, Open Source, Has End to End Encryption</li>
-        <li>Google Keep: Ads, Tracking, Not Open Source, No End to End Encryption</li>
-        <li>Apple Notes: No Ads, Limited Tracking, Not Open Source, No End to End Encryption</li>
-        <li>Microsoft OneNote: Ads, Tracking, Not Open Source, No End to End Encryption</li>
-    </ul>
-    <p>Try Munetios SupaNotes today!</p>
-    <p>Link: <a href="https://notes.munetios.com">https://notes.munetios.com</a></p>
-    </div>
-    <footer>
+      </article>
+    </main>
+    <footer class="footer-panel mu-card mu-glass liquid-glass">
         <p>&copy; 2026 Munetios. Open Source.</p>
         <a href="https://www.munetios.com">Munetios</a>
         <a href="https://write.munetios.com">OmniWrite</a>
@@ -187,35 +68,6 @@ footer a:hover {
         <a href="https://www.munetios.com/policies/#/terms">Terms of Service</a>
         <a href="https://www.munetios.com/policies/#/cookies">Cookie Policy</a>
     </footer>
-   <script>
- 
-    function setDarkMode(enabled) {
-        if (enabled) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('darkMode', 'true');
-        } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkMode', 'false');
-        }
-    }
-
-    // On page load, set dark mode from saved preference
-    (function() {
-        const saved = localStorage.getItem('darkMode');
-        if (saved === 'true') {
-            setDarkMode(true);
-        }
-    })();
-
-    // Toggle dark mode on icon click
-    document.querySelector('.dark-mode-toggle').addEventListener('click', function() {
-        const isDark = document.body.classList.contains('dark-mode');
-        setDarkMode(!isDark);
-    });
-   </script>
+  </div>
 </body>
 </html>
-
-
-
-

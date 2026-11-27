@@ -10,1192 +10,76 @@
 
   <link rel="icon" href="apple-touch-icon-new.png" type="image/png" />
   <link rel="apple-touch-icon" href="apple-touch-icon-new.png" />
-  <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css" />
+  <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css" crossorigin="anonymous" />
 
 
-  <style>
-
-    :root {
-      --bg: #f6f3ff;
-      --bg-secondary: #ffffff;
-      --surface: rgba(255, 255, 255, 0.72);
-      --surface-strong: rgba(255, 255, 255, 0.9);
-      --surface-border: rgba(124, 58, 237, 0.16);
-      --text: #140a26;
-      --text-soft: #5f5573;
-      --heading: #170b2b;
-      --primary: #7c3aed;
-      --primary-strong: #6d28d9;
-      --primary-soft: rgba(124, 58, 237, 0.12);
-      --shadow: 0 18px 60px rgba(72, 33, 130, 0.12);
-      --shadow-soft: 0 8px 30px rgba(72, 33, 130, 0.08);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
-      --radius-md: 18px;
-      --container: 1320px;
-      --header-height: 84px;
-    }
-
-    body.dark-mode {
-      --bg: #120025;
-      --bg-secondary: #170033;
-      --surface: rgba(31, 7, 69, 0.01);
-      --surface-strong: rgba(40, 8, 84, 0.10);
-      --surface-border: rgba(202, 177, 255, 0.12);
-      --text: #f7f4ff;
-      --text-soft: #cdbdf0;
-      --heading: #ffffff;
-      --primary: #a78bfa;
-      --primary-strong: #c4b5fd;
-      --primary-soft: rgba(167, 139, 250, 0.16);
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.25);
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: 'Google Sans Flex', sans-serif;
-      font-feature-settings: "ss01" 1;
-      font-variation-settings: 'wght' 500, 'ROND' 80;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(124, 58, 237, 0.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(139, 92, 246, 0.12), transparent 22%),
-        linear-gradient(180deg, var(--bg), var(--bg-secondary));
-      min-height: 100vh;
-      overflow-x: hidden;
-      transition: background-color 0.25s ease, color 0.25s ease;
-    }
-
-    body.menu-open {
-      overflow: hidden;
-    }
-
-    icon,
-    .material-symbols-rounded {
-      font-family: 'Material Symbols Rounded';
-      font-weight: normal;
-      font-style: normal;
-      font-size: 24px;
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    img {
-      display: block;
-      max-width: 100%;
-    }
-
-    button {
-      font: inherit;
-    }
-
-    .page-shell {
-      position: relative;
-      min-height: 100vh;
-    }
-
-    .bg-orb {
-      position: fixed;
-      border-radius: 999px;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(24px);
-      opacity: 0.5;
-    }
-
-    .orb-1 {
-      top: -120px;
-      left: -120px;
-      width: 300px;
-      height: 300px;
-      background: rgba(124, 58, 237, 0.16);
-    }
-
-    .orb-2 {
-      top: 220px;
-      right: -130px;
-      width: 320px;
-      height: 320px;
-      background: rgba(139, 92, 246, 0.14);
-    }
-
-    .orb-3 {
-      bottom: 80px;
-      left: 8%;
-      width: 260px;
-      height: 260px;
-      background: rgba(76, 29, 149, 0.1);
-    }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      padding: 14px 18px;
-      backdrop-filter: blur(2px) saturate(180%);
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .header-inner {
-      max-width: var(--container);
-      margin: 0 auto;
-      min-height: var(--header-height);
-      display: grid;
-      grid-template-columns: auto 1fr auto auto auto;
-      gap: 14px;
-      align-items: center;
-      padding: 12px 14px;
-      border-radius: 30px;
-      border: 1px solid var(--surface-border);
-      background: var(--surface);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(2px) saturate(180%);
-    }
-
-    .logo {
-      min-width: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      border-radius: 22px;
-      font-weight: 700;
-      color: var(--heading);
-      background: rgba(255, 255, 255, 0.04);
-      white-space: nowrap;
-    }
-
-    .logo img {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      flex-shrink: 0;
-    }
-
-    .desktop-nav-wrap {
-      display: flex;
-      justify-content: center;
-      min-width: 0;
-    }
-
-    nav.desktop-nav {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px;
-      min-height: 58px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.04);
-      min-width: 0;
-      flex-wrap: wrap;
-    }
-
-    nav.desktop-nav a {
-      color: var(--text);
-      font-weight: 600;
-      padding: 12px 16px;
-      border-radius: 999px;
-      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-      white-space: nowrap;
-    }
-
-    nav.desktop-nav a:hover,
-    nav.desktop-nav a:focus-visible {
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      outline: none;
-      transform: translateY(-1px);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .dark-mode-toggle,
-    .menu-toggle,
-    .scroll-top {
-      border: 1px solid var(--surface-border);
-      background: var(--surface-strong);
-      color: var(--text);
-      border-radius: 18px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-      backdrop-filter: blur(2px) saturate(180%);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .dark-mode-toggle:hover,
-    .menu-toggle:hover,
-    .scroll-top:hover,
-    .dark-mode-toggle:focus-visible,
-    .menu-toggle:focus-visible,
-    .scroll-top:focus-visible {
-      transform: translateY(-2px);
-      outline: none;
-      border-color: rgba(124, 58, 237, 0.32);
-      background: var(--primary-soft);
-    }
-
-    .dark-mode-toggle,
-    .menu-toggle {
-      width: 56px;
-      height: 56px;
-      padding: 0;
-    }
-
-    .custom-language {
-      position: relative;
-    }
-
-    .language-trigger {
-      min-height: 56px;
-      min-width: 190px;
-      border: 1px solid var(--surface-border);
-      background: var(--surface-strong);
-      color: var(--text);
-      border-radius: 18px;
-      padding: 0 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      cursor: pointer;
-      backdrop-filter: blur(2px) saturate(180%);
-      box-shadow: var(--shadow-soft);
-      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-    }
-
-    .language-trigger:hover,
-    .language-trigger:focus-visible {
-      transform: translateY(-2px);
-      outline: none;
-      border-color: rgba(124, 58, 237, 0.32);
-      background: var(--primary-soft);
-    }
-
-    .language-trigger-left {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .language-trigger-left span:last-child {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .language-chevron {
-      transition: transform 0.2s ease;
-    }
-
-    .custom-language.open .language-chevron {
-      transform: rotate(180deg);
-    }
-
-    .language-menu {
-      position: absolute;
-      top: calc(100% + 10px);
-      left: 0;
-      min-width: 100%;
-      padding: 8px;
-      border-radius: 18px;
-      border: 1px solid var(--surface-border);
-      background: var(--surface-strong);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(2px) saturate(180%);
-      display: none;
-      z-index: 1200;
-    }
-
-    .custom-language.open .language-menu {
-      display: grid;
-      gap: 6px;
-      animation: fadeSlide 0.18s ease;
-    }
-
-    .language-option {
-      border: none;
-      min-height: 46px;
-      border-radius: 14px;
-      background: transparent;
-      color: var(--text);
-      text-align: left;
-      padding: 0 14px;
-      cursor: pointer;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-
-    .language-option:hover,
-    .language-option:focus-visible,
-    .language-option.active {
-      outline: none;
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-    }
-
-    .menu-toggle {
-      display: none;
-    }
-
-    .mobile-panel {
-      position: fixed;
-      top: calc(16px + var(--header-height));
-      right: 16px;
-      left: 16px;
-      z-index: 999;
-      padding: 14px;
-      border-radius: 24px;
-      background: var(--surface-strong);
-      border: 1px solid var(--surface-border);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(2px) saturate(180%);
-      display: none;
-    }
-
-    .mobile-panel.open {
-      display: block;
-      animation: fadeSlide 0.22s ease;
-    }
-
-    .mobile-panel nav {
-      display: grid;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .mobile-panel nav a {
-      color: var(--text);
-      font-weight: 600;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .mobile-panel nav a:hover,
-    .mobile-panel nav a:focus-visible {
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      outline: none;
-    }
-
-    .mobile-info-chip {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-soft);
-      font-size: 0.96rem;
-      margin-bottom: 10px;
-    }
-
-    .mobile-language-wrap {
-      position: relative;
-    }
-
-    .mobile-language-trigger {
-      width: 100%;
-      min-height: 52px;
-      border: 1px solid var(--surface-border);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      border-radius: 16px;
-      padding: 0 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      cursor: pointer;
-      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-    }
-
-    .mobile-language-trigger:hover,
-    .mobile-language-trigger:focus-visible {
-      outline: none;
-      background: var(--primary-soft);
-      border-color: rgba(124, 58, 237, 0.32);
-      transform: translateY(-1px);
-    }
-
-    .mobile-language-menu {
-      position: relative;
-      margin-top: 10px;
-      padding: 8px;
-      border-radius: 18px;
-      border: 1px solid var(--surface-border);
-      background: rgba(255, 255, 255, 0.04);
-      display: none;
-      gap: 6px;
-    }
-
-    .mobile-language-wrap.open .mobile-language-menu {
-      display: grid;
-      animation: fadeSlide 0.18s ease;
-    }
-
-    .mobile-language-wrap.open .language-chevron {
-      transform: rotate(180deg);
-    }
-
-    main {
-      position: relative;
-      z-index: 1;
-      max-width: var(--container);
-      margin: 0 auto;
-      padding: 18px 20px 100px;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 22px;
-      margin-top: 12px;
-      margin-bottom: 26px;
-      align-items: stretch;
-    }
-
-    .hero-card,
-    .hero-side,
-    .section-panel,
-    .stat-card,
-    .faq-card,
-    .footer-panel {
-      border: 1px solid var(--surface-border);
-      background: var(--surface);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(2px) saturate(180%);
-    }
-
-    .hero-card {
-      padding: 34px;
-      position: relative;
-      overflow: hidden;
-      min-height: 360px;
-    }
-
-    .hero-card::before {
-      content: "";
-      position: absolute;
-      inset: auto -50px -50px auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 999px;
-      background: radial-gradient(circle, rgba(124, 58, 237, 0.18), transparent 70%);
-      pointer-events: none;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    h1, h2, h3, h4, h5, h6, p, li, a, button, span {
-      font-family: 'Google Sans Flex', sans-serif;
-      font-feature-settings: 'ss02' off, 'ss01' on, 'liga' off, 'clig' off !important;
-    }
-
-    .hero h1 {
-      margin: 0 0 14px;
-      font-size: clamp(2rem, 4vw, 3.45rem);
-      line-height: 1.04;
-      color: var(--heading);
-      letter-spacing: -0.03em;
-    }
-
-    .hero p {
-      margin: 0;
-      font-size: clamp(1rem, 1.35vw, 1.16rem);
-      line-height: 1.75;
-      color: var(--text-soft);
-      max-width: 760px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 22px;
-    }
-
-    .btn,
-    .btn-secondary {
-      appearance: none;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-      font-family: 'Google Sans Flex', sans-serif;
-      font-variation-settings: 'wght' 650, 'ROND' 80;
-      min-height: 52px;
-      border-radius: 999px;
-      padding: 0 20px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-size: 1rem;
-      white-space: nowrap;
-    }
-
-    .btn {
-      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-      color: white;
-      box-shadow: 0 12px 30px rgba(124, 58, 237, 0.22);
-    }
-
-    .btn:hover,
-    .btn:focus-visible,
-    .btn-secondary:hover,
-    .btn-secondary:focus-visible {
-      transform: translateY(-2px);
-      outline: none;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text);
-      border: 1px solid var(--surface-border);
-    }
-
-    .btn-secondary:hover,
-    .btn-secondary:focus-visible {
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-    }
-
-    .hero-side {
-      padding: 22px;
-      display: grid;
-      gap: 16px;
-      align-content: start;
-    }
-
-    .mini-panel {
-      padding: 18px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(124, 58, 237, 0.08);
-    }
-
-    .mini-panel h3 {
-      margin: 0 0 8px;
-      font-size: 1.08rem;
-      color: var(--heading);
-    }
-
-    .mini-panel p {
-      margin: 0;
-      color: var(--text-soft);
-      font-size: 0.98rem;
-      line-height: 1.65;
-    }
-
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 26px;
-    }
-
-    .stat-card {
-      padding: 22px;
-    }
-
-    .stat-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .stat-label {
-      color: var(--text-soft);
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    .stat-value {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 800;
-      color: var(--heading);
-      line-height: 1;
-    }
-
-    .stat-sub {
-      color: var(--text-soft);
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    .section-panel {
-      padding: 28px;
-      margin-bottom: 22px;
-    }
-
-    .section-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: end;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .section-header h2 {
-      margin: 0;
-      font-size: clamp(1.45rem, 2vw, 2rem);
-      color: var(--heading);
-      letter-spacing: -0.02em;
-    }
-
-    .section-header p {
-      margin: 8px 0 0;
-      color: var(--text-soft);
-      line-height: 1.7;
-      max-width: 760px;
-      font-size: 1rem;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .info-card,
-    .faq-card {
-      padding: 20px;
-      border-radius: 24px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(124, 58, 237, 0.1);
-    }
-
-    .info-card .card-icon,
-    .faq-card .card-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(167, 139, 250, 0.14));
-      color: var(--primary-strong);
-      margin-bottom: 14px;
-      border: 1px solid rgba(124, 58, 237, 0.12);
-    }
-
-    .info-card h3,
-    .faq-card h3 {
-      margin: 0 0 10px;
-      font-size: 1.18rem;
-      color: var(--heading);
-    }
-
-    .info-card p,
-    .faq-card p,
-    .section-panel p,
-    .section-panel li {
-      margin: 0;
-      color: var(--text-soft);
-      font-size: 1rem;
-      line-height: 1.75;
-    }
-
-    .stack {
-      display: grid;
-      gap: 16px;
-    }
-
-    .link-row {
-      margin-top: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .text-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 46px;
-      padding: 0 16px;
-      border-radius: 999px;
-      border: 1px solid var(--surface-border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    .text-link:hover,
-    .text-link:focus-visible {
-      outline: none;
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      transform: translateY(-1px);
-    }
-
-    .faq-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .footer-panel {
-      padding: 24px;
-      margin-top: 8px;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .footer-brand h3 {
-      margin: 0 0 10px;
-      color: var(--heading);
-      font-size: 1.3rem;
-    }
-
-    .footer-brand p,
-    .footer-links a,
-    .footer-meta {
-      color: var(--text-soft);
-      line-height: 1.7;
-      font-size: 0.98rem;
-    }
-
-    .footer-links {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px 14px;
-    }
-
-    .footer-links a {
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .footer-links a:hover,
-    .footer-links a:focus-visible {
-      outline: none;
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-    }
-
-    .scroll-top {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 900;
-      width: 56px;
-      height: 56px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-    }
-
-    .scroll-top.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.45s ease, transform 0.45s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(-8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 1200px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .stats-row {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .info-grid,
-      .faq-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 1120px) {
-      .header-inner {
-        grid-template-columns: auto 1fr auto auto;
-      }
-
-      .custom-language {
-        order: 4;
-      }
-    }
-
-    @media (max-width: 980px) {
-      .site-header {
-        padding: 12px;
-      }
-
-      .header-inner {
-        grid-template-columns: minmax(0, 1fr) auto auto;
-      }
-
-      .desktop-nav-wrap,
-      .custom-language {
-        display: none;
-      }
-
-      .menu-toggle {
-        display: inline-flex;
-      }
-
-      main {
-        padding: 14px 16px 90px;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .header-inner {
-        min-height: 74px;
-        padding: 10px;
-        gap: 10px;
-      }
-
-      .logo {
-        min-width: 0;
-        width: 100%;
-        padding: 12px 14px;
-        font-size: 1.04rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .hero-card,
-      .hero-side,
-      .section-panel,
-      .stat-card,
-      .faq-card,
-      .footer-panel {
-        border-radius: 24px;
-      }
-
-      .hero-card {
-        padding: 24px;
-        min-height: auto;
-      }
-
-      .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .btn,
-      .btn-secondary,
-      .text-link {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .stats-row,
-      .info-grid,
-      .faq-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .section-panel {
-        padding: 22px;
-      }
-
-      .footer-links {
-        grid-template-columns: 1fr;
-      }
-
-      .mobile-panel {
-        top: 94px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      :root {
-        --header-height: 72px;
-      }
-
-      .site-header {
-        padding: 10px;
-      }
-
-      .header-inner {
-        border-radius: 24px;
-      }
-
-      .logo {
-        font-size: 0.96rem;
-        gap: 10px;
-      }
-
-      .logo img {
-        width: 34px;
-        height: 34px;
-      }
-
-      .dark-mode-toggle,
-      .menu-toggle {
-        width: 50px;
-        height: 50px;
-        border-radius: 16px;
-      }
-
-      .hero h1 {
-        font-size: clamp(1.8rem, 8vw, 2.55rem);
-      }
-
-      .hero p,
-      .section-header p,
-      .info-card p,
-      .faq-card p,
-      .footer-brand p,
-      .footer-links a {
-        font-size: 0.98rem;
-      }
-
-      .section-header h2 {
-        font-size: 1.34rem;
-      }
-
-      .language-trigger,
-      .mobile-language-trigger {
-        min-width: 0;
-      }
-    }
-
-    @media (max-width: 380px) {
-      main {
-        padding-inline: 12px;
-      }
-
-      .hero-card,
-      .hero-side,
-      .section-panel,
-      .footer-panel {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .eyebrow {
-        width: 100%;
-        justify-content: center;
-        text-align: center;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/munetios-ui/munetios-ui-v4.css" />
+  <link rel="stylesheet" href="/info-pages.css" />
+  <script src="/munetios-ui/munetios-ui-v4.js"></script>
+  <script src="/info-pages.js" defer></script>
 </head>
-<body>
+<body class="mu-root info-page about-page">
   <div class="page-shell">
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-    <div class="bg-orb orb-3"></div>
-
     <header class="site-header">
-      <div class="header-inner liquid-glass">
-        <div class="logo liquid-glass" aria-label="Munetios">
-          <img src="apple-touch-icon-new.png" alt="Munetios Logo" />
-          <span data-i18n="brandName">Munetios</span>
-        </div>
-
-        <div class="desktop-nav-wrap">
-          <nav class="desktop-nav liquid-glass" aria-label="Primary navigation">
-            <a href="/" data-i18n="navHome">Home</a>
-            <a href="/apps1.html" data-i18n="navProducts">Products</a>
-            <a href="https://blog.munetios.com" data-i18n="navBlog">Blog</a>
-            <a href="/whats-new.html" data-i18n="navWhatsNew">What's New</a>
-          </nav>
-        </div>
-
-        <div class="custom-language liquid-glass" id="desktopLanguageDropdown">
-          <button
-            class="language-trigger"
-            id="desktopLanguageTrigger"
-            type="button"
-            aria-haspopup="listbox"
-            aria-expanded="false"
-            aria-label="Change language"
-          >
-            <span class="language-trigger-left">
-              <icon>translate</icon>
-              <span id="desktopLanguageLabel">English</span>
-            </span>
-            <icon class="language-chevron">expand_more</icon>
-          </button>
-
-          <div class="language-menu" id="desktopLanguageMenu" role="listbox" aria-label="Languages">
-            <button class="language-option active" type="button" role="option" data-lang="en" aria-selected="true">English</button>
-            <button class="language-option" type="button" role="option" data-lang="es" aria-selected="false">Español</button>
-            <button class="language-option" type="button" role="option" data-lang="fr" aria-selected="false">Français</button>
-            <button class="language-option" type="button" role="option" data-lang="de" aria-selected="false">Deutsch</button>
-            <button class="language-option" type="button" role="option" data-lang="pt" aria-selected="false">Português</button>
-          </div>
-        </div>
-
-        <div class="header-actions">
-          <button
-            class="dark-mode-toggle liquid-glass"
-            type="button"
-            aria-label="Toggle dark mode"
-            title="Toggle dark mode"
-          >
-            <icon id="darkModeIcon">dark_mode</icon>
-          </button>
-
-          <button
-            class="menu-toggle liquid-glass"
-            type="button"
-            aria-label="Open menu"
-            aria-expanded="false"
-            aria-controls="mobilePanel"
-            title="Open menu"
-          >
-            <icon id="menuIcon">menu</icon>
-          </button>
-        </div>
+      <div class="header-inner mu-topbar">
+        <a class="logo mu-btn mu-glass liquid-glass" href="/">
+          <img src="/apple-touch-icon-new.png" alt="" width="32" height="32" />
+          Munetios
+        </a>
+        <nav class="desktop-nav mu-glass liquid-glass" aria-label="Primary navigation">
+          <a class="mu-nav-item" href="/" data-i18n="navHome">Home</a>
+          <a class="mu-nav-item" href="/about.html" aria-current="page" data-i18n="navAbout">About</a>
+          <a class="mu-nav-item" href="/apps1.html" data-i18n="navProducts">Products</a>
+          <a class="mu-nav-item" href="/whats-new.html" data-i18n="navWhatsNew">What's New</a>
+          <a class="mu-nav-item" href="https://blog.munetios.com" data-i18n="navBlog">Blog</a>
+        </nav>
+        <select class="mu-select site-language" id="siteLanguage" aria-label="Language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="pt">Português</option>
+        </select>
+        <button class="dark-mode-toggle mu-icon-btn liquid-glass" type="button" aria-label="Dark mode" aria-pressed="false">
+          <span class="mu-icon" aria-hidden="true">dark_mode</span>
+        </button>
+        <button class="menu-toggle mu-icon-btn liquid-glass" type="button" aria-label="Navigation menu" aria-controls="siteMenu" aria-expanded="false">
+          <span class="mu-icon" aria-hidden="true">menu</span>
+        </button>
       </div>
+      <nav class="mobile-panel mu-glass liquid-glass" id="siteMenu" aria-label="Mobile navigation" hidden>
+          <a class="mu-nav-item" href="/" data-i18n="navHome">Home</a>
+          <a class="mu-nav-item" href="/about.html" aria-current="page" data-i18n="navAbout">About</a>
+          <a class="mu-nav-item" href="/apps1.html" data-i18n="navProducts">Products</a>
+          <a class="mu-nav-item" href="/whats-new.html" data-i18n="navWhatsNew">What's New</a>
+          <a class="mu-nav-item" href="https://blog.munetios.com" data-i18n="navBlog">Blog</a>
+      </nav>
     </header>
 
-    <div class="mobile-panel liquid-glass" id="mobilePanel" aria-hidden="true">
-      <nav aria-label="Mobile navigation">
-        <a href="/" data-i18n="navHome">Home</a>
-        <a href="/apps1.html" data-i18n="navProducts">Products</a>
-        <a href="https://blog.munetios.com" data-i18n="navBlog">Blog</a>
-        <a href="/whats-new.html" data-i18n="navWhatsNew">What's New</a>
-      </nav>
-
-      <div class="mobile-info-chip">
-        <icon>info</icon>
-        <span data-i18n="mobileInfo">About Munetios with a redesigned premium responsive layout.</span>
-      </div>
-
-      <div class="mobile-language-wrap" id="mobileLanguageDropdown">
-        <button
-          class="mobile-language-trigger"
-          id="mobileLanguageTrigger"
-          type="button"
-          aria-haspopup="listbox"
-          aria-expanded="false"
-          aria-label="Change language"
-        >
-          <span class="language-trigger-left">
-            <icon>translate</icon>
-            <span id="mobileLanguageLabel">English</span>
-          </span>
-          <icon class="language-chevron">expand_more</icon>
-        </button>
-
-        <div class="mobile-language-menu" id="mobileLanguageMenu" role="listbox" aria-label="Languages">
-          <button class="language-option active" type="button" role="option" data-lang="en" aria-selected="true">English</button>
-          <button class="language-option" type="button" role="option" data-lang="es" aria-selected="false">Español</button>
-          <button class="language-option" type="button" role="option" data-lang="fr" aria-selected="false">Français</button>
-          <button class="language-option" type="button" role="option" data-lang="de" aria-selected="false">Deutsch</button>
-          <button class="language-option" type="button" role="option" data-lang="pt" aria-selected="false">Português</button>
-        </div>
-      </div>
-    </div>
-
     <main>
-      <section class="hero reveal">
-        <div class="hero-card liquid-glass">
+      <section class="hero">
+        <div class="hero-card liquid-glass mu-card mu-glass">
           <div class="eyebrow">
-            <icon>diamond</icon>
+            <icon aria-hidden="true">diamond</icon>
             <span data-i18n="eyebrowAbout">About Munetios</span>
           </div>
 
           <h1 data-i18n="heroTitle">Privacy-first design, responsive products, and a better digital experience</h1>
-          <p data-i18n="heroText">
-            Munetios is a platform dedicated to providing high-quality software
-            products and services. This redesigned About page keeps your original
-            content while improving hierarchy, layout, responsiveness, and overall polish.
-          </p>
+          <p data-i18n="heroText">Munetios is a platform dedicated to building privacy-first software for everyday productivity.</p>
 
           <div class="hero-actions">
-            <a class="btn" href="/apps1.html">
-              <icon>apps</icon>
+            <a class="btn mu-btn mu-btn-primary" href="/apps1.html">
+              <icon aria-hidden="true">apps</icon>
               <span data-i18n="heroBtnProducts">Explore products</span>
             </a>
-            <a class="btn-secondary" href="https://www.munetios.com/policies/#/privacy">
-              <icon>privacy</icon>
+            <a class="btn-secondary mu-btn" href="https://www.munetios.com/policies/#/privacy">
+              <icon aria-hidden="true">privacy</icon>
               <span data-i18n="heroBtnPrivacy">Read privacy policy</span>
             </a>
           </div>
         </div>
 
-        <aside class="hero-side liquid-glass">
+        <aside class="hero-side liquid-glass mu-card mu-glass">
           <div class="mini-panel">
             <h3 data-i18n="missionTitle">Mission</h3>
             <p data-i18n="missionText">
@@ -1207,7 +91,7 @@
           <div class="mini-panel">
             <h3 data-i18n="designTitle">Core design</h3>
             <p data-i18n="designText">
-              Purple branding, Google Sans Flex, and liquid-glass styling with a
+              Purple branding, Munetios UI v4 Font, and liquid-glass styling with a
               modern responsive interface.
             </p>
           </div>
@@ -1219,58 +103,54 @@
         </aside>
       </section>
 
-      <section class="stats-row reveal" aria-label="Quick overview">
-        <div class="stat-card liquid-glass">
+      <section class="stats-row" aria-label="Quick overview">
+        <div class="stat-card liquid-glass mu-card mu-glass">
           <div class="stat-top">
             <span class="stat-label" data-i18n="statFounded">Founded</span>
-            <icon>event</icon>
+            <icon aria-hidden="true">event</icon>
           </div>
           <div class="stat-value">2025</div>
           <div class="stat-sub" data-i18n="statFoundedText">Founded on February 9, 2025.</div>
         </div>
 
-        <div class="stat-card liquid-glass">
+        <div class="stat-card liquid-glass mu-card mu-glass">
           <div class="stat-top">
             <span class="stat-label" data-i18n="statLocation">Location</span>
-            <icon>place</icon>
+            <icon aria-hidden="true">place</icon>
           </div>
           <div class="stat-value">USA</div>
           <div class="stat-sub" data-i18n="statLocationText">Massachusetts-based.</div>
         </div>
 
-        <div class="stat-card liquid-glass">
+        <div class="stat-card liquid-glass mu-card mu-glass">
           <div class="stat-top">
             <span class="stat-label" data-i18n="statDesign">Design</span>
-            <icon>palette</icon>
+            <icon aria-hidden="true">palette</icon>
           </div>
           <div class="stat-value" data-i18n="statDesignValue">Purple</div>
-          <div class="stat-sub" data-i18n="statDesignText">Liquid glass with Google Sans Flex.</div>
+          <div class="stat-sub" data-i18n="statDesignText">Liquid glass with Munetios UI v4 Font.</div>
         </div>
 
-        <div class="stat-card liquid-glass">
+        <div class="stat-card liquid-glass mu-card mu-glass">
           <div class="stat-top">
             <span class="stat-label" data-i18n="statFocus">Focus</span>
-            <icon>shield_lock</icon>
+            <icon aria-hidden="true">shield_lock</icon>
           </div>
           <div class="stat-value" data-i18n="statFocusValue">Privacy</div>
           <div class="stat-sub" data-i18n="statFocusText">Built around better control and better experience.</div>
         </div>
       </section>
 
-      <section class="section-panel reveal">
+      <section class="section-panel mu-card mu-glass liquid-glass">
         <div class="section-header">
           <div>
             <h2 data-i18n="aboutTitle">About Munetios</h2>
-            <p data-i18n="aboutSubtitle">
-              Your original overview is preserved here, but presented in a cleaner
-              and more readable structure.
-            </p>
           </div>
         </div>
 
         <div class="info-grid">
-          <div class="info-card">
-            <div class="card-icon"><icon>rocket_launch</icon></div>
+          <div class="info-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">rocket_launch</icon></div>
             <h3 data-i18n="platformMissionTitle">Platform mission</h3>
             <p data-i18n="platformMissionText">
               Munetios is a platform dedicated to providing high-quality software
@@ -1279,27 +159,24 @@
             </p>
           </div>
 
-          <div class="info-card">
-            <div class="card-icon"><icon>event_available</icon></div>
+          <div class="info-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">event_available</icon></div>
             <h3 data-i18n="foundedDateTitle">Founded date</h3>
             <p data-i18n="foundedDateValue">February 9, 2025</p>
           </div>
 
-          <div class="info-card">
-            <div class="card-icon"><icon>mail</icon></div>
+          <div class="info-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">mail</icon></div>
             <h3 data-i18n="contactTitle">Contact</h3>
             <p>munetios96@gmail.com</p>
           </div>
         </div>
       </section>
 
-      <section class="section-panel reveal">
+      <section class="section-panel mu-card mu-glass liquid-glass">
         <div class="section-header">
           <div>
             <h2 data-i18n="privacyTitle">Privacy Policy</h2>
-            <p data-i18n="privacySubtitle">
-              The original privacy section is preserved and made easier to scan.
-            </p>
           </div>
         </div>
 
@@ -1311,67 +188,61 @@
             remains private and secure.
           </p>
           <div class="link-row">
-            <a class="text-link" href="https://www.munetios.com/policies/#/privacy">
-              <icon>policy</icon>
+            <a class="text-link mu-btn" href="https://www.munetios.com/policies/#/privacy">
+              <icon aria-hidden="true">policy</icon>
               <span data-i18n="privacyLink">Read full Privacy Policy</span>
             </a>
           </div>
         </div>
       </section>
 
-      <section class="section-panel reveal">
+      <section class="section-panel mu-card mu-glass liquid-glass">
         <div class="section-header">
           <div>
             <h2 data-i18n="designSectionTitle">Munetios Design</h2>
-            <p data-i18n="designSectionSubtitle">
-              Design details from the original page, now shown in a stronger card layout.
-            </p>
           </div>
         </div>
 
         <div class="info-grid">
-          <div class="info-card">
-            <div class="card-icon"><icon>format_paint</icon></div>
+          <div class="info-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">format_paint</icon></div>
             <h3 data-i18n="colorsTitle">Colors</h3>
             <p data-i18n="colorsText">
               Purple (#7c3aed), Dark Purple (#5b21b6), Black (#000000), White (#ffffff)
             </p>
           </div>
 
-          <div class="info-card">
-            <div class="card-icon"><icon>font_download</icon></div>
+          <div class="info-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">font_download</icon></div>
             <h3 data-i18n="fontTitle">Font</h3>
-            <p data-i18n="fontText">'Google Sans Flex', sans-serif</p>
+            <p data-i18n="fontText">Munetios UI v4 Font</p>
           </div>
 
-          <div class="info-card">
-            <div class="card-icon"><icon>tune</icon></div>
+          <div class="info-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">tune</icon></div>
             <h3 data-i18n="typographyTitle">Typography settings</h3>
             <p data-i18n="typographyText">Font variation settings used: 'wght' 500 'ROND' 80</p>
           </div>
         </div>
 
         <div class="link-row" style="margin-top: 18px;">
-          <div class="text-link" style="cursor: default;">
-            <icon>blur_on</icon>
+          <div class="text-link mu-btn" style="cursor: default;">
+            <icon aria-hidden="true">blur_on</icon>
             <span data-i18n="liquidGlassText">Liquid Glass Effect (Premium and Beautiful)</span>
           </div>
         </div>
       </section>
 
-      <section class="section-panel reveal">
+      <section class="section-panel mu-card mu-glass liquid-glass">
         <div class="section-header">
           <div>
             <h2 data-i18n="faqTitle">FAQ</h2>
-            <p data-i18n="faqSubtitle">
-              Same FAQ content, redesigned into clearer cards.
-            </p>
           </div>
         </div>
 
         <div class="faq-grid">
-          <div class="faq-card">
-            <div class="card-icon"><icon>help</icon></div>
+          <div class="faq-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">help</icon></div>
             <h3 data-i18n="faq1q">What is Munetios?</h3>
             <p data-i18n="faq1a">
               Munetios is a platform dedicated to providing high-quality software
@@ -1379,27 +250,24 @@
             </p>
           </div>
 
-          <div class="faq-card">
-            <div class="card-icon"><icon>place</icon></div>
+          <div class="faq-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">place</icon></div>
             <h3 data-i18n="faq2q">Where is Munetios located?</h3>
             <p data-i18n="faq2a">Munetios is located in Massachusetts, USA.</p>
           </div>
 
-          <div class="faq-card">
-            <div class="card-icon"><icon>alternate_email</icon></div>
+          <div class="faq-card mu-card mu-glass liquid-glass">
+            <div class="card-icon"><icon aria-hidden="true">alternate_email</icon></div>
             <h3 data-i18n="faq3q">How can I contact Munetios?</h3>
             <p data-i18n="faq3a">You can contact Munetios via email at munetios96@gmail.com.</p>
           </div>
         </div>
       </section>
 
-      <section class="section-panel reveal">
+      <section class="section-panel mu-card mu-glass liquid-glass">
         <div class="section-header">
           <div>
             <h2 data-i18n="appsTitle">Apps</h2>
-            <p data-i18n="appsSubtitle">
-              The apps section is preserved with better visual presentation.
-            </p>
           </div>
         </div>
 
@@ -1409,21 +277,18 @@
             Games Hub, Tasks, Weather, Notes, Calculator and more.
           </p>
           <div class="link-row">
-            <a class="text-link" href="/apps1.html">
-              <icon>apps</icon>
+            <a class="text-link mu-btn" href="/apps1.html">
+              <icon aria-hidden="true">apps</icon>
               <span data-i18n="appsLink">Explore all our apps</span>
             </a>
           </div>
         </div>
       </section>
 
-      <section class="section-panel reveal">
+      <section class="section-panel mu-card mu-glass liquid-glass">
         <div class="section-header">
           <div>
             <h2 data-i18n="trademarkTitle">Trademark</h2>
-            <p data-i18n="trademarkSubtitle">
-              Original trademark section kept intact in meaning.
-            </p>
           </div>
         </div>
 
@@ -1437,16 +302,13 @@
         </div>
       </section>
 
-      <section class="footer-panel liquid-glass reveal">
+      <section class="footer-panel liquid-glass mu-card mu-glass">
         <div class="footer-grid">
           <div class="footer-brand">
             <h3 data-i18n="footerBrand">Munetios</h3>
             <p data-i18n="footerCopyright">
               © 2026 Munetios. Open Source.
             </p>
-            <div class="footer-meta" data-i18n="footerMeta">
-              Built with a redesigned responsive layout that matches the newer Products page style.
-            </div>
           </div>
 
           <div class="footer-links">
@@ -1461,78 +323,34 @@
     </main>
 
     <button
-      class="scroll-top liquid-glass"
+      class="scroll-top liquid-glass mu-icon-btn"
       id="scrollTopBtn"
       type="button"
       aria-label="Scroll to top"
       title="Scroll to top"
     >
-      <icon>arrow_upward</icon>
+      <icon aria-hidden="true">arrow_upward</icon>
     </button>
   </div>
 
   <script>
-    (function () {
-      try {
-        const settings = JSON.parse(localStorage.getItem("munetiosSettings") || "{}");
-        if (settings.singleStory === true) {
-          const style = document.createElement("style");
-          style.innerHTML = "* { font-feature-settings: 'ss02' off, 'ss01' on, 'liga' off, 'clig' off !important; }";
-          document.head.appendChild(style);
-        }
-      } catch (e) {}
-    })();
-
-    function setDarkMode(enabled) {
-      if (enabled) {
-        document.body.classList.add('dark-mode');
-        localStorage.setItem('darkMode', 'true');
-      } else {
-        document.body.classList.remove('dark-mode');
-        localStorage.setItem('darkMode', 'false');
-      }
-      updateDarkModeIcon();
-    }
-
-    function updateDarkModeIcon() {
-      const icon = document.getElementById('darkModeIcon');
-      if (!icon) return;
-      icon.textContent = document.body.classList.contains('dark-mode')
-        ? 'light_mode'
-        : 'dark_mode';
-    }
-
-    (function () {
-      const saved = localStorage.getItem('darkMode');
-      if (saved === 'true') {
-        setDarkMode(true);
-      } else {
-        updateDarkModeIcon();
-      }
-    })();
-
-    document.querySelector('.dark-mode-toggle').addEventListener('click', function () {
-      const isDark = document.body.classList.contains('dark-mode');
-      setDarkMode(!isDark);
-    });
-
     const translations = {
       en: {
         brandName: "Munetios",
         navHome: "Home",
+        navAbout: "About",
         navProducts: "Products",
         navBlog: "Blog",
         navWhatsNew: "What's New",
-        mobileInfo: "About Munetios with a redesigned premium responsive layout.",
         eyebrowAbout: "About Munetios",
         heroTitle: "Privacy-first design, responsive products, and a better digital experience",
-        heroText: "Munetios is a platform dedicated to providing high-quality software products and services. This redesigned About page keeps your original content while improving hierarchy, layout, responsiveness, and overall polish.",
+        heroText: "Munetios is a platform dedicated to building privacy-first software for everyday productivity.",
         heroBtnProducts: "Explore products",
         heroBtnPrivacy: "Read privacy policy",
         missionTitle: "Mission",
         missionText: "Create innovative solutions that enhance productivity and improve the digital experience for users.",
         designTitle: "Core design",
-        designText: "Purple branding, Google Sans Flex, and liquid-glass styling with a modern responsive interface.",
+        designText: "Purple branding, Munetios UI v4 Font, and liquid-glass styling with a modern responsive interface.",
         locationTitle: "Location",
         locationText: "Massachusetts, USA",
         statFounded: "Founded",
@@ -1541,32 +359,28 @@
         statLocationText: "Massachusetts-based.",
         statDesign: "Design",
         statDesignValue: "Purple",
-        statDesignText: "Liquid glass with Google Sans Flex.",
+        statDesignText: "Liquid glass with Munetios UI v4 Font.",
         statFocus: "Focus",
         statFocusValue: "Privacy",
         statFocusText: "Built around better control and better experience.",
         aboutTitle: "About Munetios",
-        aboutSubtitle: "Your original overview is preserved here, but presented in a cleaner and more readable structure.",
         platformMissionTitle: "Platform mission",
         platformMissionText: "Munetios is a platform dedicated to providing high-quality software products and services. The goal is to create innovative solutions that enhance productivity and improve the digital experience.",
         foundedDateTitle: "Founded date",
         foundedDateValue: "February 9, 2025",
         contactTitle: "Contact",
         privacyTitle: "Privacy Policy",
-        privacySubtitle: "The original privacy section is preserved and made easier to scan.",
         privacyText: "Your privacy is very important to us. We do not collect data, use logging, or use tracking mechanisms to monitor your activity on the platform. We are committed to ensuring that your personal information remains private and secure.",
         privacyLink: "Read full Privacy Policy",
         designSectionTitle: "Munetios Design",
-        designSectionSubtitle: "Design details from the original page, now shown in a stronger card layout.",
         colorsTitle: "Colors",
         colorsText: "Purple (#7c3aed), Dark Purple (#5b21b6), Black (#000000), White (#ffffff)",
         fontTitle: "Font",
-        fontText: "'Google Sans Flex', sans-serif",
+        fontText: "Munetios UI v4 Font",
         typographyTitle: "Typography settings",
         typographyText: "Font variation settings used: 'wght' 500 'ROND' 80",
         liquidGlassText: "Liquid Glass Effect (Premium and Beautiful)",
         faqTitle: "FAQ",
-        faqSubtitle: "Same FAQ content, redesigned into clearer cards.",
         faq1q: "What is Munetios?",
         faq1a: "Munetios is a platform dedicated to providing high-quality software products and services.",
         faq2q: "Where is Munetios located?",
@@ -1574,15 +388,12 @@
         faq3q: "How can I contact Munetios?",
         faq3a: "You can contact Munetios via email at munetios96@gmail.com.",
         appsTitle: "Apps",
-        appsSubtitle: "The apps section is preserved with better visual presentation.",
         appsText: "Munetios offers many apps such as Search, Calendar, Photos, OmniWrite, Games Hub, Tasks, Weather, Notes, Calculator and more.",
         appsLink: "Explore all our apps",
         trademarkTitle: "Trademark",
-        trademarkSubtitle: "Original trademark section kept intact in meaning.",
         trademarkText: "Munetios and the Munetios logo are currently not registered trademarks. However, trademark registration may be pursued in the future to protect brand identity. Please respect the use of the name and logo in accordance with applicable laws.",
         footerBrand: "Munetios",
         footerCopyright: "© 2026 Munetios. Open Source.",
-        footerMeta: "Built with a redesigned responsive layout that matches the newer Products page style.",
         footerMunetios: "Munetios",
         footerOmniWrite: "OmniWrite",
         footerPrivacy: "Privacy Policy",
@@ -1592,19 +403,19 @@
       es: {
         brandName: "Munetios",
         navHome: "Inicio",
+        navAbout: "Acerca de",
         navProducts: "Productos",
         navBlog: "Blog",
         navWhatsNew: "Novedades",
-        mobileInfo: "Acerca de Munetios con un diseño premium rediseñado y adaptable.",
         eyebrowAbout: "Acerca de Munetios",
         heroTitle: "Diseño centrado en la privacidad, productos adaptables y una mejor experiencia digital",
-        heroText: "Munetios es una plataforma dedicada a ofrecer productos y servicios de software de alta calidad. Esta página Acerca de rediseñada mantiene tu contenido original mientras mejora la jerarquía, el diseño, la capacidad de respuesta y el acabado general.",
+        heroText: "Munetios desarrolla software para la productividad diaria que prioriza la privacidad.",
         heroBtnProducts: "Explorar productos",
         heroBtnPrivacy: "Leer política de privacidad",
         missionTitle: "Misión",
         missionText: "Crear soluciones innovadoras que mejoren la productividad y la experiencia digital de los usuarios.",
         designTitle: "Diseño principal",
-        designText: "Marca púrpura, Google Sans Flex y estilo liquid-glass con una interfaz adaptable moderna.",
+        designText: "Marca púrpura, Munetios UI v4 Font y estilo liquid-glass con una interfaz adaptable moderna.",
         locationTitle: "Ubicación",
         locationText: "Massachusetts, EE. UU.",
         statFounded: "Fundado",
@@ -1613,32 +424,28 @@
         statLocationText: "Con sede en Massachusetts.",
         statDesign: "Diseño",
         statDesignValue: "Púrpura",
-        statDesignText: "Liquid glass con Google Sans Flex.",
+        statDesignText: "Cristal líquido con la fuente Munetios UI v4.",
         statFocus: "Enfoque",
         statFocusValue: "Privacidad",
         statFocusText: "Construido en torno a un mejor control y una mejor experiencia.",
         aboutTitle: "Acerca de Munetios",
-        aboutSubtitle: "Tu resumen original se conserva aquí, pero se presenta con una estructura más limpia y fácil de leer.",
         platformMissionTitle: "Misión de la plataforma",
         platformMissionText: "Munetios es una plataforma dedicada a ofrecer productos y servicios de software de alta calidad. El objetivo es crear soluciones innovadoras que mejoren la productividad y la experiencia digital.",
         foundedDateTitle: "Fecha de fundación",
         foundedDateValue: "9 de febrero de 2025",
         contactTitle: "Contacto",
         privacyTitle: "Política de Privacidad",
-        privacySubtitle: "La sección original de privacidad se conserva y es más fácil de leer.",
         privacyText: "Tu privacidad es muy importante para nosotros. No recopilamos datos, no usamos registros ni mecanismos de seguimiento para monitorear tu actividad en la plataforma. Estamos comprometidos a garantizar que tu información personal permanezca privada y segura.",
         privacyLink: "Leer la Política de Privacidad completa",
         designSectionTitle: "Diseño de Munetios",
-        designSectionSubtitle: "Detalles de diseño de la página original, ahora mostrados en un diseño de tarjetas más sólido.",
         colorsTitle: "Colores",
         colorsText: "Púrpura (#7c3aed), Púrpura oscuro (#5b21b6), Negro (#000000), Blanco (#ffffff)",
         fontTitle: "Fuente",
-        fontText: "'Google Sans Flex', sans-serif",
+        fontText: "Munetios UI v4 Font",
         typographyTitle: "Configuración tipográfica",
         typographyText: "Configuración de variación tipográfica usada: 'wght' 500 'ROND' 80",
         liquidGlassText: "Efecto Liquid Glass (Premium y hermoso)",
         faqTitle: "Preguntas frecuentes",
-        faqSubtitle: "El mismo contenido FAQ, rediseñado en tarjetas más claras.",
         faq1q: "¿Qué es Munetios?",
         faq1a: "Munetios es una plataforma dedicada a ofrecer productos y servicios de software de alta calidad.",
         faq2q: "¿Dónde se encuentra Munetios?",
@@ -1646,15 +453,12 @@
         faq3q: "¿Cómo puedo contactar a Munetios?",
         faq3a: "Puedes contactar a Munetios por correo en munetios96@gmail.com.",
         appsTitle: "Apps",
-        appsSubtitle: "La sección de apps se conserva con una mejor presentación visual.",
         appsText: "Munetios ofrece muchas apps como Search, Calendar, Photos, OmniWrite, Games Hub, Tasks, Weather, Notes, Calculator y más.",
         appsLink: "Explorar todas nuestras apps",
         trademarkTitle: "Marca registrada",
-        trademarkSubtitle: "La sección original de marca se conserva en significado.",
         trademarkText: "Munetios y el logotipo de Munetios actualmente no son marcas registradas. Sin embargo, el registro de marca puede buscarse en el futuro para proteger la identidad de la marca. Por favor respeta el uso del nombre y del logotipo de acuerdo con las leyes aplicables.",
         footerBrand: "Munetios",
         footerCopyright: "© 2026 Munetios. Código abierto.",
-        footerMeta: "Construido con un diseño adaptable rediseñado que coincide con el estilo más reciente de la página Products.",
         footerMunetios: "Munetios",
         footerOmniWrite: "OmniWrite",
         footerPrivacy: "Política de Privacidad",
@@ -1664,19 +468,19 @@
       fr: {
         brandName: "Munetios",
         navHome: "Accueil",
+        navAbout: "À propos",
         navProducts: "Produits",
         navBlog: "Blog",
         navWhatsNew: "Nouveautés",
-        mobileInfo: "À propos de Munetios avec une mise en page premium repensée et responsive.",
         eyebrowAbout: "À propos de Munetios",
         heroTitle: "Design axé sur la confidentialité, produits responsives et meilleure expérience numérique",
-        heroText: "Munetios est une plateforme dédiée à fournir des produits et services logiciels de haute qualité. Cette page À propos repensée conserve votre contenu original tout en améliorant la hiérarchie, la mise en page, la réactivité et la finition générale.",
+        heroText: "Munetios crée des logiciels de productivité au quotidien qui privilégient la confidentialité.",
         heroBtnProducts: "Explorer les produits",
         heroBtnPrivacy: "Lire la politique de confidentialité",
         missionTitle: "Mission",
         missionText: "Créer des solutions innovantes qui améliorent la productivité et l’expérience numérique des utilisateurs.",
         designTitle: "Design principal",
-        designText: "Identité violette, Google Sans Flex et style liquid-glass avec une interface moderne responsive.",
+        designText: "Identité violette, Munetios UI v4 Font et style liquid-glass avec une interface moderne responsive.",
         locationTitle: "Emplacement",
         locationText: "Massachusetts, États-Unis",
         statFounded: "Fondé",
@@ -1685,32 +489,28 @@
         statLocationText: "Basé au Massachusetts.",
         statDesign: "Design",
         statDesignValue: "Violet",
-        statDesignText: "Liquid glass avec Google Sans Flex.",
+        statDesignText: "Verre liquide avec la police Munetios UI v4.",
         statFocus: "Priorité",
         statFocusValue: "Confidentialité",
         statFocusText: "Conçu autour d’un meilleur contrôle et d’une meilleure expérience.",
         aboutTitle: "À propos de Munetios",
-        aboutSubtitle: "Votre aperçu original est conservé ici, mais présenté dans une structure plus propre et plus lisible.",
         platformMissionTitle: "Mission de la plateforme",
         platformMissionText: "Munetios est une plateforme dédiée à fournir des produits et services logiciels de haute qualité. L’objectif est de créer des solutions innovantes qui améliorent la productivité et l’expérience numérique.",
         foundedDateTitle: "Date de fondation",
         foundedDateValue: "9 février 2025",
         contactTitle: "Contact",
         privacyTitle: "Politique de confidentialité",
-        privacySubtitle: "La section confidentialité d’origine est conservée et plus facile à parcourir.",
         privacyText: "Votre confidentialité est très importante pour nous. Nous ne collectons pas de données, n’utilisons pas de journaux ni de mécanismes de suivi pour surveiller votre activité sur la plateforme. Nous nous engageons à garantir que vos informations personnelles restent privées et sécurisées.",
         privacyLink: "Lire la politique de confidentialité complète",
         designSectionTitle: "Design Munetios",
-        designSectionSubtitle: "Les détails de design de la page d’origine sont maintenant présentés dans une mise en page en cartes plus solide.",
         colorsTitle: "Couleurs",
         colorsText: "Violet (#7c3aed), Violet foncé (#5b21b6), Noir (#000000), Blanc (#ffffff)",
         fontTitle: "Police",
-        fontText: "'Google Sans Flex', sans-serif",
+        fontText: "Munetios UI v4 Font",
         typographyTitle: "Réglages typographiques",
         typographyText: "Réglages de variation typographique utilisés : 'wght' 500 'ROND' 80",
         liquidGlassText: "Effet Liquid Glass (Premium et magnifique)",
         faqTitle: "FAQ",
-        faqSubtitle: "Le même contenu FAQ, repensé dans des cartes plus claires.",
         faq1q: "Qu’est-ce que Munetios ?",
         faq1a: "Munetios est une plateforme dédiée à fournir des produits et services logiciels de haute qualité.",
         faq2q: "Où se trouve Munetios ?",
@@ -1718,15 +518,12 @@
         faq3q: "Comment puis-je contacter Munetios ?",
         faq3a: "Vous pouvez contacter Munetios par e-mail à munetios96@gmail.com.",
         appsTitle: "Applications",
-        appsSubtitle: "La section des applications est conservée avec une meilleure présentation visuelle.",
         appsText: "Munetios propose de nombreuses applications comme Search, Calendar, Photos, OmniWrite, Games Hub, Tasks, Weather, Notes, Calculator et plus encore.",
         appsLink: "Explorer toutes nos applications",
         trademarkTitle: "Marque",
-        trademarkSubtitle: "La section marque d’origine est conservée dans son sens.",
         trademarkText: "Munetios et le logo Munetios ne sont actuellement pas des marques déposées. Cependant, un enregistrement de marque pourra être envisagé à l’avenir pour protéger l’identité de la marque. Veuillez respecter l’utilisation du nom et du logo conformément aux lois applicables.",
         footerBrand: "Munetios",
         footerCopyright: "© 2026 Munetios. Open source.",
-        footerMeta: "Construit avec une mise en page responsive repensée qui correspond au style plus récent de la page Products.",
         footerMunetios: "Munetios",
         footerOmniWrite: "OmniWrite",
         footerPrivacy: "Politique de confidentialité",
@@ -1736,19 +533,19 @@
       de: {
         brandName: "Munetios",
         navHome: "Startseite",
+        navAbout: "Über uns",
         navProducts: "Produkte",
         navBlog: "Blog",
         navWhatsNew: "Neuigkeiten",
-        mobileInfo: "Über Munetios mit einem neu gestalteten Premium-Responsive-Layout.",
         eyebrowAbout: "Über Munetios",
         heroTitle: "Datenschutzorientiertes Design, responsive Produkte und ein besseres digitales Erlebnis",
-        heroText: "Munetios ist eine Plattform, die hochwertige Softwareprodukte und -dienste bereitstellt. Diese neu gestaltete Über-Seite behält deinen ursprünglichen Inhalt bei und verbessert gleichzeitig Hierarchie, Layout, Reaktionsfähigkeit und die gesamte Optik.",
+        heroText: "Munetios entwickelt Software für den produktiven Alltag mit besonderem Augenmerk auf Datenschutz.",
         heroBtnProducts: "Produkte entdecken",
         heroBtnPrivacy: "Datenschutzerklärung lesen",
         missionTitle: "Mission",
         missionText: "Innovative Lösungen schaffen, die Produktivität und digitales Erlebnis für Nutzer verbessern.",
         designTitle: "Kerndesign",
-        designText: "Lila Branding, Google Sans Flex und Liquid-Glass-Styling mit moderner responsiver Oberfläche.",
+        designText: "Lila Branding, Munetios UI v4 Font und Liquid-Glass-Styling mit moderner responsiver Oberfläche.",
         locationTitle: "Standort",
         locationText: "Massachusetts, USA",
         statFounded: "Gegründet",
@@ -1757,32 +554,28 @@
         statLocationText: "Mit Sitz in Massachusetts.",
         statDesign: "Design",
         statDesignValue: "Lila",
-        statDesignText: "Liquid Glass mit Google Sans Flex.",
+        statDesignText: "Flüssigglas mit der Schrift Munetios UI v4.",
         statFocus: "Fokus",
         statFocusValue: "Datenschutz",
         statFocusText: "Entwickelt für bessere Kontrolle und bessere Erfahrung.",
         aboutTitle: "Über Munetios",
-        aboutSubtitle: "Deine ursprüngliche Übersicht bleibt hier erhalten, wird aber in einer saubereren und besser lesbaren Struktur dargestellt.",
         platformMissionTitle: "Plattform-Mission",
         platformMissionText: "Munetios ist eine Plattform, die hochwertige Softwareprodukte und -dienste bereitstellt. Das Ziel ist es, innovative Lösungen zu schaffen, die Produktivität und digitales Erlebnis verbessern.",
         foundedDateTitle: "Gründungsdatum",
         foundedDateValue: "9. Februar 2025",
         contactTitle: "Kontakt",
         privacyTitle: "Datenschutzerklärung",
-        privacySubtitle: "Der ursprüngliche Datenschutzbereich bleibt erhalten und ist leichter lesbar.",
         privacyText: "Deine Privatsphäre ist uns sehr wichtig. Wir erfassen keine Daten, verwenden kein Logging und keine Tracking-Mechanismen, um deine Aktivität auf der Plattform zu überwachen. Wir verpflichten uns, sicherzustellen, dass deine persönlichen Informationen privat und sicher bleiben.",
         privacyLink: "Vollständige Datenschutzerklärung lesen",
         designSectionTitle: "Munetios Design",
-        designSectionSubtitle: "Designdetails der ursprünglichen Seite werden jetzt in einem stärkeren Kartenlayout gezeigt.",
         colorsTitle: "Farben",
         colorsText: "Lila (#7c3aed), Dunkellila (#5b21b6), Schwarz (#000000), Weiß (#ffffff)",
         fontTitle: "Schriftart",
-        fontText: "'Google Sans Flex', sans-serif",
+        fontText: "Munetios UI v4 Font",
         typographyTitle: "Typografie-Einstellungen",
         typographyText: "Verwendete Schriftvariations-Einstellungen: 'wght' 500 'ROND' 80",
         liquidGlassText: "Liquid-Glass-Effekt (Premium und schön)",
         faqTitle: "FAQ",
-        faqSubtitle: "Der gleiche FAQ-Inhalt, neu gestaltet in klareren Karten.",
         faq1q: "Was ist Munetios?",
         faq1a: "Munetios ist eine Plattform, die hochwertige Softwareprodukte und -dienste bereitstellt.",
         faq2q: "Wo befindet sich Munetios?",
@@ -1790,15 +583,12 @@
         faq3q: "Wie kann ich Munetios kontaktieren?",
         faq3a: "Du kannst Munetios per E-Mail unter munetios96@gmail.com kontaktieren.",
         appsTitle: "Apps",
-        appsSubtitle: "Der Apps-Bereich bleibt erhalten und hat eine bessere visuelle Darstellung.",
         appsText: "Munetios bietet viele Apps wie Search, Calendar, Photos, OmniWrite, Games Hub, Tasks, Weather, Notes, Calculator und mehr.",
         appsLink: "Alle unsere Apps entdecken",
         trademarkTitle: "Markenzeichen",
-        trademarkSubtitle: "Der ursprüngliche Markenzeichen-Bereich bleibt in seiner Bedeutung erhalten.",
         trademarkText: "Munetios und das Munetios-Logo sind derzeit keine eingetragenen Marken. Eine Markeneintragung kann jedoch in Zukunft angestrebt werden, um die Markenidentität zu schützen. Bitte respektiere die Nutzung des Namens und des Logos gemäß den geltenden Gesetzen.",
         footerBrand: "Munetios",
         footerCopyright: "© 2026 Munetios. Open Source.",
-        footerMeta: "Erstellt mit einem neu gestalteten responsiven Layout, das zum neueren Stil der Products-Seite passt.",
         footerMunetios: "Munetios",
         footerOmniWrite: "OmniWrite",
         footerPrivacy: "Datenschutzerklärung",
@@ -1808,19 +598,19 @@
       pt: {
         brandName: "Munetios",
         navHome: "Início",
+        navAbout: "Sobre",
         navProducts: "Produtos",
         navBlog: "Blog",
         navWhatsNew: "Novidades",
-        mobileInfo: "Sobre Munetios com um layout premium redesenhado e responsivo.",
         eyebrowAbout: "Sobre Munetios",
         heroTitle: "Design com foco em privacidade, produtos responsivos e uma melhor experiência digital",
-        heroText: "Munetios é uma plataforma dedicada a fornecer produtos e serviços de software de alta qualidade. Esta página Sobre redesenhada mantém seu conteúdo original enquanto melhora hierarquia, layout, responsividade e acabamento geral.",
+        heroText: "A Munetios desenvolve softwares para a produtividade diária com foco na privacidade.",
         heroBtnProducts: "Explorar produtos",
         heroBtnPrivacy: "Ler política de privacidade",
         missionTitle: "Missão",
         missionText: "Criar soluções inovadoras que melhorem a produtividade e a experiência digital dos usuários.",
         designTitle: "Design principal",
-        designText: "Marca roxa, Google Sans Flex e estilo liquid-glass com uma interface moderna e responsiva.",
+        designText: "Marca roxa, Munetios UI v4 Font e estilo liquid-glass com uma interface moderna e responsiva.",
         locationTitle: "Localização",
         locationText: "Massachusetts, EUA",
         statFounded: "Fundado",
@@ -1829,32 +619,28 @@
         statLocationText: "Baseado em Massachusetts.",
         statDesign: "Design",
         statDesignValue: "Roxo",
-        statDesignText: "Liquid glass com Google Sans Flex.",
+        statDesignText: "Vidro líquido com a fonte Munetios UI v4.",
         statFocus: "Foco",
         statFocusValue: "Privacidade",
         statFocusText: "Construído em torno de melhor controle e melhor experiência.",
         aboutTitle: "Sobre Munetios",
-        aboutSubtitle: "Sua visão geral original é preservada aqui, mas apresentada em uma estrutura mais limpa e fácil de ler.",
         platformMissionTitle: "Missão da plataforma",
         platformMissionText: "Munetios é uma plataforma dedicada a fornecer produtos e serviços de software de alta qualidade. O objetivo é criar soluções inovadoras que melhorem a produtividade e a experiência digital.",
         foundedDateTitle: "Data de fundação",
         foundedDateValue: "9 de fevereiro de 2025",
         contactTitle: "Contato",
         privacyTitle: "Política de Privacidade",
-        privacySubtitle: "A seção original de privacidade é preservada e ficou mais fácil de ler.",
         privacyText: "Sua privacidade é muito importante para nós. Não coletamos dados, não usamos logs nem mecanismos de rastreamento para monitorar sua atividade na plataforma. Estamos comprometidos em garantir que suas informações pessoais permaneçam privadas e seguras.",
         privacyLink: "Ler a Política de Privacidade completa",
         designSectionTitle: "Design Munetios",
-        designSectionSubtitle: "Detalhes de design da página original, agora mostrados em um layout de cartões mais forte.",
         colorsTitle: "Cores",
         colorsText: "Roxo (#7c3aed), Roxo escuro (#5b21b6), Preto (#000000), Branco (#ffffff)",
         fontTitle: "Fonte",
-        fontText: "'Google Sans Flex', sans-serif",
+        fontText: "Munetios UI v4 Font",
         typographyTitle: "Configurações tipográficas",
         typographyText: "Configurações de variação tipográfica usadas: 'wght' 500 'ROND' 80",
         liquidGlassText: "Efeito Liquid Glass (Premium e bonito)",
         faqTitle: "FAQ",
-        faqSubtitle: "O mesmo conteúdo de FAQ, redesenhado em cartões mais claros.",
         faq1q: "O que é Munetios?",
         faq1a: "Munetios é uma plataforma dedicada a fornecer produtos e serviços de software de alta qualidade.",
         faq2q: "Onde Munetios está localizado?",
@@ -1862,15 +648,12 @@
         faq3q: "Como posso entrar em contato com Munetios?",
         faq3a: "Você pode entrar em contato com Munetios por e-mail em munetios96@gmail.com.",
         appsTitle: "Apps",
-        appsSubtitle: "A seção de apps é preservada com melhor apresentação visual.",
         appsText: "Munetios oferece muitos apps como Search, Calendar, Photos, OmniWrite, Games Hub, Tasks, Weather, Notes, Calculator e mais.",
         appsLink: "Explorar todos os nossos apps",
         trademarkTitle: "Marca registrada",
-        trademarkSubtitle: "A seção original de marca registrada foi mantida no significado.",
         trademarkText: "Munetios e o logotipo Munetios atualmente não são marcas registradas. No entanto, o registro da marca pode ser buscado no futuro para proteger a identidade da marca. Respeite o uso do nome e do logotipo de acordo com as leis aplicáveis.",
         footerBrand: "Munetios",
         footerCopyright: "© 2026 Munetios. Código aberto.",
-        footerMeta: "Construído com um layout responsivo redesenhado que combina com o estilo mais novo da página Products.",
         footerMunetios: "Munetios",
         footerOmniWrite: "OmniWrite",
         footerPrivacy: "Política de Privacidade",
@@ -1879,160 +662,30 @@
       }
     };
 
-    const languageNames = {
-      en: "English",
-      es: "Español",
-      fr: "Français",
-      de: "Deutsch",
-      pt: "Português"
-    };
+    const languageSelect = document.getElementById('siteLanguage');
+    const languageLabels = { en: 'Language', es: 'Idioma', fr: 'Langue', de: 'Sprache', pt: 'Idioma' };
 
-    function applyLanguage(lang) {
-      const selected = translations[lang] ? lang : 'en';
+    function applyLanguage(language) {
+      const selected = Object.hasOwn(translations, language) ? language : 'en';
       document.documentElement.lang = selected;
-      localStorage.setItem('munetiosLanguage', selected);
-
-      const elements = document.querySelectorAll('[data-i18n]');
-      elements.forEach((element) => {
-        const key = element.getAttribute('data-i18n');
-        if (translations[selected][key]) {
-          element.textContent = translations[selected][key];
-        }
+      languageSelect.value = selected;
+      languageSelect.setAttribute('aria-label', languageLabels[selected]);
+      document.querySelectorAll('[data-i18n]').forEach((element) => {
+        const text = translations[selected][element.dataset.i18n];
+        if (text) element.textContent = text;
       });
-
-      updateLanguageButtons(selected);
+      window.MunetiosUI.refreshSelect(languageSelect);
     }
 
-    function updateLanguageButtons(selected) {
-      const desktopLabel = document.getElementById('desktopLanguageLabel');
-      const mobileLabel = document.getElementById('mobileLanguageLabel');
-
-      if (desktopLabel) desktopLabel.textContent = languageNames[selected] || "English";
-      if (mobileLabel) mobileLabel.textContent = languageNames[selected] || "English";
-
-      document.querySelectorAll('.language-option').forEach((option) => {
-        const isActive = option.dataset.lang === selected;
-        option.classList.toggle('active', isActive);
-        option.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      });
+    window.MunetiosUI.enhanceSelect(languageSelect);
+    try {
+      applyLanguage(localStorage.getItem('munetiosLanguage'));
+    } catch {
+      applyLanguage('en');
     }
-
-    const desktopLanguageDropdown = document.getElementById('desktopLanguageDropdown');
-    const desktopLanguageTrigger = document.getElementById('desktopLanguageTrigger');
-
-    const mobileLanguageDropdown = document.getElementById('mobileLanguageDropdown');
-    const mobileLanguageTrigger = document.getElementById('mobileLanguageTrigger');
-
-    function closeLanguageMenus() {
-      if (desktopLanguageDropdown) {
-        desktopLanguageDropdown.classList.remove('open');
-      }
-      if (desktopLanguageTrigger) {
-        desktopLanguageTrigger.setAttribute('aria-expanded', 'false');
-      }
-
-      if (mobileLanguageDropdown) {
-        mobileLanguageDropdown.classList.remove('open');
-      }
-      if (mobileLanguageTrigger) {
-        mobileLanguageTrigger.setAttribute('aria-expanded', 'false');
-      }
-    }
-
-    function toggleDesktopLanguageMenu() {
-      const isOpen = desktopLanguageDropdown.classList.contains('open');
-      closeLanguageMenus();
-      if (!isOpen) {
-        desktopLanguageDropdown.classList.add('open');
-        desktopLanguageTrigger.setAttribute('aria-expanded', 'true');
-      }
-    }
-
-    function toggleMobileLanguageMenu() {
-      const isOpen = mobileLanguageDropdown.classList.contains('open');
-      closeLanguageMenus();
-      if (!isOpen) {
-        mobileLanguageDropdown.classList.add('open');
-        mobileLanguageTrigger.setAttribute('aria-expanded', 'true');
-      }
-    }
-
-    if (desktopLanguageTrigger) {
-      desktopLanguageTrigger.addEventListener('click', toggleDesktopLanguageMenu);
-    }
-
-    if (mobileLanguageTrigger) {
-      mobileLanguageTrigger.addEventListener('click', toggleMobileLanguageMenu);
-    }
-
-    document.querySelectorAll('.language-option').forEach((option) => {
-      option.addEventListener('click', function () {
-        const lang = this.dataset.lang;
-        applyLanguage(lang);
-        closeLanguageMenus();
-      });
-    });
-
-    (function () {
-      const savedLanguage = localStorage.getItem('munetiosLanguage') || 'en';
-      applyLanguage(savedLanguage);
-    })();
-
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mobilePanel = document.getElementById('mobilePanel');
-    const menuIcon = document.getElementById('menuIcon');
-
-    function closeMobileMenu() {
-      mobilePanel.classList.remove('open');
-      mobilePanel.setAttribute('aria-hidden', 'true');
-      menuToggle.setAttribute('aria-expanded', 'false');
-      menuToggle.setAttribute('aria-label', 'Open menu');
-      menuIcon.textContent = 'menu';
-      document.body.classList.remove('menu-open');
-    }
-
-    function openMobileMenu() {
-      mobilePanel.classList.add('open');
-      mobilePanel.setAttribute('aria-hidden', 'false');
-      menuToggle.setAttribute('aria-expanded', 'true');
-      menuToggle.setAttribute('aria-label', 'Close menu');
-      menuIcon.textContent = 'close';
-      document.body.classList.add('menu-open');
-    }
-
-    menuToggle.addEventListener('click', function () {
-      const isOpen = mobilePanel.classList.contains('open');
-      if (isOpen) {
-        closeMobileMenu();
-      } else {
-        openMobileMenu();
-      }
-    });
-
-    document.addEventListener('click', function (event) {
-      const clickedOutsideDesktopLanguage =
-        !desktopLanguageDropdown || !desktopLanguageDropdown.contains(event.target);
-      const clickedOutsideMobileLanguage =
-        !mobileLanguageDropdown || !mobileLanguageDropdown.contains(event.target);
-
-      if (clickedOutsideDesktopLanguage && clickedOutsideMobileLanguage) {
-        closeLanguageMenus();
-      }
-
-      if (
-        mobilePanel.classList.contains('open') &&
-        !mobilePanel.contains(event.target) &&
-        !menuToggle.contains(event.target)
-      ) {
-        closeMobileMenu();
-      }
-    });
-
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 980) {
-        closeMobileMenu();
-      }
-      closeLanguageMenus();
+    languageSelect.addEventListener('change', () => {
+      applyLanguage(languageSelect.value);
+      try { localStorage.setItem('munetiosLanguage', languageSelect.value); } catch {}
     });
 
     const scrollTopBtn = document.getElementById('scrollTopBtn');
@@ -2053,32 +706,6 @@
 
     updateScrollButton();
 
-    const revealItems = document.querySelectorAll('.reveal');
-
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.12 }
-      );
-
-      revealItems.forEach((item) => observer.observe(item));
-    } else {
-      revealItems.forEach((item) => item.classList.add('visible'));
-    }
-
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') {
-        closeLanguageMenus();
-        closeMobileMenu();
-      }
-    });
   </script>
 </body>
 </html>
