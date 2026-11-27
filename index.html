@@ -8073,6 +8073,20 @@ if (isAmerica250Date && logo) {
           };
         })();
 
+        // Black Friday doodle: November 27, 2026 (visitor's local date).
+        (function () {
+          const now = new Date();
+          if (now.getFullYear() !== 2026 || now.getMonth() !== 10 || now.getDate() !== 27) return;
+
+          const logo = document.getElementById("canChangeLogoinDoodles");
+          if (!logo) return;
+
+          logo.src = "blackfriday.png";
+          logo.alt = "Munetios Black Friday 2026";
+          logo.style.cursor = "default";
+          logo.onclick = null;
+        })();
+
         // Hash-based routing for images and search modes
         (function () {
           const searchInput = document.getElementById("searchInput");
