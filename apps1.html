@@ -8,11 +8,7 @@
   />
   <title>Products - Munetios</title>
 
-  <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css" />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0..1&display=swap"
-  />
+  <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css" crossorigin="anonymous" />
   <meta
     name="description"
     content="Explore the range of products offered by Munetios, including our private search engine and upcoming tools designed to enhance your online experience."
@@ -38,1431 +34,79 @@
     content="BF44E33561FDFF8178BDA1E527F81862"
   />
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght,ROND@6..144,1..1000,80&display=swap');
-
-    :root {
-      --bg: #f5f3ff;
-      --bg-secondary: #ffffff;
-      --surface: rgba(255, 255, 255, 0.72);
-      --surface-strong: rgba(255, 255, 255, 0.9);
-      --surface-border: rgba(124, 58, 237, 0.16);
-      --text: #140a26;
-      --text-soft: #5f5573;
-      --heading: #170b2b;
-      --primary: #7c3aed;
-      --primary-strong: #6d28d9;
-      --primary-soft: rgba(124, 58, 237, 0.12);
-      --success: #0f9d58;
-      --warning: #d97706;
-      --shadow: 0 18px 60px rgba(72, 33, 130, 0.12);
-      --shadow-soft: 0 8px 30px rgba(72, 33, 130, 0.08);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
-      --radius-md: 18px;
-      --radius-sm: 14px;
-      --header-height: 84px;
-      --container: 1320px;
-    }
-
-    body.dark-mode {
-      --bg: #120025;
-      --bg-secondary: #170033;
-      --surface: rgba(31, 7, 69, 0.01);
-      --surface-strong: rgba(40, 8, 84, 0.10);
-      --surface-border: rgba(202, 177, 255, 0.12);
-      --text: #f7f4ff;
-      --text-soft: #cdbdf0;
-      --heading: #ffffff;
-      --primary: #a78bfa;
-      --primary-strong: #c4b5fd;
-      --primary-soft: rgba(167, 139, 250, 0.16);
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.25);
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: 'Google Sans Flex', sans-serif;
-      font-variation-settings: 'wght' 500, 'ROND' 80;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background:
-        radial-gradient(circle at top left, rgba(124, 58, 237, 0.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(139, 92, 246, 0.12), transparent 22%),
-        linear-gradient(180deg, var(--bg), var(--bg-secondary));
-      color: var(--text);
-      min-height: 100vh;
-      transition:
-        background-color 0.25s ease,
-        color 0.25s ease;
-      overflow-x: hidden;
-    }
-
-    body.menu-open {
-      overflow: hidden;
-    }
-
-    icon,
-    .material-symbols-rounded {
-      font-family: 'Material Symbols Rounded';
-      font-weight: normal;
-      font-style: normal;
-      font-size: 24px;
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      letter-spacing: normal;
-      text-transform: none;
-      white-space: nowrap;
-      word-wrap: normal;
-      direction: ltr;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .page-shell {
-      position: relative;
-      min-height: 100vh;
-    }
-
-    .bg-orb {
-      position: fixed;
-      inset: auto;
-      pointer-events: none;
-      z-index: 0;
-      border-radius: 999px;
-      filter: blur(24px);
-      opacity: 0.5;
-    }
-
-    .orb-1 {
-      top: -120px;
-      left: -120px;
-      width: 300px;
-      height: 300px;
-      background: rgba(124, 58, 237, 0.16);
-    }
-
-    .orb-2 {
-      top: 200px;
-      right: -140px;
-      width: 320px;
-      height: 320px;
-      background: rgba(139, 92, 246, 0.14);
-    }
-
-    .orb-3 {
-      bottom: 80px;
-      left: 8%;
-      width: 260px;
-      height: 260px;
-      background: rgba(76, 29, 149, 0.1);
-    }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      padding: 14px 18px;
-      backdrop-filter: blur(2px) saturate(180%);
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .header-inner {
-      max-width: var(--container);
-      margin: 0 auto;
-      min-height: var(--header-height);
-      display: grid;
-      grid-template-columns: auto 1fr auto auto;
-      gap: 14px;
-      align-items: center;
-      padding: 12px 14px;
-      border-radius: 30px;
-      border: 1px solid var(--surface-border);
-      background: var(--surface);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(2px) saturate(180%);
-    }
-
-    .logo {
-      min-width: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      border-radius: 22px;
-      font-weight: 700;
-      color: var(--heading);
-      background: rgba(255, 255, 255, 0.04);
-      white-space: nowrap;
-    }
-
-    .logo-mark {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #7c3aed, #a78bfa);
-      box-shadow: 0 0 0 6px rgba(124, 58, 237, 0.12);
-      flex-shrink: 0;
-    }
-
-    .desktop-nav-wrap {
-      display: flex;
-      justify-content: center;
-      min-width: 0;
-    }
-
-    nav.desktop-nav {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px;
-      min-height: 58px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.04);
-      min-width: 0;
-      flex-wrap: wrap;
-    }
-
-    nav.desktop-nav a {
-      color: var(--text);
-      font-weight: 600;
-      padding: 12px 16px;
-      border-radius: 999px;
-      transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
-      white-space: nowrap;
-    }
-
-    nav.desktop-nav a:hover,
-    nav.desktop-nav a:focus-visible {
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      outline: none;
-      transform: translateY(-1px);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .icon-btn,
-    .dark-mode-toggle,
-    .menu-toggle,
-    .scroll-top {
-      border: 1px solid var(--surface-border);
-      background: var(--surface-strong);
-      color: var(--text);
-      border-radius: 18px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        border-color 0.2s ease;
-      backdrop-filter: blur(2px) saturate(180%);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .icon-btn:hover,
-    .dark-mode-toggle:hover,
-    .menu-toggle:hover,
-    .scroll-top:hover,
-    .icon-btn:focus-visible,
-    .dark-mode-toggle:focus-visible,
-    .menu-toggle:focus-visible,
-    .scroll-top:focus-visible {
-      transform: translateY(-2px);
-      outline: none;
-      border-color: rgba(124, 58, 237, 0.32);
-      background: var(--primary-soft);
-    }
-
-    .dark-mode-toggle,
-    .menu-toggle {
-      width: 56px;
-      height: 56px;
-      padding: 0;
-    }
-
-    .menu-toggle {
-      display: none;
-    }
-
-    .mobile-panel {
-      position: fixed;
-      top: calc(16px + var(--header-height));
-      right: 16px;
-      left: 16px;
-      z-index: 999;
-      padding: 14px;
-      border-radius: 24px;
-      background: var(--surface-strong);
-      border: 1px solid var(--surface-border);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(2px) saturate(180%);
-      display: none;
-    }
-
-    .mobile-panel.open {
-      display: block;
-      animation: fadeSlide 0.22s ease;
-    }
-
-    .mobile-panel nav {
-      display: grid;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .mobile-panel nav a {
-      color: var(--text);
-      font-weight: 600;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .mobile-panel nav a:hover,
-    .mobile-panel nav a:focus-visible {
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      outline: none;
-    }
-
-    .mobile-extra {
-      display: grid;
-      gap: 10px;
-    }
-
-    .mobile-info-chip {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-soft);
-      font-size: 0.96rem;
-    }
-
-    main {
-      position: relative;
-      z-index: 1;
-      max-width: var(--container);
-      margin: 0 auto;
-      padding: 18px 20px 100px;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 22px;
-      align-items: stretch;
-      margin-top: 12px;
-      margin-bottom: 26px;
-    }
-
-    .hero-card,
-    .hero-side,
-    .section-panel,
-    .stats-row .stat-card,
-    .box-app-list,
-    .compare-card,
-    .filter-bar {
-      border: 1px solid var(--surface-border);
-      background: var(--surface);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(2px) saturate(180%);
-    }
-
-    .hero-card {
-      padding: 34px;
-      position: relative;
-      overflow: hidden;
-      min-height: 360px;
-    }
-
-    .hero-card::before {
-      content: "";
-      position: absolute;
-      inset: auto -50px -50px auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 999px;
-      background: radial-gradient(circle, rgba(124, 58, 237, 0.18), transparent 70%);
-      pointer-events: none;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .hero h1,
-    .hero h2,
-    .hero h3,
-    .hero h4,
-    .hero h5,
-    .hero h6,
-    .hero p,
-    main h1,
-    main h2,
-    main h3,
-    main h4,
-    main h5,
-    main h6,
-    main p,
-    main li,
-    main input,
-    main button {
-      font-family: 'Google Sans Flex', sans-serif;
-      font-feature-settings: 'ss02' off, 'ss01' on, 'liga' off, 'clig' off !important;
-    }
-
-    .hero h1 {
-      margin: 0 0 14px;
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      line-height: 1.04;
-      color: var(--heading);
-      letter-spacing: -0.03em;
-    }
-
-    .hero p {
-      margin: 0;
-      font-size: clamp(1rem, 1.4vw, 1.18rem);
-      line-height: 1.75;
-      color: var(--text-soft);
-      max-width: 780px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 22px;
-    }
-
-    .btn,
-    .btn-secondary,
-    .chip-btn {
-      appearance: none;
-      border: none;
-      cursor: pointer;
-      transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease;
-      font-family: 'Google Sans Flex', sans-serif;
-      font-variation-settings: 'wght' 650, 'ROND' 80;
-      font-feature-settings: 'ss02' off, 'ss01' on, 'liga' off, 'clig' off !important;
-    }
-
-    .btn,
-    .btn-secondary {
-      min-height: 52px;
-      border-radius: 999px;
-      padding: 0 20px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-size: 1rem;
-      white-space: nowrap;
-    }
-
-    .btn {
-      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-      color: white;
-      box-shadow: 0 12px 30px rgba(124, 58, 237, 0.22);
-    }
-
-    .btn:hover,
-    .btn:focus-visible {
-      transform: translateY(-2px);
-      outline: none;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text);
-      border: 1px solid var(--surface-border);
-    }
-
-    .btn-secondary:hover,
-    .btn-secondary:focus-visible {
-      transform: translateY(-2px);
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      outline: none;
-    }
-
-    .hero-side {
-      padding: 22px;
-      display: grid;
-      gap: 16px;
-      align-content: start;
-    }
-
-    .mini-panel {
-      padding: 18px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(124, 58, 237, 0.08);
-    }
-
-    .mini-panel h3 {
-      margin: 0 0 8px;
-      font-size: 1.08rem;
-      color: var(--heading);
-    }
-
-    .mini-panel p {
-      margin: 0;
-      color: var(--text-soft);
-      font-size: 0.98rem;
-      line-height: 1.65;
-    }
-
-    .status-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 2px;
-    }
-
-    .status-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      font-size: 0.95rem;
-    }
-
-    .status-item strong {
-      color: var(--heading);
-      font-size: 0.96rem;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .status-live {
-      background: rgba(15, 157, 88, 0.14);
-      color: var(--success);
-    }
-
-    .status-upcoming {
-      background: rgba(217, 119, 6, 0.14);
-      color: var(--warning);
-    }
-
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 26px;
-    }
-
-    .stat-card {
-      padding: 22px;
-    }
-
-    .stat-card .stat-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .stat-label {
-      color: var(--text-soft);
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    .stat-value {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 800;
-      color: var(--heading);
-      line-height: 1;
-    }
-
-    .stat-sub {
-      color: var(--text-soft);
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    .section-panel {
-      padding: 28px;
-      margin-bottom: 22px;
-    }
-
-    .section-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: end;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .section-header h2 {
-      margin: 0;
-      font-size: clamp(1.45rem, 2vw, 2rem);
-      color: var(--heading);
-      letter-spacing: -0.02em;
-    }
-
-    .section-header p {
-      margin: 8px 0 0;
-      color: var(--text-soft);
-      line-height: 1.7;
-      max-width: 760px;
-      font-size: 1rem;
-    }
-
-    .compare-layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    .compare-card {
-      padding: 18px;
-    }
-
-    .compare-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .compare-grid li {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.04);
-      min-width: 0;
-    }
-
-    .compare-grid li .icon-wrap {
-      width: 42px;
-      height: 42px;
-      min-width: 42px;
-      border-radius: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-    }
-
-    .compare-grid li strong {
-      display: block;
-      margin-bottom: 4px;
-      color: var(--heading);
-    }
-
-    .compare-grid li span {
-      color: var(--text-soft);
-      line-height: 1.55;
-      display: block;
-      font-size: 0.96rem;
-    }
-
-    .filter-bar {
-      padding: 18px;
-      margin-bottom: 18px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) auto auto;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .search-wrap {
-      position: relative;
-      min-width: 0;
-    }
-
-    .search-wrap icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-soft);
-      pointer-events: none;
-      font-size: 22px;
-    }
-
-    .product-search {
-      width: 100%;
-      min-height: 56px;
-      border-radius: 18px;
-      border: 1px solid var(--surface-border);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      padding: 0 16px 0 48px;
-      outline: none;
-    }
-
-    .product-search::placeholder {
-      color: var(--text-soft);
-    }
-
-    .product-search:focus {
-      border-color: rgba(124, 58, 237, 0.34);
-      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.08);
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: flex-end;
-    }
-
-    .chip-btn {
-      min-height: 48px;
-      padding: 0 16px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      border: 1px solid var(--surface-border);
-      font-size: 0.95rem;
-    }
-
-    .chip-btn:hover,
-    .chip-btn:focus-visible,
-    .chip-btn.active {
-      outline: none;
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      border-color: rgba(124, 58, 237, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .products-toolbar {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .results-count {
-      color: var(--text-soft);
-      font-size: 0.96rem;
-      font-weight: 600;
-    }
-
-    .toolbar-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .grid-apps-list {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 0;
-    }
-
-    .box-app-list {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-      position: relative;
-      overflow: hidden;
-      transition:
-        transform 0.25s ease,
-        border-color 0.25s ease,
-        box-shadow 0.25s ease;
-    }
-
-    .box-app-list:hover,
-    .box-app-list:focus-within {
-      transform: translateY(-4px);
-      border-color: rgba(124, 58, 237, 0.28);
-      box-shadow: var(--shadow);
-    }
-
-    .card-head {
-      display: flex;
-      align-items: start;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .app-icon {
-      width: 54px;
-      height: 54px;
-      min-width: 54px;
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(167, 139, 250, 0.14));
-      color: var(--primary-strong);
-      border: 1px solid rgba(124, 58, 237, 0.12);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
-    }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      line-height: 1;
-      border: 1px solid rgba(124, 58, 237, 0.14);
-    }
-
-    .tag-live {
-      background: rgba(15, 157, 88, 0.12);
-      color: var(--success);
-      border-color: rgba(15, 157, 88, 0.14);
-    }
-
-    .tag-upcoming {
-      background: rgba(217, 119, 6, 0.12);
-      color: var(--warning);
-      border-color: rgba(217, 119, 6, 0.14);
-    }
-
-    .tag-category {
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-    }
-
-    .box-app-list h2 {
-      margin: 0 0 10px;
-      color: var(--heading);
-      font-size: 1.34rem;
-      line-height: 1.18;
-      letter-spacing: -0.02em;
-    }
-
-    .box-app-list p {
-      margin: 0;
-      color: var(--text-soft);
-      font-size: 1rem;
-      line-height: 1.7;
-    }
-
-    .card-footer {
-      margin-top: auto;
-      padding-top: 18px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .secondary-link {
-      min-height: 48px;
-      padding: 0 16px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--surface-border);
-      font-weight: 600;
-    }
-
-    .secondary-link:hover,
-    .secondary-link:focus-visible {
-      outline: none;
-      background: var(--primary-soft);
-      color: var(--primary-strong);
-      transform: translateY(-1px);
-    }
-
-    .no-results {
-      display: none;
-      text-align: center;
-      padding: 36px 22px;
-      border-radius: 24px;
-      border: 1px dashed var(--surface-border);
-      color: var(--text-soft);
-      background: rgba(255, 255, 255, 0.03);
-      margin-top: 16px;
-    }
-
-    .no-results.show {
-      display: block;
-    }
-
-    .footer-note {
-      margin-top: 26px;
-      color: var(--text-soft);
-      text-align: center;
-      font-size: 0.96rem;
-      line-height: 1.7;
-    }
-
-    .scroll-top {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 900;
-      width: 56px;
-      height: 56px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-    }
-
-    .scroll-top.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(18px);
-      transition:
-        opacity 0.45s ease,
-        transform 0.45s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(-8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 1200px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .stats-row {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .grid-apps-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 980px) {
-      .site-header {
-        padding: 12px;
-      }
-
-      .header-inner {
-        grid-template-columns: minmax(0, 1fr) auto auto;
-      }
-
-      .desktop-nav-wrap {
-        display: none;
-      }
-
-      .menu-toggle {
-        display: inline-flex;
-      }
-
-      .filter-bar {
-        grid-template-columns: 1fr;
-      }
-
-      .chips {
-        justify-content: flex-start;
-      }
-
-      .compare-grid {
-        grid-template-columns: 1fr;
-      }
-
-      main {
-        padding: 14px 16px 90px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .header-inner {
-        min-height: 74px;
-        padding: 10px;
-        gap: 10px;
-      }
-
-      .logo {
-        min-width: 0;
-        width: 100%;
-        padding: 12px 14px;
-        font-size: 1.06rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .hero-card,
-      .hero-side,
-      .section-panel,
-      .stat-card,
-      .box-app-list {
-        border-radius: 24px;
-      }
-
-      .hero-card {
-        padding: 24px;
-        min-height: auto;
-      }
-
-      .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .btn,
-      .btn-secondary,
-      .secondary-link {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .stats-row {
-        grid-template-columns: 1fr;
-      }
-
-      .grid-apps-list {
-        grid-template-columns: 1fr;
-      }
-
-      .products-toolbar {
-        align-items: flex-start;
-      }
-
-      .section-panel {
-        padding: 22px;
-      }
-
-      .compare-card {
-        padding: 16px;
-      }
-
-      .card-head {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .card-tags {
-        justify-content: flex-start;
-      }
-
-      .mobile-panel {
-        top: 94px;
-      }
-
-      .scroll-top {
-        width: 52px;
-        height: 52px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      :root {
-        --header-height: 72px;
-      }
-
-      .site-header {
-        padding: 10px;
-      }
-
-      .header-inner {
-        border-radius: 24px;
-      }
-
-      .logo {
-        font-size: 0.98rem;
-        gap: 10px;
-      }
-
-      .logo-mark {
-        width: 14px;
-        height: 14px;
-        box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.12);
-      }
-
-      .dark-mode-toggle,
-      .menu-toggle {
-        width: 50px;
-        height: 50px;
-        border-radius: 16px;
-      }
-
-      .hero h1 {
-        font-size: clamp(1.8rem, 8vw, 2.6rem);
-      }
-
-      .hero p,
-      .section-header p,
-      .box-app-list p,
-      .mini-panel p {
-        font-size: 0.98rem;
-      }
-
-      .section-header h2 {
-        font-size: 1.34rem;
-      }
-
-      .product-search {
-        min-height: 52px;
-      }
-
-      .chip-btn {
-        min-height: 44px;
-        padding: 0 14px;
-        font-size: 0.9rem;
-      }
-
-      .box-app-list {
-        padding: 18px;
-      }
-
-      .app-icon {
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-      }
-
-      .card-footer {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .mobile-info-chip {
-        align-items: flex-start;
-      }
-    }
-
-    @media (max-width: 380px) {
-      main {
-        padding-inline: 12px;
-      }
-
-      .hero-card,
-      .hero-side,
-      .section-panel,
-      .filter-bar,
-      .box-app-list {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .logo {
-        font-size: 0.92rem;
-      }
-
-      .eyebrow {
-        width: 100%;
-        justify-content: center;
-        text-align: center;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/munetios-ui/munetios-ui-v4.css" />
+  <link rel="stylesheet" href="/info-pages.css" />
+  <script src="/munetios-ui/munetios-ui-v4.js"></script>
+  <script src="/info-pages.js" defer></script>
 </head>
-<body>
+<body class="mu-root info-page products-page">
   <div class="page-shell">
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-    <div class="bg-orb orb-3"></div>
-
     <header class="site-header">
-      <div class="header-inner liquid-glass">
-        <div class="logo liquid-glass" aria-label="Munetios Products">
-          <span class="logo-mark" aria-hidden="true"></span>
-          <span>Munetios Products</span>
-        </div>
-
-        <div class="desktop-nav-wrap">
-          <nav class="desktop-nav liquid-glass" aria-label="Primary navigation">
-            <a href="/">Home</a>
-            <a href="/about.html">About</a>
-            <a href="https://blog.munetios.com">Blog</a>
-            <a href="/whats-new.html">What's New</a>
-          </nav>
-        </div>
-
-        <div class="header-actions">
-          <button
-            class="dark-mode-toggle liquid-glass"
-            type="button"
-            aria-label="Toggle dark mode"
-            title="Toggle dark mode"
-          >
-            <icon id="darkModeIcon">dark_mode</icon>
-          </button>
-
-          <button
-            class="menu-toggle liquid-glass"
-            type="button"
-            aria-label="Open menu"
-            aria-expanded="false"
-            aria-controls="mobilePanel"
-            title="Open menu"
-          >
-            <icon id="menuIcon">menu</icon>
-          </button>
-        </div>
+      <div class="header-inner mu-topbar">
+        <a class="logo mu-btn mu-glass liquid-glass" href="/">
+          <img src="/apple-touch-icon-new.png" alt="" width="32" height="32" />
+          Munetios
+        </a>
+        <nav class="desktop-nav mu-glass liquid-glass" aria-label="Primary navigation">
+          <a class="mu-nav-item" href="/">Home</a>
+          <a class="mu-nav-item" href="/about.html">About</a>
+          <a class="mu-nav-item" href="/apps1.html" aria-current="page">Products</a>
+          <a class="mu-nav-item" href="/whats-new.html">What's New</a>
+          <a class="mu-nav-item" href="https://blog.munetios.com">Blog</a>
+        </nav>
+        <button class="dark-mode-toggle mu-icon-btn liquid-glass" type="button" aria-label="Dark mode" aria-pressed="false">
+          <span class="mu-icon" aria-hidden="true">dark_mode</span>
+        </button>
+        <button class="menu-toggle mu-icon-btn liquid-glass" type="button" aria-label="Navigation menu" aria-controls="siteMenu" aria-expanded="false">
+          <span class="mu-icon" aria-hidden="true">menu</span>
+        </button>
       </div>
+      <nav class="mobile-panel mu-glass liquid-glass" id="siteMenu" aria-label="Mobile navigation" hidden>
+          <a class="mu-nav-item" href="/">Home</a>
+          <a class="mu-nav-item" href="/about.html">About</a>
+          <a class="mu-nav-item" href="/apps1.html" aria-current="page">Products</a>
+          <a class="mu-nav-item" href="/whats-new.html">What's New</a>
+          <a class="mu-nav-item" href="https://blog.munetios.com">Blog</a>
+      </nav>
     </header>
 
-    <div class="mobile-panel liquid-glass" id="mobilePanel" aria-hidden="true">
-      <nav aria-label="Mobile navigation">
-        <a href="/">Home</a>
-        <a href="/about.html">About</a>
-        <a href="https://blog.munetios.com">Blog</a>
-        <a href="/whats-new.html">What's New</a>
-      </nav>
-
-      <div class="mobile-extra">
-        <div class="mobile-info-chip">
-          <icon>privacy</icon>
-          <span>Privacy-first products with a cleaner responsive layout.</span>
-        </div>
-        <div class="mobile-info-chip">
-          <icon>devices</icon>
-          <span>Optimized for desktop, tablet, large phones, and small phones.</span>
-        </div>
-      </div>
-    </div>
-
     <main>
-      <section class="hero reveal">
-        <div class="hero-card liquid-glass">
+      <section class="hero">
+        <div class="hero-card liquid-glass mu-card mu-glass">
           <div class="eyebrow">
-            <icon>shield_lock</icon>
+            <icon aria-hidden="true">shield_lock</icon>
             Privacy-first ecosystem
           </div>
 
-          <h1>Meet Munetios Search and explore the Munetios product ecosystem</h1>
-          <p>
-            Munetios Search is a private search engine that does not track you.
-            This redesigned products page keeps your existing features while
-            giving the UI a stronger structure, better spacing, richer cards,
-            and far better media queries across devices.
-          </p>
+          <h1>Explore Munetios products</h1>
+          <p>Search privately, get work done, and discover apps for everyday tasks.</p>
 
           <div class="hero-actions">
             <button
-              class="btn"
+              class="btn mu-btn mu-btn-primary"
               type="button"
               onclick="window.location.href='https://www.munetios.com/search/search.html'"
             >
-              <icon>travel_explore</icon>
+              <icon aria-hidden="true">travel_explore</icon>
               Open Munetios Search
             </button>
 
             <button
-              class="btn-secondary"
+              class="btn-secondary mu-btn"
               type="button"
               onclick="document.getElementById('products').scrollIntoView({ behavior: 'smooth' })"
             >
-              <icon>apps</icon>
+              <icon aria-hidden="true">apps</icon>
               Browse products
             </button>
           </div>
         </div>
-
-        <aside class="hero-side liquid-glass">
-          <div class="mini-panel">
-            <h3>What improved</h3>
-            <p>
-              Better hierarchy, better layout density, stronger mobile behavior,
-              improved card design, smoother interactions, and extra tools like
-              product search and filters.
-            </p>
-          </div>
-
-          <div class="mini-panel">
-            <h3>Quick status</h3>
-            <div class="status-list">
-              <div class="status-item">
-                <strong>Dark mode</strong>
-                <span class="status-badge status-live">
-                  <icon>check_circle</icon>
-                  Preserved
-                </span>
-              </div>
-              <div class="status-item">
-                <strong>Existing product actions</strong>
-                <span class="status-badge status-live">
-                  <icon>check_circle</icon>
-                  Preserved
-                </span>
-              </div>
-              <div class="status-item">
-                <strong>Responsive layout</strong>
-                <span class="status-badge status-live">
-                  <icon>phone_iphone</icon>
-                  Enhanced
-                </span>
-              </div>
-              <div class="status-item">
-                <strong>Extra features</strong>
-                <span class="status-badge status-upcoming">
-                  <icon>bolt</icon>
-                  Added
-                </span>
-              </div>
-            </div>
-          </div>
-        </aside>
       </section>
 
-      <section class="stats-row reveal" aria-label="Product highlights">
-        <div class="stat-card liquid-glass">
-          <div class="stat-top">
-            <span class="stat-label">Visible products</span>
-            <icon>dashboard</icon>
-          </div>
-          <div class="stat-value" id="productCountStat">13</div>
-          <div class="stat-sub">Automatically updates when products are filtered.</div>
-        </div>
-
-        <div class="stat-card liquid-glass">
-          <div class="stat-top">
-            <span class="stat-label">Private focus</span>
-            <icon>lock</icon>
-          </div>
-          <div class="stat-value">Strong</div>
-          <div class="stat-sub">Privacy-centered messaging remains prominent.</div>
-        </div>
-
-        <div class="stat-card liquid-glass">
-          <div class="stat-top">
-            <span class="stat-label">Responsive design</span>
-            <icon>devices</icon>
-          </div>
-          <div class="stat-value">Full</div>
-          <div class="stat-sub">Desktop, tablet, large phone, and compact phone support.</div>
-        </div>
-
-        <div class="stat-card liquid-glass">
-          <div class="stat-top">
-            <span class="stat-label">Extra tools</span>
-            <icon>auto_awesome</icon>
-          </div>
-          <div class="stat-value">6+</div>
-          <div class="stat-sub">Search, filters, mobile menu, animations, and more.</div>
-        </div>
-      </section>
-
-      <section class="section-panel reveal">
+      <section class="section-panel mu-card mu-glass liquid-glass">
         <div class="section-header">
           <div>
             <h2>Why Munetios Search stands out</h2>
-            <p>
-              Your original comparison content is preserved, but presented in a
-              stronger grid with more readable spacing and better scanning.
-            </p>
           </div>
         </div>
 
@@ -1470,45 +114,38 @@
           <div class="compare-card liquid-glass">
             <ul class="compare-grid">
               <li>
-                <span class="icon-wrap"><icon>verified_user</icon></span>
+                <span class="icon-wrap"><icon aria-hidden="true">verified_user</icon></span>
                 <div>
                   <strong>Munetios Search</strong>
                   <span>No ads, respects privacy, does not track you, frontend open source, no accounts needed.</span>
                 </div>
               </li>
               <li>
-                <span class="icon-wrap"><icon>ads_click</icon></span>
+                <span class="icon-wrap"><icon aria-hidden="true">ads_click</icon></span>
                 <div>
                   <strong>Google Search</strong>
                   <span>Has ads, tracks you, not open source, accounts optional but used for personalization.</span>
                 </div>
               </li>
               <li>
-                <span class="icon-wrap"><icon>public</icon></span>
+                <span class="icon-wrap"><icon aria-hidden="true">public</icon></span>
                 <div>
                   <strong>Bing Search</strong>
                   <span>Has ads, tracks you, not open source, accounts optional but used for personalization.</span>
                 </div>
               </li>
               <li>
-                <span class="icon-wrap"><icon>shield</icon></span>
+                <span class="icon-wrap"><icon aria-hidden="true">shield</icon></span>
                 <div>
                   <strong>DuckDuckGo</strong>
                   <span>Has some ads, does not track you, partially open source, no accounts needed.</span>
                 </div>
               </li>
               <li>
-                <span class="icon-wrap"><icon>manage_search</icon></span>
+                <span class="icon-wrap"><icon aria-hidden="true">manage_search</icon></span>
                 <div>
                   <strong>Brave Search</strong>
                   <span>Has ads, does not track you, partially open source, no accounts needed.</span>
-                </div>
-              </li>
-              <li>
-                <span class="icon-wrap"><icon>bolt</icon></span>
-                <div>
-                  <strong>Improved presentation</strong>
-                  <span>This redesign improves readability, density, spacing, structure, and responsiveness without removing features.</span>
                 </div>
               </li>
             </ul>
@@ -1516,44 +153,40 @@
         </div>
       </section>
 
-      <section class="section-panel reveal" id="products">
+      <section class="section-panel mu-card mu-glass liquid-glass" id="products">
         <div class="section-header">
           <div>
             <h2>Products List</h2>
-            <p>
-              Browse all products, search instantly, and filter by category.
-              Existing buttons and core actions are preserved.
-            </p>
           </div>
         </div>
 
         <div class="filter-bar liquid-glass">
           <label class="search-wrap" for="productSearch">
             <span class="sr-only">Search products</span>
-            <icon>search</icon>
+            <icon aria-hidden="true">search</icon>
             <input
               id="productSearch"
-              class="product-search"
+              class="product-search mu-input"
               type="text"
-              placeholder="Search products, descriptions, or categories..."
+              placeholder="Search products"
               autocomplete="off"
             />
           </label>
 
-          <div class="chips" aria-label="Filter categories">
-            <button class="chip-btn active" type="button" data-filter="all">All</button>
-            <button class="chip-btn" type="button" data-filter="search">Search</button>
-            <button class="chip-btn" type="button" data-filter="productivity">Productivity</button>
-            <button class="chip-btn" type="button" data-filter="media">Media</button>
-            <button class="chip-btn" type="button" data-filter="utility">Utility</button>
+          <div class="chips mu-segmented" role="group" aria-label="Filter categories">
+            <button class="chip-btn" type="button" aria-pressed="true" data-filter="all">All</button>
+            <button class="chip-btn" type="button" aria-pressed="false" data-filter="search">Search</button>
+            <button class="chip-btn" type="button" aria-pressed="false" data-filter="productivity">Productivity</button>
+            <button class="chip-btn" type="button" aria-pressed="false" data-filter="media">Media</button>
+            <button class="chip-btn" type="button" aria-pressed="false" data-filter="utility">Utility</button>
           </div>
         </div>
 
         <div class="products-toolbar">
-          <div class="results-count" id="resultsCount">Showing 13 products</div>
+          <div class="results-count" id="resultsCount" role="status">Showing 13 products</div>
           <div class="toolbar-actions">
-            <button class="btn-secondary" type="button" id="resetFiltersBtn">
-              <icon>filter_alt_off</icon>
+            <button class="btn-secondary mu-btn" type="button" id="resetFiltersBtn">
+              <icon aria-hidden="true">filter_alt_off</icon>
               Reset filters
             </button>
           </div>
@@ -1561,16 +194,16 @@
 
         <div class="grid-apps-list" id="productsGrid">
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="search"
             data-status="live"
             data-title="Munetios Search"
             data-description="Munetios Search is a private search engine that does not track you. We respect your privacy and do not collect any personal data from our users."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>travel_explore</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">travel_explore</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Search</span>
               </div>
             </div>
@@ -1582,30 +215,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://www.munetios.com/search/search.html'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://www.munetios.com/search/search.html">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://www.munetios.com/search/search.html">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="productivity"
             data-status="live"
             data-title="Munetios OmniWrite"
             data-description="Munetios OmniWrite is a advanced document writing tool."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>edit_document</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">edit_document</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Productivity</span>
               </div>
             </div>
@@ -1613,30 +246,30 @@
             <p>Munetios OmniWrite is a advanced document writing tool.</p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://write.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://write.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://write.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="utility"
             data-status="live"
             data-title="Munetios Maps"
             data-description="Munetios Maps is a better world exploring with markers, directions, and openstreetmap data."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>map</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">map</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Utility</span>
               </div>
             </div>
@@ -1647,30 +280,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://maps.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://maps.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://maps.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="productivity"
             data-status="live"
             data-title="Munetios Calendar"
             data-description="Munetios Calendar is a advanced private calendar that you can make calendars, favorite dates and more."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>calendar_month</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">calendar_month</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Productivity</span>
               </div>
             </div>
@@ -1681,30 +314,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://calendar.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://calendar.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://calendar.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="productivity"
             data-status="live"
             data-title="Munetios SupaNotes"
             data-description="Munetios SupaNotes is a advanced, end to end encrypted note-taking app that helps you capture your ideas and thoughts securely."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>note_stack</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">note_stack</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Productivity</span>
               </div>
             </div>
@@ -1715,30 +348,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://notes.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://notes.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://notes.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="productivity"
             data-status="upcoming"
             data-title="Munetios Meet"
             data-description="Munetios Meet is a upcoming service that meetings are encrypted and secure for everyone."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>video_call</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">video_call</icon></div>
               <div class="card-tags">
-                <span class="tag tag-upcoming"><icon>schedule</icon>Coming Soon</span>
+                <span class="tag tag-upcoming"><icon aria-hidden="true">schedule</icon>Coming Soon</span>
                 <span class="tag tag-category">Productivity</span>
               </div>
             </div>
@@ -1748,25 +381,25 @@
               secure for everyone.
             </p>
             <div class="card-footer">
-              <button class="btn" type="button">Coming Soon</button>
-              <button class="secondary-link" type="button" disabled aria-disabled="true">
-                <icon>hourglass_top</icon>
+              <button class="btn mu-btn mu-btn-primary" type="button">Coming Soon</button>
+              <button class="secondary-link mu-btn" type="button" disabled aria-disabled="true">
+                <icon aria-hidden="true">hourglass_top</icon>
                 Upcoming
               </button>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="productivity"
             data-status="live"
             data-title="Munetios Meals"
             data-description="Munetios Meals is a secure and better planning meals and more."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>restaurant</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">restaurant</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Productivity</span>
               </div>
             </div>
@@ -1774,30 +407,30 @@
             <p>Munetios Meals is a secure and better planning meals and more.</p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://calendar.munetios.com/new/meals'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://calendar.munetios.com/new/meals">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://calendar.munetios.com/new/meals">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="productivity"
             data-status="live"
             data-title="Munetios Tasks"
             data-description="Munetios Tasks is a private task manager that helps you organize your tasks and to-dos."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>checklist</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">checklist</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Productivity</span>
               </div>
             </div>
@@ -1808,30 +441,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://tasks.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://tasks.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://tasks.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="media"
             data-status="live"
             data-title="Munetios Photos"
             data-description="Munetios Photos is a private photo storage that helps you keep your memories safe."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>photo_library</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">photo_library</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Media</span>
               </div>
             </div>
@@ -1842,30 +475,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://photos.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://photos.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://photos.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="utility"
             data-status="live"
             data-title="Munetios Calculator"
             data-description="Munetios Calculator is a advanced and private calculator for quick calculations without tracking."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>calculate</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">calculate</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Utility</span>
               </div>
             </div>
@@ -1876,30 +509,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://calculator.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://calculator.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://calculator.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="productivity"
             data-status="live"
             data-title="Munetios Notebook"
             data-description="Munetios Notebook is a secure and private notebook for organizing your notes and ideas."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>menu_book</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">menu_book</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Productivity</span>
               </div>
             </div>
@@ -1910,30 +543,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://notebook.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://notebook.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://notebook.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="media"
             data-status="live"
             data-title="Munetios Games Hub"
             data-description="Munetios Games Hub is a collection of fun and engaging games that you can play online."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>sports_esports</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">sports_esports</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Media</span>
               </div>
             </div>
@@ -1944,30 +577,30 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://www.munetios.com/games'"
               >
                 Play
               </button>
-              <a class="secondary-link" href="https://www.munetios.com/games">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://www.munetios.com/games">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
 
           <article
-            class="box-app-list liquid-glass reveal"
+            class="box-app-list liquid-glass mu-card mu-glass"
             data-category="utility"
             data-status="live"
             data-title="Munetios Weather"
             data-description="Munetios Weather is a private weather app that provides accurate and up-to-date weather information."
           >
             <div class="card-head">
-              <div class="app-icon"><icon>partly_cloudy_day</icon></div>
+              <div class="app-icon"><icon aria-hidden="true">partly_cloudy_day</icon></div>
               <div class="card-tags">
-                <span class="tag tag-live"><icon>check_circle</icon>Live</span>
+                <span class="tag tag-live"><icon aria-hidden="true">check_circle</icon>Live</span>
                 <span class="tag tag-category">Utility</span>
               </div>
             </div>
@@ -1978,142 +611,44 @@
             </p>
             <div class="card-footer">
               <button
-                class="btn"
+                class="btn mu-btn mu-btn-primary"
                 type="button"
                 onclick="window.location.href='https://weather.munetios.com'"
               >
                 Try it out
               </button>
-              <a class="secondary-link" href="https://weather.munetios.com">
-                <icon>open_in_new</icon>
+              <a class="secondary-link mu-btn" href="https://weather.munetios.com">
+                <icon aria-hidden="true">open_in_new</icon>
                 Open
               </a>
             </div>
           </article>
         </div>
 
-        <div class="no-results" id="noResults">
+        <div class="no-results mu-card mu-glass liquid-glass" id="noResults">
           <icon style="font-size: 34px; margin-bottom: 10px;">search_off</icon>
           <div>No products matched your search or filter.</div>
         </div>
-
-        <p class="footer-note">
-          This redesign keeps the original functionality intact while improving
-          visual structure, responsiveness, and usability.
-        </p>
       </section>
     </main>
 
     <button
-      class="scroll-top liquid-glass"
+      class="scroll-top liquid-glass mu-icon-btn"
       id="scrollTopBtn"
       type="button"
       aria-label="Scroll to top"
       title="Scroll to top"
     >
-      <icon>arrow_upward</icon>
+      <icon aria-hidden="true">arrow_upward</icon>
     </button>
   </div>
 
   <script>
-    function setDarkMode(enabled) {
-      if (enabled) {
-        document.body.classList.add('dark-mode');
-        localStorage.setItem('darkMode', 'true');
-      } else {
-        document.body.classList.remove('dark-mode');
-        localStorage.setItem('darkMode', 'false');
-      }
-
-      updateDarkModeIcon();
-    }
-
-    function updateDarkModeIcon() {
-      const icon = document.getElementById('darkModeIcon');
-      if (!icon) return;
-      icon.textContent = document.body.classList.contains('dark-mode')
-        ? 'light_mode'
-        : 'dark_mode';
-    }
-
-    (function () {
-      const saved = localStorage.getItem('darkMode');
-      if (saved === 'true') {
-        setDarkMode(true);
-      } else {
-        updateDarkModeIcon();
-      }
-    })();
-
-    document.querySelector('.dark-mode-toggle').addEventListener('click', function () {
-      const isDark = document.body.classList.contains('dark-mode');
-      setDarkMode(!isDark);
-    });
-
-    (function () {
-      try {
-        const settings = JSON.parse(localStorage.getItem("munetiosSettings") || "{}");
-        if (settings.singleStory === true) {
-          const style = document.createElement("style");
-          style.innerHTML = "* { font-feature-settings: 'ss02' off, 'ss01' on, 'liga' off, 'clig' off !important; }";
-          document.head.appendChild(style);
-        }
-      } catch (e) {}
-    })();
-
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mobilePanel = document.getElementById('mobilePanel');
-    const menuIcon = document.getElementById('menuIcon');
-
-    function closeMobileMenu() {
-      mobilePanel.classList.remove('open');
-      mobilePanel.setAttribute('aria-hidden', 'true');
-      menuToggle.setAttribute('aria-expanded', 'false');
-      menuToggle.setAttribute('aria-label', 'Open menu');
-      menuIcon.textContent = 'menu';
-      document.body.classList.remove('menu-open');
-    }
-
-    function openMobileMenu() {
-      mobilePanel.classList.add('open');
-      mobilePanel.setAttribute('aria-hidden', 'false');
-      menuToggle.setAttribute('aria-expanded', 'true');
-      menuToggle.setAttribute('aria-label', 'Close menu');
-      menuIcon.textContent = 'close';
-      document.body.classList.add('menu-open');
-    }
-
-    menuToggle.addEventListener('click', function () {
-      const isOpen = mobilePanel.classList.contains('open');
-      if (isOpen) {
-        closeMobileMenu();
-      } else {
-        openMobileMenu();
-      }
-    });
-
-    document.addEventListener('click', function (event) {
-      if (
-        mobilePanel.classList.contains('open') &&
-        !mobilePanel.contains(event.target) &&
-        !menuToggle.contains(event.target)
-      ) {
-        closeMobileMenu();
-      }
-    });
-
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 980) {
-        closeMobileMenu();
-      }
-    });
-
     const searchInput = document.getElementById('productSearch');
     const chips = document.querySelectorAll('.chip-btn');
     const cards = document.querySelectorAll('.box-app-list');
     const resultsCount = document.getElementById('resultsCount');
     const noResults = document.getElementById('noResults');
-    const productCountStat = document.getElementById('productCountStat');
     const resetFiltersBtn = document.getElementById('resetFiltersBtn');
 
     let activeFilter = 'all';
@@ -2149,15 +684,11 @@
         visibleCount === 1
           ? 'Showing 1 product'
           : 'Showing ' + visibleCount + ' products';
-
-      productCountStat.textContent = String(visibleCount);
       noResults.classList.toggle('show', visibleCount === 0);
     }
 
     chips.forEach((chip) => {
       chip.addEventListener('click', function () {
-        chips.forEach((btn) => btn.classList.remove('active'));
-        this.classList.add('active');
         activeFilter = this.dataset.filter;
         updateProductFiltering();
       });
@@ -2168,8 +699,7 @@
     resetFiltersBtn.addEventListener('click', function () {
       searchInput.value = '';
       activeFilter = 'all';
-      chips.forEach((btn) => btn.classList.remove('active'));
-      document.querySelector('.chip-btn[data-filter="all"]').classList.add('active');
+      chips.forEach((btn) => btn.setAttribute('aria-pressed', String(btn.dataset.filter === 'all')));
       updateProductFiltering();
       searchInput.focus();
     });
@@ -2194,33 +724,6 @@
 
     updateScrollButton();
 
-    const revealItems = document.querySelectorAll('.reveal');
-
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        {
-          threshold: 0.12,
-        }
-      );
-
-      revealItems.forEach((item) => observer.observe(item));
-    } else {
-      revealItems.forEach((item) => item.classList.add('visible'));
-    }
-
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') {
-        closeMobileMenu();
-      }
-    });
   </script>
 </body>
 </html>
