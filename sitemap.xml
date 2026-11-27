@@ -38,6 +38,12 @@
     <priority>1.0</priority>
   </url>
     <url>
+    <loc>https://mail.munetios.com/</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+    <url>
     <loc>https://maps.munetios.com/</loc>
     <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
@@ -138,6 +144,7 @@
   <url>
     <loc>https://webfilter.munetios.com/</loc>
     <lastmod>2026-11-24</lastmod>
+    <priority>0.8</priority>
   </url>
 
   <url>
